@@ -17,8 +17,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("auth/", include("djoser.urls")),  # Djoser auth endpoints
-    path("auth/", include("djoser.urls.authtoken")),  # Token endpoints
+    path("auth/", include("users.urls")),
     path("esim/", include("esim.urls")),  # eSIM endpoints
     # path("billing/", include("billing.urls")),  # Billing endpoints
     path(
