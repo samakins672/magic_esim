@@ -26,7 +26,7 @@ class User(AbstractUser):
         null=True,
     )
 
-    REQUIRED_FIELDS = ['first_name, last_name']
+    REQUIRED_FIELDS = ['username']
     USERNAME_FIELD = 'email'
 
     def set_otp(self):
