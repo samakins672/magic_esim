@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import eSIMPlan, eSIMActivation
 
-# Register your models here.
+admin.site.register(eSIMPlan)
+admin.site.register(eSIMActivation)
