@@ -2744,7 +2744,7 @@ progress {
 .form-control-lg {
   min-height: calc(1.375em + 1.415rem + calc(var(--bs-border-width) * 2));
   padding: .7075rem 1.3125rem;
-  font-size: 1.0625rem;
+  /* font-size: 1.0625rem; */
   border-radius: var(--bs-border-radius-lg)
 }
 
