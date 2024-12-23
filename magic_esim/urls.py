@@ -4,6 +4,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+from django.conf.urls import handler404
 
 urlpatterns = [
     path("api/admin/", admin.site.urls),
@@ -22,3 +23,5 @@ urlpatterns = [
     path("reset-pasword/", TemplateView.as_view(template_name="reset-pasword.html"), name="reset-pasword"),
     path("dashboard/", TemplateView.as_view(template_name="dashboard.html"), name="dashboard"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+handler404 = 'magic_esim.views.custom_404'
