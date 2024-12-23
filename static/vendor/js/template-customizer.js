@@ -702,30 +702,30 @@
                             this._listeners.push([d, "change", m])
                         } else
                             u.parentNode.removeChild(u);
-                        var h = this.container.querySelector(".template-customizer-themes")
-                          , p = h.querySelector(".template-customizer-themes-options");
-                        if (this._hasControls("themes")) {
-                            this.settings.availableThemes.forEach((function(t) {
-                                var e;
-                                e = "theme-semi-dark" === t.name ? "semi-dark" : "theme-bordered" === t.name ? "border" : "default";
-                                var s = i(t.name, t.title, "themeRadios", w.contains("dark-style"), e);
-                                p.appendChild(s)
-                            }
-                            )),
-                            p.querySelector('input[value="'.concat(this.settings.theme.name, '"]')).setAttribute("checked", "checked");
-                            var y = function(e) {
-                                t._loading = !0,
-                                t._loadingState(!0, !0),
-                                t.setTheme(e.target.value, !0, (function() {
-                                    t._loading = !1,
-                                    t._loadingState(!1, !0)
-                                }
-                                ))
-                            };
-                            p.addEventListener("change", y),
-                            this._listeners.push([p, "change", y])
-                        } else
-                            h.parentNode.removeChild(h);
+                        // var h = this.container.querySelector(".template-customizer-themes")
+                        //   , p = h.querySelector(".template-customizer-themes-options");
+                        // if (this._hasControls("themes")) {
+                        //     this.settings.availableThemes.forEach((function(t) {
+                        //         var e;
+                        //         e = "theme-semi-dark" === t.name ? "semi-dark" : "theme-bordered" === t.name ? "border" : "default";
+                        //         var s = i(t.name, t.title, "themeRadios", w.contains("dark-style"), e);
+                        //         p.appendChild(s)
+                        //     }
+                        //     )),
+                        //     p.querySelector('input[value="'.concat(this.settings.theme.name, '"]')).setAttribute("checked", "checked");
+                        //     var y = function(e) {
+                        //         t._loading = !0,
+                        //         t._loadingState(!0, !0),
+                        //         t.setTheme(e.target.value, !0, (function() {
+                        //             t._loading = !1,
+                        //             t._loadingState(!1, !0)
+                        //         }
+                        //         ))
+                        //     };
+                        //     p.addEventListener("change", y),
+                        //     this._listeners.push([p, "change", y])
+                        // } else
+                        //     h.parentNode.removeChild(h);
                         var f = this.container.querySelector(".template-customizer-theming");
                         this._hasControls("style") || this._hasControls("themes") || f.parentNode.removeChild(f);
                         var v = this.container.querySelector(".template-customizer-layout");
@@ -1101,7 +1101,7 @@
                     panel_sub_header: "Customize and preview in real time",
                     theming_header: "Theming",
                     style_label: "Style (Mode)",
-                    theme_label: "Themes",
+                    theme_label: "",
                     layout_header: "Layout",
                     layout_label: "Menu (Navigation)",
                     layout_header_label: "Header Types",
@@ -1114,7 +1114,7 @@
                     panel_sub_header: "Personnalisez et prévisualisez en temps réel",
                     theming_header: "Thématisation",
                     style_label: "Style (Mode)",
-                    theme_label: "Thèmes",
+                    theme_label: "",
                     layout_header: "Disposition",
                     layout_label: "Menu (Navigation)",
                     layout_header_label: "Types d'en-tête",
@@ -1127,7 +1127,7 @@
                     panel_sub_header: "تخصيص ومعاينة في الوقت الحقيقي",
                     theming_header: "السمات",
                     style_label: "النمط (الوضع)",
-                    theme_label: "المواضيع",
+                    theme_label: "",
                     layout_header: "تَخطِيط",
                     layout_label: "القائمة (الملاحة)",
                     layout_header_label: "أنواع الرأس",
@@ -1140,7 +1140,7 @@
                     panel_sub_header: "Anpassen und Vorschau in Echtzeit",
                     theming_header: "Themen",
                     style_label: "Stil (Modus)",
-                    theme_label: "Themen",
+                    theme_label: "",
                     layout_header: "Layout",
                     layout_label: "Menü (Navigation)",
                     layout_header_label: "Header-Typen",

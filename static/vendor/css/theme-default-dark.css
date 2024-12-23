@@ -692,7 +692,7 @@ button.list-group-item-primary.active {
 }
 
 .nav-pills .nav-link.active {
-    box-shadow: 0 .125rem .25rem 0 rgba(105, 108, 255, .4)
+    box-shadow: 0 .125rem .25rem 0 rgba(105, 188, 255, 0.4)
 }
 
 .nav-pills .nav-link.active,

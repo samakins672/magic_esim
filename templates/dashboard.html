@@ -82,7 +82,7 @@
 
 
         <div class="app-brand demo ">
-          <a href="index.html" class="app-brand-link">
+          <a href="/" class="app-brand-link">
             <span class="app-brand-logo demo">
 
               <svg width="25" viewBox="0 0 25 42" version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -1322,40 +1322,6 @@
 
             <ul class="navbar-nav flex-row align-items-center ms-auto">
 
-
-
-
-              <!-- Language -->
-              <li class="nav-item dropdown-language dropdown me-2 me-xl-0">
-                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-                  <i class='bx bx-globe'></i>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                  <li>
-                    <a class="dropdown-item" href="javascript:void(0);" data-language="en" data-text-direction="ltr">
-                      <span>English</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="javascript:void(0);" data-language="fr" data-text-direction="ltr">
-                      <span>French</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="javascript:void(0);" data-language="ar" data-text-direction="rtl">
-                      <span>Arabic</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="javascript:void(0);" data-language="de" data-text-direction="ltr">
-                      <span>German</span>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <!-- /Language -->
-
-
               <!-- Style Switcher -->
               <li class="nav-item dropdown-style-switcher dropdown me-2 me-xl-0">
                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
@@ -1383,7 +1349,7 @@
 
 
               <!-- Quick links  -->
-              <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
+              <!-- <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown"
                   data-bs-auto-close="outside" aria-expanded="false">
                   <i class='bx bx-grid-alt'></i>
@@ -1434,7 +1400,7 @@
                         <span class="dropdown-shortcuts-icon rounded-circle mb-3">
                           <i class="bx bx-pie-chart-alt-2 bx-26px text-heading"></i>
                         </span>
-                        <a href="index.html" class="stretched-link">Dashboard</a>
+                        <a href="/" class="stretched-link">Dashboard</a>
                         <small>User Dashboard</small>
                       </div>
                       <div class="dropdown-shortcuts-item col">
@@ -1463,7 +1429,7 @@
                     </div>
                   </div>
                 </div>
-              </li>
+              </li> -->
               <!-- Quick links -->
 
               <!-- Notification -->
@@ -1756,16 +1722,31 @@
               </li>
               <!--/ User -->
 
-
             </ul>
           </div>
 
-
           <!-- Search Small Screens -->
           <div class="navbar-search-wrapper search-input-wrapper  d-none">
-            <input type="text" class="form-control search-input container-xxl border-0" placeholder="Search..."
-              aria-label="Search...">
-            <i class="bx bx-x search-toggler cursor-pointer"></i>
+            <span class="twitter-typeahead" style="position: relative; display: inline-block;"><input type="text"
+                class="form-control search-input container-xxl border-0 tt-input" placeholder="Search..."
+                aria-label="Search..." autocomplete="off" spellcheck="false" dir="auto"
+                style="position: relative; vertical-align: top;">
+              <pre aria-hidden="true"
+                style="position: absolute; visibility: hidden; white-space: pre; font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; font-size: 15px; font-style: normal; font-variant: normal; font-weight: 400; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: auto; text-transform: none;"></pre>
+              <div class="tt-menu navbar-search-suggestion ps"
+                style="position: absolute; top: 100%; left: 0px; z-index: 100; display: none;">
+                <div class="tt-dataset tt-dataset-pages"></div>
+                <div class="tt-dataset tt-dataset-files"></div>
+                <div class="tt-dataset tt-dataset-members"></div>
+                <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                  <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div>
+                </div>
+                <div class="ps__rail-y" style="top: 0px; right: 0px;">
+                  <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div>
+                </div>
+              </div>
+            </span>
+            <i class="bx bx-x bx-md search-toggler cursor-pointer"></i>
           </div>
 
 
@@ -2828,7 +2809,7 @@
 
   </div>
   <!-- / Layout wrapper -->
-   
+
 
   <!-- Core JS -->
   <!-- build:js assets/vendor/js/core.js -->
