@@ -1,6 +1,9 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html lang="en" class="light-style customizer-hide" dir="ltr" data-theme="theme-default" data-assets-path="../assets/"
-  data-template="vertical-menu-template-free">
+<html lang="en" class="layout-navbar-fixed layout-compact light-style layout-menu-fixed" dir="ltr"
+  data-theme="theme-default" data-assets-path="{% static '' %}" data-template="vertical-menu-template"
+  data-style="light">
 
 <head>
   <meta charset="utf-8" />
@@ -12,7 +15,7 @@
   <meta name="description" content="" />
 
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="../assets/img/favicon/favicon.ico" />
+  <link rel="icon" type="image/x-icon" href="{% static 'img/favicon/favicon.ico' %}" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -22,15 +25,15 @@
     rel="stylesheet" />
 
   <!-- Icons. Uncomment required icon fonts -->
-  <link rel="stylesheet" href="../assets/vendor/fonts/boxicons.css" />
+  <link rel="stylesheet" href="{% static 'vendor/fonts/boxicons.css' %}" />
 
   <!-- Core CSS -->
-  <link rel="stylesheet" href="../assets/vendor/css/core.css" class="template-customizer-core-css" />
-  <link rel="stylesheet" href="../assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
-  <link rel="stylesheet" href="../assets/css/demo.css" />
+  <link rel="stylesheet" href="{% static 'vendor/css/core.css' %}" class="template-customizer-core-css" />
+  <link rel="stylesheet" href="{% static 'vendor/css/theme-default.css' %}" class="template-customizer-theme-css" />
+  <link rel="stylesheet" href="{% static 'css/demo.css' %}" />
 
   <!-- Vendors CSS -->
-  <link rel="stylesheet" href="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+  <link rel="stylesheet" href="{% static 'vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
 
   <!-- Page CSS -->
   <style>
@@ -63,13 +66,13 @@
   </style>
 
   <!-- Page -->
-  <link rel="stylesheet" href="../assets/vendor/css/pages/page-auth.css" />
+  <link rel="stylesheet" href="{% static 'vendor/css/pages/page-auth.css' %}" />
   <!-- Helpers -->
-  <script src="../assets/vendor/js/helpers.js"></script>
+  <script src="{% static 'vendor/js/helpers.js' %}"></script>
 
   <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
   <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-  <script src="../assets/js/config.js"></script>
+  <script src="{% static 'js/config.js' %}"></script>
 </head>
 
 <body>
@@ -83,9 +86,9 @@
           <div class="card-body">
             <!-- Logo -->
             <div class="app-brand justify-content-center mt-5">
-              <a href="index.html" class="app-brand-link gap-2">
+              <a href="/" class="app-brand-link gap-2">
                 <span class="app-brand-logo demo">
-                  <img src="../assets/img/logo.png" alt="logo" class="img-fluid" width="160" />
+                  <img src="{% static 'img/logo.png' %}" alt="logo" class="img-fluid" width="160" />
                 </span>
               </a>
             </div>
@@ -96,13 +99,13 @@
               <p class="mb-4">Create Your Account with just few steps</p>
               <div class="d-flex justify-content-center gap-4">
                 <a href="#" class="btn btn-outline-light btn-sm px-5 py-2 rounded-pill">
-                  <img src="../assets/img/icons/brands/google.png" alt="" class="img-fluid mx-3" width="20px" />
+                  <img src="{% static 'img/icons/brands/google.png' %}" alt="" class="img-fluid mx-3" width="20px" />
                 </a>
                 <a href="#" class="btn btn-outline-light btn-sm px-5 py-2 rounded-pill">
-                  <img src="../assets/img/icons/brands/facebook.png" alt="" class="img-fluid mx-3" width="20px" />
+                  <img src="{% static 'img/icons/brands/facebook.png' %}" alt="" class="img-fluid mx-3" width="20px" />
                 </a>
                 <a href="#" class="btn btn-outline-light btn-sm px-5 py-2 rounded-pill">
-                  <img src="../assets/img/icons/brands/apple.png" alt="" class="img-fluid mx-3" width="20px" />
+                  <img src="{% static 'img/icons/brands/apple.png' %}" alt="" class="img-fluid mx-3" width="20px" />
                 </a>
               </div>
             </div>
@@ -193,21 +196,21 @@
 
   <!-- Core JS -->
   <!-- build:js assets/vendor/js/core.js -->
-  <script src="../assets/vendor/libs/jquery/jquery.js"></script>
-  <script src="../assets/vendor/libs/popper/popper.js"></script>
-  <script src="../assets/vendor/js/bootstrap.js"></script>
-  <script src="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+  <script src="{% static 'vendor/libs/jquery/jquery.js' %}"></script>
+  <script src="{% static 'vendor/libs/popper/popper.js' %}"></script>
+  <script src="{% static 'vendor/js/bootstrap.js' %}"></script>
+  <script src="{% static 'vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
 
-  <script src="../assets/vendor/js/menu.js"></script>
+  <script src="{% static 'vendor/js/menu.js' %}"></script>
   <!-- endbuild -->
 
   <!-- Vendors JS -->
 
   <!-- Main JS -->
-  <script src="../assets/js/main.js"></script>
+  <script src="{% static 'js/main.js' %}"></script>
 
   <!-- Page JS -->
-  <script src="../assets/js/otp-handling.js"></script>
+  <script src="{% static 'js/otp-handling.js' %}"></script>
 
 </body>
 

@@ -18,4 +18,7 @@ urlpatterns = [
     ),
     path("", TemplateView.as_view(template_name="index.html"), name="index"),
     path("login/", TemplateView.as_view(template_name="login.html"), name="login"),
+    path("signup/", TemplateView.as_view(template_name="signup.html"), name="signup"),
+    path("reset-pasword/", TemplateView.as_view(template_name="reset-pasword.html"), name="reset-pasword"),
+    path("dashboard/", TemplateView.as_view(template_name="dashboard.html"), name="dashboard"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
