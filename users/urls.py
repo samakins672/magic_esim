@@ -1,4 +1,5 @@
 from django.urls import path
+from rest_framework_simplejwt.views import TokenRefreshView
 from .views import (
     UserRegistrationView,
     OTPRequestView,
@@ -13,4 +14,5 @@ urlpatterns = [
     path("otp/verify/", OTPVerifyView.as_view(), name="otp-verify"),
     path("login/", LoginView.as_view(), name="login"),  # Login endpoint
     path("user/me/", UserMeView.as_view(), name="user-me"),
+    path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
