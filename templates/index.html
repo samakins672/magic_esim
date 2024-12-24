@@ -222,95 +222,79 @@
               </button>
             </li>
           </ul>
-          
+
           <div class="tab-content">
             <div class="tab-pane fade show active" id="navs-pills-justified-local" role="tabpanel">
               <div class="row g-5 text-center"> <!-- Added `g-3` for uniform spacing -->
+                {% for country in countries %}
                 <div class="col-12 col-md-6 col-lg-4">
-                  <div class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                  <a href="" class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
-                      <img src="https://flagcdn.com/w320/us.png" alt="Africa" class="me-2 rounded" width="60px" height="40px"/>
-                      Africa
+                      <img src="https://flagcdn.com/w320/{{ country.alpha_2|lower }}.png" alt="{{ country.name }}" class="me-2 rounded" width="60px" height="40px"/>
+                      {{ country.name }}
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
-                  </div>
+                  </a>
                 </div>
-                <div class="col-12 col-md-6 col-lg-4">
-                  <div class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
-                    <span>
-                      <img src="https://flagcdn.com/w320/us.png" alt="Africa" class="me-2 rounded" width="60px" height="40px"/>
-                      Africa
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4">
-                  <div class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
-                    <span>
-                      <img src="https://flagcdn.com/w320/us.png" alt="Africa" class="me-2 rounded" width="60px" height="40px"/>
-                      Africa
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </div>
-                </div>
+                {% endfor %}
               </div>
             </div>
             
             <div class="tab-pane fade" id="navs-pills-justified-regions" role="tabpanel">
               <div class="row g-5 text-center"> <!-- Added `g-3` for uniform spacing -->
                 <div class="col-12 col-md-6 col-lg-4">
-                  <div class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                  <a href="#" class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
                       <img src="{% static 'img/regions/africa.png' %}" alt="Africa" class="me-2 rounded" width="50px"/>
                       Africa
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
-                  </div>
+                  </a>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
-                  <div class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                  <a href="#" class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
                       <img src="{% static 'img/regions/asia.png' %}" alt="Asia" class="me-2 rounded" width="50px"/>
                       Asia
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
-                  </div>
+                  </a>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
-                  <div class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                  <a href="#" class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
                       <img src="{% static 'img/regions/europe.png' %}" alt="Europe" class="me-2 rounded" width="50px"/>
                       Europe
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
-                  </div>
+                  </a>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
-                  <div class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                  <a href="#" class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
                       <img src="{% static 'img/regions/north-america.png' %}" alt="North America" class="me-2 rounded" width="50px"/>
                       North America
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
-                  </div>
+                  </a>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
-                  <div class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                  <a href="#" class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
                       <img src="{% static 'img/regions/south-america.png' %}" alt="South America" class="me-2 rounded" width="50px"/>
                       South America
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
-                  </div>
+                  </a>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
-                  <div class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                  <a href="#" class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
                       <img src="{% static 'img/regions/caribbean.png' %}" alt="caribbean" class="me-2 rounded" width="50px"/>
                       Caribbean
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
-                  </div>
+                  </a>
                 </div>
               </div>
             </div>

@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import handler404
+from .views import custom_404, index
 
 urlpatterns = [
     path("api/admin/", admin.site.urls),
@@ -17,11 +18,11 @@ urlpatterns = [
         SpectacularSwaggerView.as_view(url_name="openapi-schema"),
         name="swagger-ui",
     ),
-    path("", TemplateView.as_view(template_name="index.html"), name="index"),
+    path("", index, name="index"),
     path("login/", TemplateView.as_view(template_name="login.html"), name="login"),
     path("signup/", TemplateView.as_view(template_name="signup.html"), name="signup"),
     path("reset-pasword/", TemplateView.as_view(template_name="reset-pasword.html"), name="reset-pasword"),
     path("dashboard/", TemplateView.as_view(template_name="dashboard.html"), name="dashboard"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-handler404 = 'magic_esim.views.custom_404'
+handler404 = custom_404
