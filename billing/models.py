@@ -1,7 +1,7 @@
+import uuid
 from django.db import models
 from django.conf import settings
 from django.utils.timezone import now
-from esim.models import eSIMPlan
 
 class Payment(models.Model):
     STATUS_CHOICES = [
@@ -16,9 +16,9 @@ class Payment(models.Model):
         ('WALLET', 'Wallet'),
     ]
 
+    ref_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)  # Auto-generate UUID
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='payments')
-    plan = models.ForeignKey(eSIMPlan, on_delete=models.CASCADE, related_name='payments')
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='CARD')
     payment_gateway = models.CharField(max_length=50, default='Stripe')  # Default to Stripe
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')

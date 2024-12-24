@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from billing.models import Payment
 
 
 class eSIMPlan(models.Model):
@@ -16,5 +17,10 @@ class eSIMPlan(models.Model):
     duration = models.IntegerField()  # In days
     duration_unit = models.CharField(max_length=25)
     support_top_up_type = models.IntegerField()  # In days
+    payment = models.ForeignKey(Payment, on_delete=models.CASCADE, related_name='esim_plans')
+    status = models.CharField(max_length=20, default='PAID')
     activated_on = models.DateTimeField(auto_now_add=True)
     expires_on = models.DateTimeField()
+
+    def __str__(self):
+        return f"eSIM Plan {self.name} ({self.status})"

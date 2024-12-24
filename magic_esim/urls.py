@@ -10,7 +10,7 @@ urlpatterns = [
     path("api/admin/", admin.site.urls),
     path("api/auth/", include("users.urls")),
     path("api/esim/", include("esim.urls")),  # eSIM endpoints
-    # path("billing/", include("billing.urls")),  # Billing endpoints
+    path("api/", include("billing.urls")),  # Billing endpoints
     path("api/schema/", SpectacularAPIView.as_view(), name="openapi-schema"),
     path(
         "api/docs/",
