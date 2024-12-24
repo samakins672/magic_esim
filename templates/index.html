@@ -204,13 +204,15 @@
             <li class="nav-item mb-1 mb-sm-0" role="presentation">
               <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
                 data-bs-target="#navs-pills-justified-local" aria-controls="navs-pills-justified-local"
-                aria-selected="true"><span class="d-none d-sm-block"><i class="tf-icons bx bx-map me-2"></i> Local</span>
+                aria-selected="true"><span class="d-none d-sm-block"><i class="tf-icons bx bx-map me-2"></i>
+                  Local</span>
               </button>
             </li>
             <li class="nav-item mb-1 mb-sm-0" role="presentation">
               <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                 data-bs-target="#navs-pills-justified-regions" aria-controls="navs-pills-justified-regions"
-                aria-selected="false" tabindex="-1"><span class="d-none d-sm-block"><i class="tf-icons bx bx-world me-2"></i>
+                aria-selected="false" tabindex="-1"><span class="d-none d-sm-block"><i
+                    class="tf-icons bx bx-world me-2"></i>
                   Regions</span>
               </button>
             </li>
@@ -225,72 +227,88 @@
 
           <div class="tab-content">
             <div class="tab-pane fade show active" id="navs-pills-justified-local" role="tabpanel">
-              <div class="row g-5 text-center"> <!-- Added `g-3` for uniform spacing -->
+              <div class="row g-5 text-center pt-3 pb-3" id="countries-list">
                 {% for country in countries %}
-                <div class="col-12 col-md-6 col-lg-4">
-                  <a href="" class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                <div class="col-12 col-md-6 col-lg-4 country-item {% if not country.is_popular %}d-none{% endif %}" data-popular="{{ country.is_popular }}">
+                  <a href=""
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
-                      <img src="https://flagcdn.com/w320/{{ country.alpha_2|lower }}.png" alt="{{ country.name }}" class="me-2 rounded" width="60px" height="40px"/>
+                      <img src="https://flagcdn.com/w320/{{ country.alpha_2|lower }}.png" alt="{{ country.name }}"
+                        class="me-2 rounded" width="60px" height="40px" />
                       {{ country.name }}
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
                   </a>
                 </div>
                 {% endfor %}
+
+                <div class="text-center">
+                  <!-- Toggle Button -->
+                  <button id="toggle-countries-btn" class="btn btn-lg btn-primary">Show 200+ Countries</button>
+                </div>
               </div>
             </div>
-            
+
             <div class="tab-pane fade" id="navs-pills-justified-regions" role="tabpanel">
-              <div class="row g-5 text-center"> <!-- Added `g-3` for uniform spacing -->
+              <div class="row g-5 text-center pt-3 pb-3"> <!-- Added `g-3` for uniform spacing -->
                 <div class="col-12 col-md-6 col-lg-4">
-                  <a href="#" class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                  <a href="#"
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
-                      <img src="{% static 'img/regions/africa.png' %}" alt="Africa" class="me-2 rounded" width="50px"/>
+                      <img src="{% static 'img/regions/africa.png' %}" alt="Africa" class="me-2 rounded" width="50px" />
                       Africa
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
                   </a>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
-                  <a href="#" class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                  <a href="#"
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
-                      <img src="{% static 'img/regions/asia.png' %}" alt="Asia" class="me-2 rounded" width="50px"/>
+                      <img src="{% static 'img/regions/asia.png' %}" alt="Asia" class="me-2 rounded" width="50px" />
                       Asia
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
                   </a>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
-                  <a href="#" class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                  <a href="#"
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
-                      <img src="{% static 'img/regions/europe.png' %}" alt="Europe" class="me-2 rounded" width="50px"/>
+                      <img src="{% static 'img/regions/europe.png' %}" alt="Europe" class="me-2 rounded" width="50px" />
                       Europe
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
                   </a>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
-                  <a href="#" class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                  <a href="#"
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
-                      <img src="{% static 'img/regions/north-america.png' %}" alt="North America" class="me-2 rounded" width="50px"/>
+                      <img src="{% static 'img/regions/north-america.png' %}" alt="North America" class="me-2 rounded"
+                        width="50px" />
                       North America
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
                   </a>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
-                  <a href="#" class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                  <a href="#"
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
-                      <img src="{% static 'img/regions/south-america.png' %}" alt="South America" class="me-2 rounded" width="50px"/>
+                      <img src="{% static 'img/regions/south-america.png' %}" alt="South America" class="me-2 rounded"
+                        width="50px" />
                       South America
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
                   </a>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
-                  <a href="#" class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                  <a href="#"
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
-                      <img src="{% static 'img/regions/caribbean.png' %}" alt="caribbean" class="me-2 rounded" width="50px"/>
+                      <img src="{% static 'img/regions/caribbean.png' %}" alt="caribbean" class="me-2 rounded"
+                        width="50px" />
                       Caribbean
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
@@ -300,29 +318,35 @@
             </div>
 
             <div class="tab-pane fade" id="navs-pills-justified-global" role="tabpanel">
-              <div class="row g-5 text-center"> <!-- Added `g-3` for uniform spacing -->
+              <div class="row g-5 text-center pt-3 pb-3"> <!-- Added `g-3` for uniform spacing -->
                 <div class="col-12 col-md-6 col-lg-4">
-                  <div class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                  <div
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
-                      <img src="https://flagcdn.com/w320/us.png" alt="Africa" class="me-2 rounded" width="60px" height="40px"/>
+                      <img src="https://flagcdn.com/w320/us.png" alt="Africa" class="me-2 rounded" width="60px"
+                        height="40px" />
                       Africa
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
                   </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
-                  <div class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                  <div
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
-                      <img src="https://flagcdn.com/w320/us.png" alt="Africa" class="me-2 rounded" width="60px" height="40px"/>
+                      <img src="https://flagcdn.com/w320/us.png" alt="Africa" class="me-2 rounded" width="60px"
+                        height="40px" />
                       Africa
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
                   </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
-                  <div class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                  <div
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
-                      <img src="https://flagcdn.com/w320/us.png" alt="Africa" class="me-2 rounded" width="60px" height="40px"/>
+                      <img src="https://flagcdn.com/w320/us.png" alt="Africa" class="me-2 rounded" width="60px"
+                        height="40px" />
                       Africa
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
@@ -1440,6 +1464,7 @@
 
   <!-- Core JS -->
   <!-- build:js assets/vendor/js/core.js -->
+  <script src="{% static 'vendor/libs/jquery/jquery.js' %}"></script>
   <script src="{% static 'vendor/libs/popper/popper.js' %}"></script>
   <script src="{% static 'vendor/js/bootstrap.js' %}"></script>
 
@@ -1452,9 +1477,31 @@
   <!-- Main JS -->
   <script src="{% static 'js/front-main.js' %}"></script>
 
-
   <!-- Page JS -->
   <script src="{% static 'js/front-page-landing.js' %}"></script>
+  <script>
+    $(document).ready(function () {
+      $("#toggle-countries-btn").on("click", function () {
+        const isShowingPopular = $(this).text() === "Show 200+ Countries";
+
+        if (isShowingPopular) {
+          // Show 200+ Countries
+          $(".country-item").removeClass("d-none");
+          $(this).text("Show Popular Countries");
+        } else {
+          // Show only popular countries
+          $(".country-item").each(function () {
+            if ($(this).data("popular") === "False" || $(this).data("popular") === false) {
+              $(this).addClass("d-none");
+            } else {
+              $(this).removeClass("d-none");
+            }
+          });
+          $(this).text("Show 200+ Countries");
+        }
+      });
+    });
+  </script>
 
 </body>
 

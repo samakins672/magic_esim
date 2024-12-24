@@ -1,0 +1,122 @@
+[
+    {
+        "alpha_2": "NG",
+        "name": "Nigeria",
+        "slug": "nigeria"
+    },
+    {
+        "alpha_2": "ZA",
+        "name": "South Africa",
+        "slug": "south-africa"
+    },
+    {
+        "alpha_2": "EG",
+        "name": "Egypt",
+        "slug": "egypt"
+    },
+    {
+        "alpha_2": "KE",
+        "name": "Kenya",
+        "slug": "kenya"
+    },
+    {
+        "alpha_2": "GH",
+        "name": "Ghana",
+        "slug": "ghana"
+    },
+    {
+        "alpha_2": "US",
+        "name": "United States",
+        "slug": "united-states"
+    },
+    {
+        "alpha_2": "CA",
+        "name": "Canada",
+        "slug": "canada"
+    },
+    {
+        "alpha_2": "GB",
+        "name": "United Kingdom",
+        "slug": "united-kingdom"
+    },
+    {
+        "alpha_2": "DE",
+        "name": "Germany",
+        "slug": "germany"
+    },
+    {
+        "alpha_2": "FR",
+        "name": "France",
+        "slug": "france"
+    },
+    {
+        "alpha_2": "IT",
+        "name": "Italy",
+        "slug": "italy"
+    },
+    {
+        "alpha_2": "ES",
+        "name": "Spain",
+        "slug": "spain"
+    },
+    {
+        "alpha_2": "AU",
+        "name": "Australia",
+        "slug": "australia"
+    },
+    {
+        "alpha_2": "JP",
+        "name": "Japan",
+        "slug": "japan"
+    },
+    {
+        "alpha_2": "CN",
+        "name": "China",
+        "slug": "china"
+    },
+    {
+        "alpha_2": "IN",
+        "name": "India",
+        "slug": "india"
+    },
+    {
+        "alpha_2": "BR",
+        "name": "Brazil",
+        "slug": "brazil"
+    },
+    {
+        "alpha_2": "RU",
+        "name": "Russia",
+        "slug": "russia"
+    },
+    {
+        "alpha_2": "MX",
+        "name": "Mexico",
+        "slug": "mexico"
+    },
+    {
+        "alpha_2": "KR",
+        "name": "South Korea",
+        "slug": "south-korea"
+    },
+    {
+        "alpha_2": "AR",
+        "name": "Argentina",
+        "slug": "argentina"
+    },
+    {
+        "alpha_2": "SA",
+        "name": "Saudi Arabia",
+        "slug": "saudi-arabia"
+    },
+    {
+        "alpha_2": "TR",
+        "name": "Turkey",
+        "slug": "turkey"
+    },
+    {
+        "alpha_2": "ID",
+        "name": "Indonesia",
+        "slug": "indonesia"
+    }
+]

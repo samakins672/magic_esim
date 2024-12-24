@@ -7,7 +7,23 @@ def custom_404(request, exception):
 
 
 def index(request):
-    json_file_path = os.path.join('static', 'vendor', 'locations', 'countries.json')
-    with open(json_file_path, 'r') as file:
+    # Load all countries
+    countries_json_path = os.path.join('static', 'vendor', 'locations', 'countries.json')
+    with open(countries_json_path, 'r') as file:
         countries = json.load(file)
-    return render(request, 'index.html', {'countries': countries})
+
+    # Load popular countries
+    popular_countries_json_path = os.path.join('static', 'vendor', 'locations', 'popular_countries.json')
+    with open(popular_countries_json_path, 'r') as file:
+        popular_countries = json.load(file)
+
+    # Add `is_popular` key to each country
+    popular_country_codes = {country['alpha_2'] for country in popular_countries}
+    for country in countries:
+        country['is_popular'] = country['alpha_2'] in popular_country_codes
+
+    # Pass both datasets to the template
+    return render(request, 'index.html', {
+        'countries': countries,
+        'popular_countries': popular_countries
+    })
