@@ -87,13 +87,19 @@
           </button>
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <a class="nav-link fw-medium" aria-current="page" href="/#landingHero">Home</a>
+              <a class="nav-link fw-medium" aria-current="page" href="#landingHero">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link fw-medium" href="/#landingFeatures">eSIM</a>
+              <a class="nav-link fw-medium" href="#eSIMs">eSIM</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link fw-medium" href="/#landingTeam">Virtual Number</a>
+              <a class="nav-link fw-medium" href="#virtualNumbers">Virtual Numbers</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link fw-medium" href="#landingFAQ">FAQs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link fw-medium" href="#landingContact">Contact Us</a>
             </li>
           </ul>
         </div>
@@ -186,7 +192,7 @@
     <!-- Hero: End -->
 
     <!-- Useful features: Start -->
-    <section id="landingFeatures" class="section-py landing-features">
+    <section id="eSIMs" class="section-py landing-features">
       <div class="container">
         <div class="text-center mb-2">
           <span class="badge bg-label-primary">Magic eSIMs</span>
@@ -229,7 +235,8 @@
             <div class="tab-pane fade show active" id="navs-pills-justified-local" role="tabpanel">
               <div class="row g-5 text-center pt-3 pb-3" id="countries-list">
                 {% for country in countries %}
-                <div class="col-12 col-md-6 col-lg-4 country-item {% if not country.is_popular %}d-none{% endif %}" data-popular="{{ country.is_popular }}">
+                <div class="col-12 col-md-6 col-lg-4 country-item {% if not country.is_popular %}d-none{% endif %}"
+                  data-popular="{{ country.is_popular }}">
                   <a href=""
                     class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
                     <span>
@@ -688,7 +695,7 @@
     <!-- Real customers reviews: End -->
 
     <!-- Our great team: Start -->
-    <section id="landingTeam" class="section-py landing-team">
+    <section id="virtualNumbers" class="section-py landing-team">
       <div class="container">
         <div class="text-center mb-4">
           <span class="badge bg-label-primary">Our Great Team</span>
@@ -1481,6 +1488,12 @@
   <script src="{% static 'js/front-page-landing.js' %}"></script>
   <script>
     $(document).ready(function () {
+
+      // Ensure the correct tab is active
+      $('button[data-bs-target="#navs-pills-justified-local"]').addClass('active');
+      $('#navs-pills-justified-local').addClass('show active');
+
+      // Toggle countries
       $("#toggle-countries-btn").on("click", function () {
         const isShowingPopular = $(this).text() === "Show 200+ Countries";
 

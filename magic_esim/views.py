@@ -18,9 +18,9 @@ def index(request):
         popular_countries = json.load(file)
 
     # Add `is_popular` key to each country
-    popular_country_codes = {country['alpha_2'] for country in popular_countries}
+    popular_country_codes = {country.get('alpha_2') for country in popular_countries if 'alpha_2' in country}
     for country in countries:
-        country['is_popular'] = country['alpha_2'] in popular_country_codes
+        country['is_popular'] = country.get('alpha_2') in popular_country_codes if 'alpha_2' in country else False
 
     # Pass both datasets to the template
     return render(request, 'index.html', {

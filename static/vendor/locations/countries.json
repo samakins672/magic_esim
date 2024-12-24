@@ -1,5 +1,20 @@
 [
     {
+        "alpha_2": "US",
+        "name": "United States",
+        "slug": "united-states"
+    },
+    {
+        "alpha_2": "GB",
+        "name": "United Kingdom",
+        "slug": "united-kingdom"
+    },
+    {
+        "alpha_2": "NG",
+        "name": "Nigeria",
+        "slug": "nigeria"
+    },
+    {
         "alpha_2": "AF",
         "name": "Afghanistan",
         "slug": "afghanistan"
@@ -458,5 +473,235 @@
         "alpha_2": "KG",
         "name": "Kyrgyzstan",
         "slug": "kyrgyzstan"
+    },
+    {
+        "alpha_2": "LA",
+        "name": "Laos",
+        "slug": "laos"
+    },
+    {
+        "alpha_2": "LV",
+        "name": "Latvia",
+        "slug": "latvia"
+    },
+    {
+        "alpha_2": "LB",
+        "name": "Lebanon",
+        "slug": "lebanon"
+    },
+    {
+        "alpha_2": "LS",
+        "name": "Lesotho",
+        "slug": "lesotho"
+    },
+    {
+        "alpha_2": "LR",
+        "name": "Liberia",
+        "slug": "liberia"
+    },
+    {
+        "alpha_2": "LY",
+        "name": "Libya",
+        "slug": "libya"
+    },
+    {
+        "alpha_2": "LI",
+        "name": "Liechtenstein",
+        "slug": "liechtenstein"
+    },
+    {
+        "alpha_2": "LT",
+        "name": "Lithuania",
+        "slug": "lithuania"
+    },
+    {
+        "alpha_2": "LU",
+        "name": "Luxembourg",
+        "slug": "luxembourg"
+    },
+    {
+        "alpha_2": "MG",
+        "name": "Madagascar",
+        "slug": "madagascar"
+    },
+    {
+        "alpha_2": "MW",
+        "name": "Malawi",
+        "slug": "malawi"
+    },
+    {
+        "alpha_2": "MY",
+        "name": "Malaysia",
+        "slug": "malaysia"
+    },
+    {
+        "alpha_2": "MV",
+        "name": "Maldives",
+        "slug": "maldives"
+    },
+    {
+        "alpha_2": "ML",
+        "name": "Mali",
+        "slug": "mali"
+    },
+    {
+        "alpha_2": "MT",
+        "name": "Malta",
+        "slug": "malta"
+    },
+    {
+        "alpha_2": "MH",
+        "name": "Marshall Islands",
+        "slug": "marshall-islands"
+    },
+    {
+        "alpha_2": "MR",
+        "name": "Mauritania",
+        "slug": "mauritania"
+    },
+    {
+        "alpha_2": "MU",
+        "name": "Mauritius",
+        "slug": "mauritius"
+    },
+    {
+        "alpha_2": "MX",
+        "name": "Mexico",
+        "slug": "mexico"
+    },
+    {
+        "alpha_2": "FM",
+        "name": "Micronesia",
+        "slug": "micronesia"
+    },
+    {
+        "alpha_2": "MD",
+        "name": "Moldova",
+        "slug": "moldova"
+    },
+    {
+        "alpha_2": "MC",
+        "name": "Monaco",
+        "slug": "monaco"
+    },
+    {
+        "alpha_2": "MN",
+        "name": "Mongolia",
+        "slug": "mongolia"
+    },
+    {
+        "alpha_2": "ME",
+        "name": "Montenegro",
+        "slug": "montenegro"
+    },
+    {
+        "alpha_2": "MA",
+        "name": "Morocco",
+        "slug": "morocco"
+    },
+    {
+        "alpha_2": "MZ",
+        "name": "Mozambique",
+        "slug": "mozambique"
+    },
+    {
+        "alpha_2": "MM",
+        "name": "Myanmar",
+        "slug": "myanmar"
+    },
+    {
+        "alpha_2": "NA",
+        "name": "Namibia",
+        "slug": "namibia"
+    },
+    {
+        "alpha_2": "NR",
+        "name": "Nauru",
+        "slug": "nauru"
+    },
+    {
+        "alpha_2": "NP",
+        "name": "Nepal",
+        "slug": "nepal"
+    },
+    {
+        "alpha_2": "NL",
+        "name": "Netherlands",
+        "slug": "netherlands"
+    },
+    {
+        "alpha_2": "NZ",
+        "name": "New Zealand",
+        "slug": "new-zealand"
+    },
+    {
+        "alpha_2": "NI",
+        "name": "Nicaragua",
+        "slug": "nicaragua"
+    },
+    {
+        "alpha_2": "NE",
+        "name": "Niger",
+        "slug": "niger"
+    },
+    {
+        "alpha_2": "MK",
+        "name": "North Macedonia",
+        "slug": "north-macedonia"
+    },
+    {
+        "alpha_2": "NO",
+        "name": "Norway",
+        "slug": "norway"
+    },
+    {
+        "alpha_2": "OM",
+        "name": "Oman",
+        "slug": "oman"
+    },
+    {
+        "alpha_2": "PK",
+        "name": "Pakistan",
+        "slug": "pakistan"
+    },
+    {
+        "alpha_2": "PW",
+        "name": "Palau",
+        "slug": "palau"
+    },
+    {
+        "alpha_2": "PS",
+        "name": "Palestine",
+        "slug": "palestine"
+    },
+    {
+        "alpha_2": "PA",
+        "name": "Panama",
+        "slug": "panama"
+    },
+    {
+        "alpha_2": "RU",
+        "name": "Russia",
+        "slug": "russia"
+    },
+    {
+        "alpha_2": "ES",
+        "name": "Spain",
+        "slug": "spain"
+    },
+    {
+        "alpha_2": "SA",
+        "name": "Saudi Arabia",
+        "slug": "saudi-arabia"
+    },
+    {
+        "alpha_2": "ZA",
+        "name": "South Africa",
+        "slug": "south-africa"
+    },
+    {
+        "alpha_2": "TR",
+        "name": "Turkey",
+        "slug": "turkey"
     }
 ]
