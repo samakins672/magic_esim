@@ -1,12 +1,14 @@
 import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework import status, generics
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
-from .serializers import eSIMPlanFilterSerializer, eSIMProfileSerializer
+from .models import eSIMPlan
+from .serializers import eSIMPlanFilterSerializer, eSIMProfileSerializer, eSIMPlanSerializer
 from decouple import config
+
 
 class eSIMPlanListView(APIView):
     """
@@ -123,3 +125,39 @@ class eSIMProfileView(APIView):
                 "message": "Invalid input parameters.",
                 "errors": serializer.errors,
             }, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class eSIMPlanListCreateView(generics.ListCreateAPIView):
+    """
+    Handles listing all eSIM plans and creating a new eSIM plan.
+    """
+    serializer_class = eSIMPlanSerializer
+    # permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Return only the eSIM plans associated with the authenticated user
+        return eSIMPlan.objects.filter(user=self.request.user)
+
+
+class eSIMPlanDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Handles retrieving, updating, and deleting a specific eSIM plan.
+    """
+    serializer_class = eSIMPlanSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Return only the eSIM plans associated with the authenticated user
+        return eSIMPlan.objects.filter(user=self.request.user)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({
+            "status": True,
+            "message": "eSIM plan updated successfully.",
+            "data": serializer.data
+        }, status=status.HTTP_200_OK)

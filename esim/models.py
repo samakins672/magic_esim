@@ -13,12 +13,13 @@ class eSIMPlan(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     volume = models.IntegerField()  # In Bytes
-    sms_status = models.IntegerField()
     duration = models.IntegerField()  # In days
     duration_unit = models.CharField(max_length=25)
     support_top_up_type = models.IntegerField()  # In days
     payment = models.ForeignKey(Payment, on_delete=models.CASCADE, related_name='esim_plans')
-    status = models.CharField(max_length=20, default='PAID')
+    esim_status = models.CharField(max_length=25, default='PAID')
+    smdp_status = models.CharField(max_length=25, default='RELEASED')
+    seller = models.CharField(max_length=25, default='esimaccess')
     activated_on = models.DateTimeField(auto_now_add=True)
     expires_on = models.DateTimeField()
 

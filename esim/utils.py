@@ -1,5 +1,15 @@
 import requests
 from decouple import config
+from datetime import timedelta
+from django.utils.timezone import now
+
+
+def calculate_expiry_date(duration):
+    """
+    Calculate the expiry date based on the current time and duration in days.
+    """
+    return now() + timedelta(days=duration)
+
 
 def fetch_esim_plan_details(package_code):
     """
