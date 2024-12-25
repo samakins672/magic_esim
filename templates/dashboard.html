@@ -1,8 +1,18 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" class="layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-default">
+<html lang="en" class="layout-navbar-fixed layout-compact light-style layout-menu-fixed" dir="ltr"
+  data-theme="theme-default" data-assets-path="{% static '' %}" data-template="vertical-menu-template"
+  data-style="light">
 
-{% include 'partials/head.html' %}
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+  <title>Dashboard - Magic eSIM</title>
+
+  {% include 'partials/head.html' %}
+
+</head>
 
 <body>
   <!-- Layout wrapper -->
@@ -49,13 +59,13 @@
   <script src="{% static 'vendor/libs/i18n/i18n.js' %}"></script>
   <script src="{% static 'vendor/libs/typeahead-js/typeahead.js' %}"></script>
   <script src="{% static 'vendor/js/menu.js' %}"></script>
-  
+
   <!-- Vendors JS -->
   <script src="{% static 'vendor/libs/apex-charts/apexcharts.js' %}"></script>
-  
+
   <!-- Main JS -->
   <script src="{% static 'js/main.js' %}"></script>
-  
+
   <!-- Page JS -->
   <script src="{% static 'js/dashboards-analytics.js' %}"></script>
 </body>
