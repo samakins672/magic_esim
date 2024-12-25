@@ -1357,6 +1357,10 @@
       $(document).on('click', '#back-to-countries-btn', function (e) {
         $('#esim-plan-cards').addClass('d-none');
         $('#countries-list').removeClass('d-none');
+
+        // Smooth scroll to the landing_esim
+        const landing_esim = document.getElementById('landingESIM');
+        landing_esim.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
 
       // Toggle countries
@@ -1365,11 +1369,11 @@
 
         if (isShowingPopular) {
           // Show 200+ Countries
-          $(".country-item").removeClass("d-none");
+          $("#countries-list .country-item").removeClass("d-none");
           $(this).text("Show Popular Countries");
         } else {
           // Show only popular countries
-          $(".country-item").each(function () {
+          $("#countries-list .country-item").each(function () {
             if ($(this).data("popular") === "False" || $(this).data("popular") === false) {
               $(this).addClass("d-none");
             } else {
@@ -1377,6 +1381,10 @@
             }
           });
           $(this).text("Show 200+ Countries");
+          
+          // Smooth scroll to the landing_esim
+          const landing_esim = document.getElementById('landingESIM');
+          landing_esim.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
     });
