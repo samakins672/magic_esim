@@ -132,7 +132,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Authentication
 AUTH_USER_MODEL = 'users.User'  # Use custom user model
-LOGIN_URL = 'login'
+LOGIN_URL = 'frontend_login'
 
 # REST Framework Configuration
 REST_FRAMEWORK = {
