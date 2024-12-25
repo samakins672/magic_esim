@@ -38,6 +38,7 @@
 
   <link rel="stylesheet" href="{% static 'vendor/libs/nouislider/nouislider.css' %}" />
   <link rel="stylesheet" href="{% static 'vendor/libs/swiper/swiper.css' %}" />
+  <link rel="stylesheet" href="{% static 'vendor/libs/spinkit/spinkit.css' %}" />
 
   <!-- Page CSS -->
 
@@ -68,7 +69,7 @@
           <button class="navbar-toggler border-0 px-0 me-4" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
             aria-label="Toggle navigation">
-            <i class="tf-icons bx bx-menu align-middle text-heading fw-medium"></i>
+            <i class="tf-icons bx bx-menu align-middle text-heading fw-bold"></i>
           </button>
           <!-- Mobile menu toggle: End-->
           <a href="/" class="app-brand-link">
@@ -87,19 +88,19 @@
           </button>
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <a class="nav-link fw-medium" aria-current="page" href="#landingHero">Home</a>
+              <a class="nav-link fw-bold" aria-current="page" href="#landingHero">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link fw-medium" href="#eSIMs">eSIM</a>
+              <a class="nav-link fw-bold" href="#landingESIM">eSIM</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link fw-medium" href="#virtualNumbers">Virtual Numbers</a>
+              <a class="nav-link fw-bold" href="#landingVirtualNumbers">Virtual Numbers</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link fw-medium" href="#landingFAQ">FAQs</a>
+              <a class="nav-link fw-bold" href="#landingFAQ">FAQs</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link fw-medium" href="#landingContact">Contact Us</a>
+              <a class="nav-link fw-bold" href="#landingContact">Contact Us</a>
             </li>
           </ul>
         </div>
@@ -166,7 +167,7 @@
               For seamless global connectivity and affordable rates
             </h2>
             <div class="landing-hero-btn d-inline-block position-relative">
-              <span class="hero-btn-item position-absolute d-none d-md-flex fw-medium">Join community
+              <span class="hero-btn-item position-absolute d-none d-md-flex fw-bold">Join community
                 <img src="{% static 'img/front-pages/icons/Join-community-arrow.png' %}" alt="Join community arrow"
                   class="scaleX-n1-rtl" /></span>
               <a href="#landingPricing" class="btn btn-primary btn-lg">Get started today</a>
@@ -191,8 +192,8 @@
     </section>
     <!-- Hero: End -->
 
-    <!-- Useful features: Start -->
-    <section id="eSIMs" class="section-py landing-features">
+    <!-- eSIMs: Start -->
+    <section id="landingESIM" class="section-py landing-esim">
       <div class="container">
         <div class="text-center mb-2">
           <span class="badge bg-label-primary">Magic eSIMs</span>
@@ -238,7 +239,7 @@
                 <div class="col-12 col-md-6 col-lg-4 country-item {% if not country.is_popular %}d-none{% endif %}"
                   data-popular="{{ country.is_popular }}">
                   <a href=""
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
                     <span>
                       <img src="https://flagcdn.com/w320/{{ country.alpha_2|lower }}.png" alt="{{ country.name }}"
                         class="me-2 rounded" width="60px" height="40px" />
@@ -251,6 +252,7 @@
 
                 <div class="text-center">
                   <!-- Toggle Button -->
+                  <div class="sk-plane sk-primary"></div>
                   <button id="toggle-countries-btn" class="btn btn-lg btn-primary">Show 200+ Countries</button>
                 </div>
               </div>
@@ -260,7 +262,7 @@
               <div class="row g-5 text-center pt-3 pb-3"> <!-- Added `g-3` for uniform spacing -->
                 <div class="col-12 col-md-6 col-lg-4">
                   <a href="#"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
                     <span>
                       <img src="{% static 'img/regions/africa.png' %}" alt="Africa" class="me-2 rounded" width="50px" />
                       Africa
@@ -270,7 +272,7 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
                   <a href="#"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
                     <span>
                       <img src="{% static 'img/regions/asia.png' %}" alt="Asia" class="me-2 rounded" width="50px" />
                       Asia
@@ -280,7 +282,7 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
                   <a href="#"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
                     <span>
                       <img src="{% static 'img/regions/europe.png' %}" alt="Europe" class="me-2 rounded" width="50px" />
                       Europe
@@ -290,7 +292,7 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
                   <a href="#"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
                     <span>
                       <img src="{% static 'img/regions/north-america.png' %}" alt="North America" class="me-2 rounded"
                         width="50px" />
@@ -301,7 +303,7 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
                   <a href="#"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
                     <span>
                       <img src="{% static 'img/regions/south-america.png' %}" alt="South America" class="me-2 rounded"
                         width="50px" />
@@ -312,7 +314,7 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
                   <a href="#"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
                     <span>
                       <img src="{% static 'img/regions/caribbean.png' %}" alt="caribbean" class="me-2 rounded"
                         width="50px" />
@@ -328,7 +330,7 @@
               <div class="row g-5 text-center pt-3 pb-3"> <!-- Added `g-3` for uniform spacing -->
                 <div class="col-12 col-md-6 col-lg-4">
                   <div
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
                     <span>
                       <img src="https://flagcdn.com/w320/us.png" alt="Africa" class="me-2 rounded" width="60px"
                         height="40px" />
@@ -339,7 +341,7 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
                   <div
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
                     <span>
                       <img src="https://flagcdn.com/w320/us.png" alt="Africa" class="me-2 rounded" width="60px"
                         height="40px" />
@@ -350,7 +352,7 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
                   <div
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-black">
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
                     <span>
                       <img src="https://flagcdn.com/w320/us.png" alt="Africa" class="me-2 rounded" width="60px"
                         height="40px" />
@@ -365,74 +367,272 @@
         </div>
       </div>
     </section>
-    <!-- Useful features: End -->
+    <!-- eSIMs: End -->
 
-    <!-- Useful features: Start -->
-    <section id="landingFeatures" class="section-py landing-features">
+    <!-- eSIM features: Start -->
+    <section id="landingEsimFeatures" class="section-py landing-esimfeatures">
       <div class="container">
         <div class="text-center mb-4">
-          <span class="badge bg-label-primary">Useful Features</span>
+          <span class="badge bg-label-primary">Step-by-Step Guide</span>
         </div>
         <h4 class="text-center mb-1">
-          <span class="position-relative fw-extrabold z-1">Everything you need
-            <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="laptop charging"
+          <span class="position-relative fw-extrabold z-1">How to Get Your eSIM
+            <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="esim icon"
               class="section-title-img position-absolute object-fit-contain bottom-0 z-n1">
           </span>
-          to start your next project
         </h4>
-        <p class="text-center mb-12">Not just a set of tools, the package includes ready-to-deploy conceptual
-          application.</p>
+        <p class="text-center mb-12">Follow these simple steps to activate your eSIM and start enjoying seamless
+          connectivity.</p>
         <div class="features-icon-wrapper row gx-0 gy-6 g-sm-12">
           <div class="col-lg-4 col-sm-6 text-center features-icon-box">
             <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/laptop.svg' %}" alt="laptop charging" />
+              <img src="{% static 'img/front-pages/icons/user.svg' %}" alt="signup" />
             </div>
-            <h5 class="mb-2">Quality Code</h5>
-            <p class="features-icon-description">Code structure that all developers will easily understand and fall in
-              love with.</p>
-          </div>
-          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
-            <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/rocket.svg' %}" alt="transition up" />
-            </div>
-            <h5 class="mb-2">Continuous Updates</h5>
-            <p class="features-icon-description">Free updates for the next 12 months, including new demos and features.
+            <h5 class="mb-2">Sign Up</h5>
+            <p class="features-icon-description">Create an account on our platform to begin the eSIM activation process.
             </p>
           </div>
           <div class="col-lg-4 col-sm-6 text-center features-icon-box">
             <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/paper.svg' %}" alt="edit" />
+              <img src="{% static 'img/front-pages/icons/paper.svg' %}" alt="choose plan" />
             </div>
-            <h5 class="mb-2">Stater-Kit</h5>
-            <p class="features-icon-description">Start your project quickly without having to remove unnecessary
-              features.</p>
-          </div>
-          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
-            <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/check.svg' %}" alt="3d select solid" />
-            </div>
-            <h5 class="mb-2">API Ready</h5>
-            <p class="features-icon-description">Just change the endpoint and see your own data loaded within seconds.
+            <h5 class="mb-2">Choose a Plan</h5>
+            <p class="features-icon-description">Select the eSIM plan that best suits your data and connectivity needs.
             </p>
           </div>
           <div class="col-lg-4 col-sm-6 text-center features-icon-box">
             <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/user.svg' %}" alt="user" />
+              <img src="{% static 'img/front-pages/icons/check.svg' %}" alt="verify identity" />
             </div>
-            <h5 class="mb-2">Excellent Support</h5>
-            <p class="features-icon-description">An easy-to-follow doc with lots of references and code examples.</p>
+            <h5 class="mb-2">Verify Your Identity</h5>
+            <p class="features-icon-description">Complete the verification process to ensure secure activation of your
+              eSIM.</p>
           </div>
           <div class="col-lg-4 col-sm-6 text-center features-icon-box">
             <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/keyboard.svg' %}" alt="keyboard" />
+              <img src="{% static 'img/front-pages/icons/rocket.svg' %}" alt="activate esim" />
             </div>
-            <h5 class="mb-2">Well Documented</h5>
-            <p class="features-icon-description">An easy-to-follow doc with lots of references and code examples.</p>
+            <h5 class="mb-2">Activate Your eSIM</h5>
+            <p class="features-icon-description">Receive your eSIM QR code and activate it on your device instantly.</p>
+          </div>
+          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
+            <div class="text-center mb-4">
+              <img src="{% static 'img/front-pages/icons/laptop.svg' %}" alt="setup complete" />
+            </div>
+            <h5 class="mb-2">Start Using Your eSIM</h5>
+            <p class="features-icon-description">Enjoy seamless connectivity and explore new possibilities with your
+              eSIM.</p>
+          </div>
+          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
+            <div class="text-center mb-4">
+              <img src="{% static 'img/front-pages/icons/user.svg' %}" alt="support" />
+            </div>
+            <h5 class="mb-2">Need Help?</h5>
+            <p class="features-icon-description">Contact our support team anytime for assistance with your eSIM setup.
+            </p>
           </div>
         </div>
       </div>
     </section>
-    <!-- Useful features: End -->
+
+    <!-- eSIM features: End -->
+
+    <!-- virtual numbers: Start -->
+    <section id="landingVirtualNumbers" class="section-py bg-body landing-virtualnumbers pb-0">
+      <div class="container pb-5">
+        <div class="text-center mb-2">
+          <span class="badge bg-label-primary">Magic Virtual Numbers</span>
+        </div>
+        <h4 class="text-center mb-4">
+          <span class="position-relative fw-extrabold z-1">
+            Become anonymous online,
+            <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="laptop charging"
+              class="section-title-img position-absolute object-fit-contain bottom-0 z-n1">
+          </span>
+          get your virtual phone number
+        </h4>
+        <div class="nav-align-top mb-5">
+          <ul class="nav nav-pills mb-4 justify-content-center gap-3" role="tablist">
+            <li class="nav-item mb-1 mb-sm-0" role="presentation">
+              <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                data-bs-target="#navs-pills-justified-countries" aria-controls="navs-pills-justified-countries"
+                aria-selected="true"><span class="d-none d-sm-block"><i class="tf-icons bx bx-map me-2"></i>
+                  Numbers for Countries</span>
+              </button>
+            </li>
+            <li class="nav-item mb-1 mb-sm-0" role="presentation">
+              <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                data-bs-target="#navs-pills-justified-services" aria-controls="navs-pills-justified-services"
+                aria-selected="false" tabindex="-1"><span class="d-none d-sm-block"><i
+                    class="tf-icons bx bx-message-rounded me-2"></i>
+                  Numbers for Services</span>
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="navs-pills-justified-countries" role="tabpanel">
+              <div class="row g-5 text-center pt-3 pb-3">
+                {% for country in countries %}
+                <div class="col-12 col-md-6 col-lg-4 country-item {% if not country.is_popular %}d-none{% endif %}"
+                  data-popular="{{ country.is_popular }}">
+                  <a href=""
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
+                    <span>
+                      <img src="https://flagcdn.com/w320/{{ country.alpha_2|lower }}.png" alt="{{ country.name }}"
+                        class="me-2 rounded" width="60px" height="40px" />
+                      {{ country.name }}
+                    </span>
+                    <i class="bx bx-md bx-chevron-right"></i>
+                  </a>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="tab-pane fade" id="navs-pills-justified-services" role="tabpanel">
+              <div class="row g-5 text-center pt-3 pb-3"> <!-- Added `g-3` for uniform spacing -->
+                <div class="col-12 col-md-6 col-lg-4">
+                  <a href="#"
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
+                    <span>
+                      <img src="{% static 'img/icons/brands/facebook.png' %}" alt="facebook" class="me-2 rounded"
+                        width="40px" />
+                      Facebook
+                    </span>
+                    <i class="bx bx-md bx-chevron-right"></i>
+                  </a>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                  <a href="#"
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
+                    <span>
+                      <img src="{% static 'img/icons/brands/facebook.png' %}" alt="facebook" class="me-2 rounded"
+                        width="40px" />
+                      Facebook
+                    </span>
+                    <i class="bx bx-md bx-chevron-right"></i>
+                  </a>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                  <a href="#"
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
+                    <span>
+                      <img src="{% static 'img/icons/brands/facebook.png' %}" alt="facebook" class="me-2 rounded"
+                        width="40px" />
+                      Facebook
+                    </span>
+                    <i class="bx bx-md bx-chevron-right"></i>
+                  </a>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                  <a href="#"
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
+                    <span>
+                      <img src="{% static 'img/icons/brands/facebook.png' %}" alt="facebook" class="me-2 rounded"
+                        width="40px" />
+                      Facebook
+                    </span>
+                    <i class="bx bx-md bx-chevron-right"></i>
+                  </a>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                  <a href="#"
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
+                    <span>
+                      <img src="{% static 'img/icons/brands/facebook.png' %}" alt="facebook" class="me-2 rounded"
+                        width="40px" />
+                      Facebook
+                    </span>
+                    <i class="bx bx-md bx-chevron-right"></i>
+                  </a>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                  <a href="#"
+                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
+                    <span>
+                      <img src="{% static 'img/icons/brands/facebook.png' %}" alt="facebook" class="me-2 rounded"
+                        width="40px" />
+                      Facebook
+                    </span>
+                    <i class="bx bx-md bx-chevron-right"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- virtual numbers: End -->
+
+    <!-- virtual numbers features: Start -->
+    <section id="landingNumberFeatures" class="section-py landing-numberfeatures">
+      <div class="container">
+        <div class="text-center mb-4">
+          <span class="badge bg-label-primary">Step-by-Step Guide</span>
+        </div>
+        <h4 class="text-center mb-1">
+          <span class="position-relative fw-extrabold z-1">How to Get Your Virtual Number
+            <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="virtual number icon"
+              class="section-title-img position-absolute object-fit-contain bottom-0 z-n1">
+          </span>
+        </h4>
+        <p class="text-center mb-12">Follow these simple steps to set up your virtual number and start making calls
+          globally.</p>
+        <div class="features-icon-wrapper row gx-0 gy-6 g-sm-12">
+          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
+            <div class="text-center mb-4">
+              <img src="{% static 'img/front-pages/icons/user.svg' %}" alt="signup" />
+            </div>
+            <h5 class="mb-2">Sign Up</h5>
+            <p class="features-icon-description">Create an account on our platform to start your virtual number setup
+              process.</p>
+          </div>
+          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
+            <div class="text-center mb-4">
+              <img src="{% static 'img/front-pages/icons/paper.svg' %}" alt="choose number" />
+            </div>
+            <h5 class="mb-2">Choose Your Number</h5>
+            <p class="features-icon-description">Select a virtual number from our wide range of available countries and
+              regions.</p>
+          </div>
+          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
+            <div class="text-center mb-4">
+              <img src="{% static 'img/front-pages/icons/check.svg' %}" alt="verify identity" />
+            </div>
+            <h5 class="mb-2">Verify Your Identity</h5>
+            <p class="features-icon-description">Complete the verification process for secure activation of your virtual
+              number.</p>
+          </div>
+          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
+            <div class="text-center mb-4">
+              <img src="{% static 'img/front-pages/icons/rocket.svg' %}" alt="activate number" />
+            </div>
+            <h5 class="mb-2">Activate Your Virtual Number</h5>
+            <p class="features-icon-description">Activate your virtual number instantly and configure it for calls or
+              messaging.</p>
+          </div>
+          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
+            <div class="text-center mb-4">
+              <img src="{% static 'img/front-pages/icons/laptop.svg' %}" alt="start using" />
+            </div>
+            <h5 class="mb-2">Start Using Your Virtual Number</h5>
+            <p class="features-icon-description">Make and receive calls or messages globally with your virtual number.
+            </p>
+          </div>
+          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
+            <div class="text-center mb-4">
+              <img src="{% static 'img/front-pages/icons/user.svg' %}" alt="support" />
+            </div>
+            <h5 class="mb-2">Need Help?</h5>
+            <p class="features-icon-description">Our support team is here to help you with any issues or questions you
+              have.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- virtual numbers features: End -->
 
     <!-- Real customers reviews: Start -->
     <section id="landingReviews" class="section-py bg-body landing-reviews pb-0">
@@ -444,14 +644,13 @@
               <span class="badge bg-label-primary">Real Customers Reviews</span>
             </div>
             <h4 class="mb-1">
-              <span class="position-relative fw-extrabold z-1">What people say
-                <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="laptop charging"
+              <span class="position-relative fw-extrabold z-1">What people love
+                <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="customer reviews icon"
                   class="section-title-img position-absolute object-fit-contain bottom-0 z-n1">
               </span>
             </h4>
             <p class="mb-5 mb-md-12">
-              See what our customers have to<br class="d-none d-xl-block" />
-              say about their experience.
+              Hear from real customers about how our eSIM and Virtual Number services are transforming their lives.
             </p>
             <div class="landing-reviews-btns">
               <button id="reviews-previous-btn" class="btn btn-icon btn-label-primary reviews-btn me-3" type="button">
@@ -466,16 +665,13 @@
             <div class="swiper-reviews-carousel overflow-hidden">
               <div class="swiper" id="swiper-reviews">
                 <div class="swiper-wrapper">
+                  <!-- Review 1 -->
                   <div class="swiper-slide">
                     <div class="card h-100">
                       <div class="card-body text-body d-flex flex-column justify-content-between h-100">
-                        <div class="mb-4">
-                          <img src="{% static 'img/front-pages/branding/logo-1.png' %}" alt="client logo"
-                            class="client-logo img-fluid" />
-                        </div>
                         <p>
-                          “Vuexy is hands down the most useful front end Bootstrap theme I've ever used. I can't wait
-                          to use it again for my next project.”
+                          “Magic eSIM has revolutionized how I stay connected while traveling. No more waiting in line
+                          for SIM cards at airports!”
                         </p>
                         <div class="text-warning mb-4">
                           <i class="bx bxs-star"></i>
@@ -489,23 +685,21 @@
                             <img src="{% static 'img/avatars/1.png' %}" alt="Avatar" class="rounded-circle" />
                           </div>
                           <div>
-                            <h6 class="mb-0">Cecilia Payne</h6>
-                            <p class="small text-muted mb-0">CEO of Airbnb</p>
+                            <h6 class="mb-0">Sophia Carter</h6>
+                            <p class="small text-muted mb-0">Digital Nomad</p>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
+
+                  <!-- Review 2 -->
                   <div class="swiper-slide">
                     <div class="card h-100">
                       <div class="card-body text-body d-flex flex-column justify-content-between h-100">
-                        <div class="mb-4">
-                          <img src="{% static 'img/front-pages/branding/logo-2.png' %}" alt="client logo"
-                            class="client-logo img-fluid" />
-                        </div>
                         <p>
-                          “I've never used a theme as versatile and flexible as Vuexy. It's my go to for building
-                          dashboard sites on almost any project.”
+                          “The virtual number service is a game-changer for my business. I can now manage multiple
+                          customer regions effortlessly.”
                         </p>
                         <div class="text-warning mb-4">
                           <i class="bx bxs-star"></i>
@@ -516,86 +710,24 @@
                         </div>
                         <div class="d-flex align-items-center">
                           <div class="avatar me-3 avatar-sm">
-                            <img src="{% static 'img/avatars/2.png' %}" alt="Avatar" class="rounded-circle" />
+                            <img src="{% static 'img/avatars/7.png' %}" alt="Avatar" class="rounded-circle" />
                           </div>
                           <div>
-                            <h6 class="mb-0">Eugenia Moore</h6>
-                            <p class="small text-muted mb-0">Founder of Hubspot</p>
+                            <h6 class="mb-0">James Roberts</h6>
+                            <p class="small text-muted mb-0">Entrepreneur</p>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
+
+                  <!-- Review 3 -->
                   <div class="swiper-slide">
                     <div class="card h-100">
                       <div class="card-body text-body d-flex flex-column justify-content-between h-100">
-                        <div class="mb-4">
-                          <img src="{% static 'img/front-pages/branding/logo-3.png' %}" alt="client logo"
-                            class="client-logo img-fluid" />
-                        </div>
                         <p>
-                          This template is really clean & well documented. The docs are really easy to understand and
-                          it's always easy to find a screenshot from their website.
-                        </p>
-                        <div class="text-warning mb-4">
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                        </div>
-                        <div class="d-flex align-items-center">
-                          <div class="avatar me-3 avatar-sm">
-                            <img src="{% static 'img/avatars/3.png' %}" alt="Avatar" class="rounded-circle" />
-                          </div>
-                          <div>
-                            <h6 class="mb-0">Curtis Fletcher</h6>
-                            <p class="small text-muted mb-0">Design Lead at Dribbble</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="swiper-slide">
-                    <div class="card h-100">
-                      <div class="card-body text-body d-flex flex-column justify-content-between h-100">
-                        <div class="mb-4">
-                          <img src="{% static 'img/front-pages/branding/logo-4.png' %}" alt="client logo"
-                            class="client-logo img-fluid" />
-                        </div>
-                        <p>
-                          All the requirements for developers have been taken into consideration, so I’m able to build
-                          any interface I want.
-                        </p>
-                        <div class="text-warning mb-4">
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bx-star"></i>
-                        </div>
-                        <div class="d-flex align-items-center">
-                          <div class="avatar me-3 avatar-sm">
-                            <img src="{% static 'img/avatars/4.png' %}" alt="Avatar" class="rounded-circle" />
-                          </div>
-                          <div>
-                            <h6 class="mb-0">Sara Smith</h6>
-                            <p class="small text-muted mb-0">Founder of Continental</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="swiper-slide">
-                    <div class="card h-100">
-                      <div class="card-body text-body d-flex flex-column justify-content-between h-100">
-                        <div class="mb-4">
-                          <img src="{% static 'img/front-pages/branding/logo-5.png' %}" alt="client logo"
-                            class="client-logo img-fluid" />
-                        </div>
-                        <p>
-                          “I've never used a theme as versatile and flexible as Vuexy. It's my go to for building
-                          dashboard sites on almost any project.”
+                          “Setting up my eSIM was incredibly fast and easy with Magic eSIM. I was connected in minutes
+                          and loved the smooth experience.”
                         </p>
                         <div class="text-warning mb-4">
                           <i class="bx bxs-star"></i>
@@ -609,44 +741,71 @@
                             <img src="{% static 'img/avatars/5.png' %}" alt="Avatar" class="rounded-circle" />
                           </div>
                           <div>
-                            <h6 class="mb-0">Eugenia Moore</h6>
-                            <p class="small text-muted mb-0">Founder of Hubspot</p>
+                            <h6 class="mb-0">Linda Wong</h6>
+                            <p class="small text-muted mb-0">Frequent Traveler</p>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
+
+                  <!-- Review 4 -->
                   <div class="swiper-slide">
                     <div class="card h-100">
                       <div class="card-body text-body d-flex flex-column justify-content-between h-100">
-                        <div class="mb-4">
-                          <img src="{% static 'img/front-pages/branding/logo-6.png' %}" alt="client logo"
-                            class="client-logo img-fluid" />
-                        </div>
                         <p>
-                          Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam nemo mollitia, ad eum
-                          officia numquam nostrum repellendus consequuntur!
+                          “Thanks to Magic eSIM, I no longer have to worry about roaming charges. The plans are
+                          affordable and reliable.”
                         </p>
                         <div class="text-warning mb-4">
                           <i class="bx bxs-star"></i>
                           <i class="bx bxs-star"></i>
                           <i class="bx bxs-star"></i>
                           <i class="bx bxs-star"></i>
-                          <i class="bx bx-star"></i>
+                          <i class="bx bxs-star-half"></i>
                         </div>
                         <div class="d-flex align-items-center">
                           <div class="avatar me-3 avatar-sm">
-                            <img src="{% static 'img/avatars/1.png' %}" alt="Avatar" class="rounded-circle" />
+                            <img src="{% static 'img/avatars/6.png' %}" alt="Avatar" class="rounded-circle" />
                           </div>
                           <div>
-                            <h6 class="mb-0">Sara Smith</h6>
-                            <p class="small text-muted mb-0">Founder of Continental</p>
+                            <h6 class="mb-0">Michael Brown</h6>
+                            <p class="small text-muted mb-0">Tech Enthusiast</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Review 5 -->
+                  <div class="swiper-slide">
+                    <div class="card h-100">
+                      <div class="card-body text-body d-flex flex-column justify-content-between h-100">
+                        <p>
+                          “Magic eSIM's virtual number has helped me stay connected with clients worldwide without
+                          additional infrastructure.”
+                        </p>
+                        <div class="text-warning mb-4">
+                          <i class="bx bxs-star"></i>
+                          <i class="bx bxs-star"></i>
+                          <i class="bx bxs-star"></i>
+                          <i class="bx bxs-star"></i>
+                          <i class="bx bxs-star"></i>
+                        </div>
+                        <div class="d-flex align-items-center">
+                          <div class="avatar me-3 avatar-sm">
+                            <img src="{% static 'img/avatars/5.png' %}" alt="Avatar" class="rounded-circle" />
+                          </div>
+                          <div>
+                            <h6 class="mb-0">Emma Johnson</h6>
+                            <p class="small text-muted mb-0">Freelancer</p>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
+
                 <div class="swiper-button-next"></div>
                 <div class="swiper-button-prev"></div>
               </div>
@@ -694,347 +853,6 @@
     </section>
     <!-- Real customers reviews: End -->
 
-    <!-- Our great team: Start -->
-    <section id="virtualNumbers" class="section-py landing-team">
-      <div class="container">
-        <div class="text-center mb-4">
-          <span class="badge bg-label-primary">Our Great Team</span>
-        </div>
-        <h4 class="text-center mb-1">
-          <span class="position-relative fw-extrabold z-1">Supported
-            <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="laptop charging"
-              class="section-title-img position-absolute object-fit-contain bottom-0 z-n1">
-          </span>
-          by Real People
-        </h4>
-        <p class="text-center mb-md-11 pb-0 pb-xl-12">Who is behind these great-looking interfaces?</p>
-        <div class="row gy-12 mt-2">
-          <div class="col-lg-3 col-sm-6">
-            <div class="card mt-3 mt-lg-0 shadow-none">
-              <div
-                class="bg-label-primary border border-bottom-0 border-label-primary position-relative team-image-box">
-                <img src="{% static 'img/front-pages/landing-page/team-member-1.png' %}"
-                  class="position-absolute card-img-position bottom-0 start-50 scaleX-n1-rtl" alt="human image" />
-              </div>
-              <div class="card-body border border-top-0 border-label-primary text-center py-5">
-                <h5 class="card-title mb-0">Sophie Gilbert</h5>
-                <p class="text-muted mb-0">Project Manager</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3 col-sm-6">
-            <div class="card mt-3 mt-lg-0 shadow-none">
-              <div class="bg-label-info border border-bottom-0 border-label-info position-relative team-image-box">
-                <img src="{% static 'img/front-pages/landing-page/team-member-2.png' %}"
-                  class="position-absolute card-img-position bottom-0 start-50 scaleX-n1-rtl" alt="human image" />
-              </div>
-              <div class="card-body border border-top-0 border-label-info text-center py-5">
-                <h5 class="card-title mb-0">Paul Miles</h5>
-                <p class="text-muted mb-0">UI Designer</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3 col-sm-6">
-            <div class="card mt-3 mt-lg-0 shadow-none">
-              <div class="bg-label-danger border border-bottom-0 border-label-danger position-relative team-image-box">
-                <img src="{% static 'img/front-pages/landing-page/team-member-3.png' %}"
-                  class="position-absolute card-img-position bottom-0 start-50 scaleX-n1-rtl" alt="human image" />
-              </div>
-              <div class="card-body border border-top-0 border-label-danger text-center py-5">
-                <h5 class="card-title mb-0">Nannie Ford</h5>
-                <p class="text-muted mb-0">Development Lead</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3 col-sm-6">
-            <div class="card mt-3 mt-lg-0 shadow-none">
-              <div
-                class="bg-label-success border border-bottom-0 border-label-success position-relative team-image-box">
-                <img src="{% static 'img/front-pages/landing-page/team-member-4.png' %}"
-                  class="position-absolute card-img-position bottom-0 start-50 scaleX-n1-rtl" alt="human image" />
-              </div>
-              <div class="card-body border border-top-0 border-label-success text-center py-5">
-                <h5 class="card-title mb-0">Chris Watkins</h5>
-                <p class="text-muted mb-0">Marketing Manager</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- Our great team: End -->
-
-    <!-- Pricing plans: Start -->
-    <section id="landingPricing" class="section-py bg-body landing-pricing">
-      <div class="container">
-        <div class="text-center mb-4">
-          <span class="badge bg-label-primary">Pricing Plans</span>
-        </div>
-        <h4 class="text-center mb-1">
-          <span class="position-relative fw-extrabold z-1">Tailored pricing plans
-            <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="laptop charging"
-              class="section-title-img position-absolute object-fit-contain bottom-0 z-n1">
-          </span>
-          designed for you
-        </h4>
-        <p class="text-center pb-2 mb-7">All plans include 40+ advanced tools and features to boost your
-          product.<br />Choose the best plan to fit your needs.</p>
-        <div class="text-center mb-12">
-          <div class="position-relative d-inline-block pt-3 pt-md-0">
-            <label class="switch switch-sm switch-primary me-0">
-              <span class="switch-label fs-6 text-body me-3">Pay Monthly</span>
-              <input type="checkbox" class="switch-input price-duration-toggler" checked />
-              <span class="switch-toggle-slider">
-                <span class="switch-on"></span>
-                <span class="switch-off"></span>
-              </span>
-              <span class="switch-label fs-6 text-body ms-3">Pay Annual</span>
-            </label>
-            <div class="pricing-plans-item position-absolute d-flex">
-              <img src="{% static 'img/front-pages/icons/pricing-plans-arrow.png' %}" alt="pricing plans arrow"
-                class="scaleX-n1-rtl" />
-              <span class="fw-medium mt-2 ms-1"> Save 25%</span>
-            </div>
-          </div>
-        </div>
-        <div class="row g-6 pt-lg-5">
-          <!-- Basic Plan: Start -->
-          <div class="col-xl-4 col-lg-6">
-            <div class="card">
-              <div class="card-header">
-                <div class="text-center">
-                  <img src="{% static 'img/front-pages/icons/paper-airplane.png' %}" alt="paper airplane icon"
-                    class="mb-8 pb-2" />
-                  <h4 class="mb-0">Basic</h4>
-                  <div class="d-flex align-items-center justify-content-center">
-                    <span class="price-monthly h2 text-primary fw-extrabold mb-0">$19</span>
-                    <span class="price-yearly h2 text-primary fw-extrabold mb-0 d-none">$14</span>
-                    <sub class="h6 text-muted mb-n1 ms-1">/mo</sub>
-                  </div>
-                  <div class="position-relative pt-2">
-                    <div class="price-yearly text-muted price-yearly-toggle d-none">$ 168 / year</div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-body">
-                <ul class="list-unstyled pricing-list">
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-label-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Timeline
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-label-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Basic search
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-label-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Live chat widget
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-label-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Email marketing
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-label-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Custom Forms
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-label-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Traffic analytics
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-label-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Basic Support
-                    </h6>
-                  </li>
-                </ul>
-                <div class="d-grid mt-8">
-                  <a href="payment-page.html" class="btn btn-label-primary">Get Started</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Basic Plan: End -->
-
-          <!-- Favourite Plan: Start -->
-          <div class="col-xl-4 col-lg-6">
-            <div class="card border border-primary shadow-xl">
-              <div class="card-header">
-                <div class="text-center">
-                  <img src="{% static 'img/front-pages/icons/plane.png' %}" alt="plane icon" class="mb-8 pb-2" />
-                  <h4 class="mb-0">Team</h4>
-                  <div class="d-flex align-items-center justify-content-center">
-                    <span class="price-monthly h2 text-primary fw-extrabold mb-0">$29</span>
-                    <span class="price-yearly h2 text-primary fw-extrabold mb-0 d-none">$22</span>
-                    <sub class="h6 text-muted mb-n1 ms-1">/mo</sub>
-                  </div>
-                  <div class="position-relative pt-2">
-                    <div class="price-yearly text-muted price-yearly-toggle d-none">$ 264 / year</div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-body">
-                <ul class="list-unstyled pricing-list">
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Everything in basic
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Timeline with database
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Advanced search
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Marketing automation
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Advanced chatbot
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Campaign management
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Collaboration tools
-                    </h6>
-                  </li>
-                </ul>
-                <div class="d-grid mt-8">
-                  <a href="payment-page.html" class="btn btn-primary">Get Started</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Favourite Plan: End -->
-
-          <!-- Standard Plan: Start -->
-          <div class="col-xl-4 col-lg-6">
-            <div class="card">
-              <div class="card-header">
-                <div class="text-center">
-                  <img src="{% static 'img/front-pages/icons/shuttle-rocket.png' %}" alt="shuttle rocket icon"
-                    class="mb-8 pb-2" />
-                  <h4 class="mb-0">Enterprise</h4>
-                  <div class="d-flex align-items-center justify-content-center">
-                    <span class="price-monthly h2 text-primary fw-extrabold mb-0">$49</span>
-                    <span class="price-yearly h2 text-primary fw-extrabold mb-0 d-none">$37</span>
-                    <sub class="h6 text-muted mb-n1 ms-1">/mo</sub>
-                  </div>
-                  <div class="position-relative pt-2">
-                    <div class="price-yearly text-muted price-yearly-toggle d-none">$ 444 / year</div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-body">
-                <ul class="list-unstyled pricing-list">
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-label-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Everything in premium
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-label-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Timeline with database
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-label-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Fuzzy search
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-label-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      A/B testing sanbox
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-label-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Custom permissions
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-label-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Social media automation
-                    </h6>
-                  </li>
-                  <li>
-                    <h6 class="d-flex align-items-center mb-3">
-                      <span class="badge badge-center rounded-pill bg-label-primary p-0 me-3"><i
-                          class="bx bx-check bx-12px"></i></span>
-                      Sales automation tools
-                    </h6>
-                  </li>
-                </ul>
-                <div class="d-grid mt-8">
-                  <a href="payment-page.html" class="btn btn-label-primary">Get Started</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Standard Plan: End -->
-        </div>
-      </div>
-    </section>
-    <!-- Pricing plans: End -->
-
     <!-- Fun facts: Start -->
     <section id="landingFunFacts" class="section-py landing-fun-facts">
       <div class="container">
@@ -1042,11 +860,11 @@
           <div class="col-sm-6 col-lg-3">
             <div class="card border border-primary shadow-none">
               <div class="card-body text-center">
-                <img src="{% static 'img/front-pages/icons/laptop.svg' %}" alt="laptop" class="mb-4" />
-                <h3 class="mb-0">7.1k+</h3>
-                <p class="fw-medium mb-0">
-                  Support Tickets<br />
-                  Resolved
+                <img src="{% static 'img/front-pages/icons/laptop.svg' %}" alt="active users" class="mb-4" />
+                <h3 class="mb-0">15k+</h3>
+                <p class="fw-bold mb-0">
+                  Active Users<br />
+                  Worldwide
                 </p>
               </div>
             </div>
@@ -1054,11 +872,11 @@
           <div class="col-sm-6 col-lg-3">
             <div class="card border border-success shadow-none">
               <div class="card-body text-center">
-                <img src="{% static 'img/front-pages/icons/user-success.svg' %}" alt="laptop" class="mb-4" />
-                <h3 class="mb-0">50k+</h3>
-                <p class="fw-medium mb-0">
-                  Join creatives<br />
-                  community
+                <img src="{% static 'img/front-pages/icons/user-success.svg' %}" alt="connected devices" class="mb-4" />
+                <h3 class="mb-0">30k+</h3>
+                <p class="fw-bold mb-0">
+                  Devices Connected<br />
+                  with eSIM
                 </p>
               </div>
             </div>
@@ -1066,11 +884,12 @@
           <div class="col-sm-6 col-lg-3">
             <div class="card border border-info shadow-none">
               <div class="card-body text-center">
-                <img src="{% static 'img/front-pages/icons/diamond-info.svg' %}" alt="laptop" class="mb-4" />
-                <h3 class="mb-0">4.8/5</h3>
-                <p class="fw-medium mb-0">
-                  Highly Rated<br />
-                  Products
+                <img src="{% static 'img/front-pages/icons/diamond-info.svg' %}" alt="customer satisfaction"
+                  class="mb-4" />
+                <h3 class="mb-0">4.9/5</h3>
+                <p class="fw-bold mb-0">
+                  Customer<br />
+                  Satisfaction
                 </p>
               </div>
             </div>
@@ -1078,11 +897,12 @@
           <div class="col-sm-6 col-lg-3">
             <div class="card border border-warning shadow-none">
               <div class="card-body text-center">
-                <img src="{% static 'img/front-pages/icons/check-warning.svg' %}" alt="laptop" class="mb-4" />
-                <h3 class="mb-0">100%</h3>
-                <p class="fw-medium mb-0">
-                  Money Back<br />
-                  Guarantee
+                <img src="{% static 'img/front-pages/icons/check-warning.svg' %}" alt="countries supported"
+                  class="mb-4" />
+                <h3 class="mb-0">200+</h3>
+                <p class="fw-bold mb-0">
+                  Countries<br />
+                  Supported
                 </p>
               </div>
             </div>
@@ -1092,6 +912,7 @@
     </section>
     <!-- Fun facts: End -->
 
+
     <!-- FAQ: Start -->
     <section id="landingFAQ" class="section-py bg-body landing-faq">
       <div class="container">
@@ -1100,15 +921,16 @@
         </div>
         <h4 class="text-center mb-1">Frequently asked
           <span class="position-relative fw-extrabold z-1">questions
-            <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="laptop charging"
+            <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="faq icon"
               class="section-title-img position-absolute object-fit-contain bottom-0 z-n1">
           </span>
         </h4>
-        <p class="text-center mb-12 pb-md-4">Browse through these FAQs to find answers to commonly asked questions.</p>
+        <p class="text-center mb-12 pb-md-4">Find answers to common questions about Magic eSIM and Virtual Number
+          services.</p>
         <div class="row gy-12 align-items-center">
           <div class="col-lg-5">
             <div class="text-center">
-              <img src="{% static 'img/front-pages/landing-page/faq-boy-with-logos.png' %}" alt="faq boy with logos"
+              <img src="{% static 'img/front-pages/landing-page/faq-boy-with-logos.png' %}" alt="faq graphic"
                 class="faq-image" />
             </div>
           </div>
@@ -1118,15 +940,14 @@
                 <h2 class="accordion-header" id="headingOne">
                   <button type="button" class="accordion-button" data-bs-toggle="collapse"
                     data-bs-target="#accordionOne" aria-expanded="true" aria-controls="accordionOne">
-                    Do you charge for each upgrade?
+                    How do I activate my eSIM?
                   </button>
                 </h2>
-
-                <div id="accordionOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div id="accordionOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                   <div class="accordion-body">
-                    Lemon drops chocolate cake gummies carrot cake chupa chups muffin topping. Sesame snaps icing
-                    marzipan gummi bears macaroon dragée danish caramels powder. Bear claw dragée pastry topping
-                    soufflé. Wafer gummi bears marshmallow pastry pie.
+                    Activating your eSIM is simple! Once you purchase an eSIM plan, you'll receive a QR code. Scan the
+                    QR code
+                    with your device's eSIM settings, and your eSIM will be activated instantly.
                   </div>
                 </div>
               </div>
@@ -1134,34 +955,30 @@
                 <h2 class="accordion-header" id="headingTwo">
                   <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse"
                     data-bs-target="#accordionTwo" aria-expanded="false" aria-controls="accordionTwo">
-                    Do I need to purchase a license for each website?
+                    Can I use a virtual number for business purposes?
                   </button>
                 </h2>
                 <div id="accordionTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
                   data-bs-parent="#accordionExample">
                   <div class="accordion-body">
-                    Dessert ice cream donut oat cake jelly-o pie sugar plum cheesecake. Bear claw dragée oat cake
-                    dragée ice cream halvah tootsie roll. Danish cake oat cake pie macaroon tart donut gummies. Jelly
-                    beans candy canes carrot cake. Fruitcake chocolate chupa chups.
+                    Yes, our virtual numbers are ideal for businesses! You can use them to manage customer calls,
+                    streamline
+                    communications, and even integrate them into your business tools for messaging and support.
                   </div>
                 </div>
               </div>
-              <div class="card accordion-item active">
+              <div class="card accordion-item">
                 <h2 class="accordion-header" id="headingThree">
-                  <button type="button" class="accordion-button" data-bs-toggle="collapse"
+                  <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse"
                     data-bs-target="#accordionThree" aria-expanded="false" aria-controls="accordionThree">
-                    What is regular license?
+                    Is Magic eSIM compatible with my device?
                   </button>
                 </h2>
-                <div id="accordionThree" class="accordion-collapse collapse show" aria-labelledby="headingThree"
+                <div id="accordionThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
                   data-bs-parent="#accordionExample">
                   <div class="accordion-body">
-                    Regular license can be used for end products that do not charge users for access or service(access
-                    is free and there will be no monthly subscription fee). Single regular license can be used for
-                    single end product and end product can be used by you or your client. If you want to sell end
-                    product to multiple clients then you will need to purchase separate license for each client. The
-                    same rule applies if you want to use the same end product on multiple domains(unique setup). For
-                    more info on regular license you can check official description.
+                    Magic eSIM is compatible with most modern devices that support eSIM technology. Please check your
+                    device's specifications or contact our support team for assistance.
                   </div>
                 </div>
               </div>
@@ -1169,15 +986,14 @@
                 <h2 class="accordion-header" id="headingFour">
                   <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse"
                     data-bs-target="#accordionFour" aria-expanded="false" aria-controls="accordionFour">
-                    What is extended license?
+                    How many countries are supported?
                   </button>
                 </h2>
                 <div id="accordionFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
                   data-bs-parent="#accordionExample">
                   <div class="accordion-body">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis et aliquid quaerat possimus maxime!
-                    Mollitia reprehenderit neque repellat deleniti delectus architecto dolorum maxime, blanditiis
-                    earum ea, incidunt quam possimus cumque.
+                    Magic eSIM and Virtual Number services are available in over 200 countries, making it easy to stay
+                    connected wherever you are.
                   </div>
                 </div>
               </div>
@@ -1185,15 +1001,16 @@
                 <h2 class="accordion-header" id="headingFive">
                   <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse"
                     data-bs-target="#accordionFive" aria-expanded="false" aria-controls="accordionFive">
-                    Which license is applicable for SASS application?
+                    What are the benefits of a virtual number?
                   </button>
                 </h2>
                 <div id="accordionFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
                   data-bs-parent="#accordionExample">
                   <div class="accordion-body">
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sequi molestias exercitationem ab cum
-                    nemo facere voluptates veritatis quia, eveniet veniam at et repudiandae mollitia ipsam quasi
-                    labore enim architecto non!
+                    A virtual number allows you to have a phone number from any country without needing a physical SIM.
+                    It’s
+                    perfect for international businesses, remote workers, and individuals who need flexible
+                    communication.
                   </div>
                 </div>
               </div>
@@ -1207,17 +1024,28 @@
     <!-- CTA: Start -->
     <section id="landingCTA" class="section-py landing-cta position-relative p-lg-0 pb-0">
       <img src="{% static 'img/front-pages/backgrounds/cta-bg-light.png' %}"
-        class="position-absolute bottom-0 end-0 scaleX-n1-rtl h-100 w-100 z-n1" alt="cta image"
+        class="position-absolute bottom-0 end-0 scaleX-n1-rtl h-100 w-100 z-n1" alt="cta background"
         data-app-light-img="front-pages/backgrounds/cta-bg-light.png"
         data-app-dark-img="front-pages/backgrounds/cta-bg-dark.png" />
       <div class="container">
         <div class="row align-items-center gy-12">
-          <div class="col-lg-6 text-start text-sm-center text-lg-start">
-            <h3 class="cta-title text-primary fw-bold mb-1">Ready to Get Started?</h3>
-            <h5 class="text-body mb-8">Start your project with a 14-day free trial</h5>
-            <a href="payment-page.html" class="btn btn-lg btn-primary">Get Started</a>
+          <div class="col-lg-7 text-start text-sm-center text-lg-start">
+            <h3 class="cta-title text-primary fw-bold mb-1">Ready to try eSIMs and change the way you stay connected?
+            </h3>
+            <h5 class="text-body mb-8">
+              Download the Magic eSIM app to purchase, manage, and top up your eSIMs anytime, anywhere!
+            </h5>
+            <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-3">
+              <a href="https://apps.apple.com" target="_blank">
+                <img src="{% static 'img/front-pages/landing-page/apple-icon.png' %}" alt="Download on the App Store" height="50px"/>
+              </a>
+              <a href="https://play.google.com" target="_blank">
+                <img src="{% static 'img/front-pages/landing-page/google-play-icon.png' %}"
+                  alt="Get it on Google Play" height="50px"/>
+              </a>
+            </div>
           </div>
-          <div class="col-lg-6 pt-lg-12 text-center text-lg-end">
+          <div class="col-lg-5 pt-lg-12 text-center text-lg-end">
             <img src="{% static 'img/front-pages/landing-page/cta-dashboard.png' %}" alt="cta dashboard"
               class="img-fluid mt-lg-4" />
           </div>
@@ -1226,20 +1054,20 @@
     </section>
     <!-- CTA: End -->
 
+
     <!-- Contact Us: Start -->
     <section id="landingContact" class="section-py bg-body landing-contact">
       <div class="container">
         <div class="text-center mb-4">
-          <span class="badge bg-label-primary">Contact US</span>
+          <span class="badge bg-label-primary">Contact Us</span>
         </div>
         <h4 class="text-center mb-1">
-          <span class="position-relative fw-extrabold z-1">Let's work
-            <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="laptop charging"
+          <span class="position-relative fw-extrabold z-1">Get in Touch
+            <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="contact icon"
               class="section-title-img position-absolute object-fit-contain bottom-0 z-n1">
           </span>
-          together
         </h4>
-        <p class="text-center mb-12 pb-md-4">Any question or remark? just write us a message</p>
+        <p class="text-center mb-12 pb-md-4">Have questions about Magic eSIM or Virtual Numbers? We’re here to help.</p>
         <div class="row g-6">
           <div class="col-lg-5">
             <div class="contact-img-box position-relative border p-2 h-100">
@@ -1254,18 +1082,17 @@
                       <div class="badge bg-label-primary rounded p-1_5 me-3"><i class="bx bx-envelope"></i></div>
                       <div>
                         <p class="mb-0">Email</p>
-                        <h6 class="mb-0"><a href="mailto:example@gmail.com" class="text-heading">example@gmail.com</a>
-                        </h6>
+                        <h6 class="mb-0"><a href="mailto:support@esimmagic.com"
+                            class="text-heading">support@esimmagic.com</a></h6>
                       </div>
                     </div>
                   </div>
                   <div class="col-md-6 col-lg-12 col-xl-6">
                     <div class="d-flex align-items-center">
-                      <div class="badge bg-label-success rounded p-1_5 me-3"><i class="bx bx-phone-call"></i>
-                      </div>
+                      <div class="badge bg-label-success rounded p-1_5 me-3"><i class="bx bx-phone-call"></i></div>
                       <div>
                         <p class="mb-0">Phone</p>
-                        <h6 class="mb-0"><a href="tel:+1234-568-963" class="text-heading">+1234 568 963</a></h6>
+                        <h6 class="mb-0"><a href="tel:+18001234567" class="text-heading">+1 800 123 4567</a></h6>
                       </div>
                     </div>
                   </div>
@@ -1276,29 +1103,29 @@
           <div class="col-lg-7">
             <div class="card h-100">
               <div class="card-body">
-                <h4 class="mb-2">Send a message</h4>
+                <h4 class="mb-2">Send a Message</h4>
                 <p class="mb-6">
-                  If you would like to discuss anything related to payment, account, licensing,<br
-                    class="d-none d-lg-block" />
-                  partnerships, or have pre-sales questions, you’re at the right place.
+                  Reach out for assistance with payments, accounts, licensing, partnerships, or any other inquiries.
+                  We're happy to help!
                 </p>
                 <form>
                   <div class="row g-4">
                     <div class="col-md-6">
                       <label class="form-label" for="contact-form-fullname">Full Name</label>
-                      <input type="text" class="form-control" id="contact-form-fullname" placeholder="john" />
+                      <input type="text" class="form-control" id="contact-form-fullname" placeholder="John Doe" />
                     </div>
                     <div class="col-md-6">
                       <label class="form-label" for="contact-form-email">Email</label>
-                      <input type="text" id="contact-form-email" class="form-control" placeholder="johndoe@gmail.com" />
+                      <input type="email" id="contact-form-email" class="form-control"
+                        placeholder="johndoe@example.com" />
                     </div>
                     <div class="col-12">
                       <label class="form-label" for="contact-form-message">Message</label>
                       <textarea id="contact-form-message" class="form-control" rows="11"
-                        placeholder="Write a message"></textarea>
+                        placeholder="Write your message here"></textarea>
                     </div>
                     <div class="col-12">
-                      <button type="submit" class="btn btn-primary">Send inquiry</button>
+                      <button type="submit" class="btn btn-primary">Send Message</button>
                     </div>
                   </div>
                 </form>
@@ -1309,6 +1136,7 @@
       </div>
     </section>
     <!-- Contact Us: End -->
+
   </div>
 
   <!-- / Sections:End -->
@@ -1325,114 +1153,54 @@
           <div class="col-lg-5">
             <a href="/" class="app-brand-link mb-6">
               <span class="app-brand-logo demo">
-
-                <svg width="25" viewBox="0 0 25 42" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink">
-                  <defs>
-                    <path
-                      d="M13.7918663,0.358365126 L3.39788168,7.44174259 C0.566865006,9.69408886 -0.379795268,12.4788597 0.557900856,15.7960551 C0.68998853,16.2305145 1.09562888,17.7872135 3.12357076,19.2293357 C3.8146334,19.7207684 5.32369333,20.3834223 7.65075054,21.2172976 L7.59773219,21.2525164 L2.63468769,24.5493413 C0.445452254,26.3002124 0.0884951797,28.5083815 1.56381646,31.1738486 C2.83770406,32.8170431 5.20850219,33.2640127 7.09180128,32.5391577 C8.347334,32.0559211 11.4559176,30.0011079 16.4175519,26.3747182 C18.0338572,24.4997857 18.6973423,22.4544883 18.4080071,20.2388261 C17.963753,17.5346866 16.1776345,15.5799961 13.0496516,14.3747546 L10.9194936,13.4715819 L18.6192054,7.984237 L13.7918663,0.358365126 Z"
-                      id="path-1"></path>
-                    <path
-                      d="M5.47320593,6.00457225 C4.05321814,8.216144 4.36334763,10.0722806 6.40359441,11.5729822 C8.61520715,12.571656 10.0999176,13.2171421 10.8577257,13.5094407 L15.5088241,14.433041 L18.6192054,7.984237 C15.5364148,3.11535317 13.9273018,0.573395879 13.7918663,0.358365126 C13.5790555,0.511491653 10.8061687,2.3935607 5.47320593,6.00457225 Z"
-                      id="path-3"></path>
-                    <path
-                      d="M7.50063644,21.2294429 L12.3234468,23.3159332 C14.1688022,24.7579751 14.397098,26.4880487 13.008334,28.506154 C11.6195701,30.5242593 10.3099883,31.790241 9.07958868,32.3040991 C5.78142938,33.4346997 4.13234973,34 4.13234973,34 C4.13234973,34 2.75489982,33.0538207 2.37032616e-14,31.1614621 C-0.55822714,27.8186216 -0.55822714,26.0572515 -4.05231404e-15,25.8773518 C0.83734071,25.6075023 2.77988457,22.8248993 3.3049379,22.52991 C3.65497346,22.3332504 5.05353963,21.8997614 7.50063644,21.2294429 Z"
-                      id="path-4"></path>
-                    <path
-                      d="M20.6,7.13333333 L25.6,13.8 C26.2627417,14.6836556 26.0836556,15.9372583 25.2,16.6 C24.8538077,16.8596443 24.4327404,17 24,17 L14,17 C12.8954305,17 12,16.1045695 12,15 C12,14.5672596 12.1403557,14.1461923 12.4,13.8 L17.4,7.13333333 C18.0627417,6.24967773 19.3163444,6.07059163 20.2,6.73333333 C20.3516113,6.84704183 20.4862915,6.981722 20.6,7.13333333 Z"
-                      id="path-5"></path>
-                  </defs>
-                  <g id="g-app-brand" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                    <g id="Brand-Logo" transform="translate(-27.000000, -15.000000)">
-                      <g id="Icon" transform="translate(27.000000, 15.000000)">
-                        <g id="Mask" transform="translate(0.000000, 8.000000)">
-                          <mask id="mask-2" fill="white">
-                            <use xlink:href="#path-1"></use>
-                          </mask>
-                          <use fill="#696cff" xlink:href="#path-1"></use>
-                          <g id="Path-3" mask="url(#mask-2)">
-                            <use fill="#696cff" xlink:href="#path-3"></use>
-                            <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-3"></use>
-                          </g>
-                          <g id="Path-4" mask="url(#mask-2)">
-                            <use fill="#696cff" xlink:href="#path-4"></use>
-                            <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-4"></use>
-                          </g>
-                        </g>
-                        <g id="Triangle"
-                          transform="translate(19.000000, 11.000000) rotate(-300.000000) translate(-19.000000, -11.000000) ">
-                          <use fill="#696cff" xlink:href="#path-5"></use>
-                          <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-5"></use>
-                        </g>
-                      </g>
-                    </g>
-                  </g>
-                </svg>
-
+                <img src="{% static 'img/logo.png' %}" alt="Magic eSIM logo" class="img-fluid" width="160" />
               </span>
-              <span class="app-brand-text demo text-white fw-bold ms-2 ps-1">sneat</span>
             </a>
             <p class="footer-text footer-logo-description mb-6">
-              Most developer friendly & highly customisable Admin Dashboard Template.
+              Magic eSIM offers reliable eSIM and virtual number solutions, keeping you connected across the globe.
             </p>
-            <form class="footer-form">
-              <label for="footer-email" class="small">Subscribe to newsletter</label>
-              <div class="d-flex mt-1">
-                <input type="email" class="form-control rounded-0 rounded-start-bottom rounded-start-top"
-                  id="footer-email" placeholder="Your email" />
-                <button type="submit" class="btn btn-primary shadow-none rounded-0 rounded-end-bottom rounded-end-top">
-                  Subscribe
-                </button>
-              </div>
-            </form>
           </div>
           <div class="col-lg-2 col-md-4 col-sm-6">
-            <h6 class="footer-title mb-6">Demos</h6>
+            <h6 class="footer-title mb-6">Services</h6>
             <ul class="list-unstyled">
               <li class="mb-4">
-                <a href="../vertical-menu-template/" target="_blank" class="footer-link">Vertical Layout</a>
+                <a href="/#landingESIM" class="footer-link">eSIM Plans</a>
               </li>
               <li class="mb-4">
-                <a href="../horizontal-menu-template/" target="_blank" class="footer-link">Horizontal Layout</a>
+                <a href="/#landingVirtualNumbers" class="footer-link">Virtual Numbers</a>
               </li>
               <li class="mb-4">
-                <a href="../vertical-menu-template-bordered/" target="_blank" class="footer-link">Bordered Layout</a>
-              </li>
-              <li class="mb-4">
-                <a href="../vertical-menu-template-semi-dark/" target="_blank" class="footer-link">Semi Dark Layout</a>
+                <a href="/#landingFAQ" class="footer-link">FAQs</a>
               </li>
               <li>
-                <a href="../vertical-menu-template-dark/" target="_blank" class="footer-link">Dark Layout</a>
+                <a href="/#landingContact" class="footer-link">Contact Us</a>
               </li>
             </ul>
           </div>
           <div class="col-lg-2 col-md-4 col-sm-6">
-            <h6 class="footer-title mb-6">Pages</h6>
+            <h6 class="footer-title mb-6">Company</h6>
             <ul class="list-unstyled">
               <li class="mb-4">
-                <a href="pricing-page.html" class="footer-link">Pricing</a>
+                <a href="javascript:;" class="footer-link">About Us</a>
               </li>
               <li class="mb-4">
-                <a href="payment-page.html" class="footer-link">Payment<span
-                    class="badge bg-primary ms-2">New</span></a>
+                <a href="javascript:;" class="footer-link">Blog</a>
               </li>
               <li class="mb-4">
-                <a href="checkout-page.html" class="footer-link">Checkout</a>
-              </li>
-              <li class="mb-4">
-                <a href="help-center-landing.html" class="footer-link">Help Center</a>
+                <a href="javascript:;" class="footer-link">Terms & Conditions</a>
               </li>
               <li>
-                <a href="/login" target="_blank" class="footer-link">Login/Register</a>
+                <a href="javascript:;" class="footer-link">Privacy Policy</a>
               </li>
             </ul>
           </div>
           <div class="col-lg-3 col-md-4">
-            <h6 class="footer-title mb-6">Download our app</h6>
-            <a href="javascript:void(0);" class="d-block mb-4"><img
-                src="{% static 'img/front-pages/landing-page/apple-icon.png' %}" alt="apple icon" /></a>
-            <a href="javascript:void(0);" class="d-block"><img
-                src="{% static 'img/front-pages/landing-page/google-play-icon.png' %}" alt="google play icon" /></a>
+            <h6 class="footer-title mb-6">Get the Magic eSIM App</h6>
+            <a href="https://apps.apple.com" class="d-block mb-4"><img
+                src="{% static 'img/front-pages/landing-page/apple-icon.png' %}" alt="Download on the App Store"  height="50px"/></a>
+            <a href="https://play.google.com" class="d-block"><img
+                src="{% static 'img/front-pages/landing-page/google-play-icon.png' %}"
+                alt="Get it on Google Play"  height="50px"/></a>
           </div>
         </div>
       </div>
@@ -1443,30 +1211,29 @@
           <span class="footer-bottom-text">©
             <script>
               document.write(new Date().getFullYear());
-
             </script>
+            Magic eSIM. All Rights Reserved.
           </span>
-          <a href="https://themeselection.com" target="_blank" class="text-white">ThemeSelection,</a>
-          <span class="footer-bottom-text"> Made with ❤️ for a better web.</span>
         </div>
         <div>
-          <a href="https://github.com/themeselection" class="me-4" target="_blank">
-            <img src="{% static 'img/front-pages/icons/github.svg' %}" alt="github icon" />
+          <a href="https://github.com/magicesim" class="me-4" target="_blank">
+            <img src="{% static 'img/front-pages/icons/github.svg' %}" alt="GitHub" />
           </a>
-          <a href="https://www.facebook.com/ThemeSelections/" class="me-4" target="_blank">
-            <img src="{% static 'img/front-pages/icons/facebook.svg' %}" alt="facebook icon" />
+          <a href="https://www.facebook.com/magicesim" class="me-4" target="_blank">
+            <img src="{% static 'img/front-pages/icons/facebook.svg' %}" alt="Facebook" />
           </a>
-          <a href="https://twitter.com/Theme_Selection" class="me-4" target="_blank">
-            <img src="{% static 'img/front-pages/icons/twitter.svg' %}" alt="twitter icon" />
+          <a href="https://twitter.com/magicesim" class="me-4" target="_blank">
+            <img src="{% static 'img/front-pages/icons/twitter.svg' %}" alt="Twitter" />
           </a>
-          <a href="https://www.instagram.com/themeselection/" target="_blank">
-            <img src="{% static 'img/front-pages/icons/instagram.svg' %}" alt="google icon" />
+          <a href="https://www.instagram.com/magicesim" target="_blank">
+            <img src="{% static 'img/front-pages/icons/instagram.svg' %}" alt="Instagram" />
           </a>
         </div>
       </div>
     </div>
   </footer>
   <!-- Footer: End -->
+
 
 
   <!-- Core JS -->
