@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "users",
     "esim",
     "billing",
+    "frontend",
 ]
 
 # Middleware
@@ -67,7 +68,10 @@ ROOT_URLCONF = 'magic_esim.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Ensure the root templates folder is added here
+        'DIRS': [
+            BASE_DIR / 'templates',
+            BASE_DIR / 'templates' / 'partials',  # Add this line
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -128,6 +132,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Authentication
 AUTH_USER_MODEL = 'users.User'  # Use custom user model
+LOGIN_URL = 'login'
 
 # REST Framework Configuration
 REST_FRAMEWORK = {
