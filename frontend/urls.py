@@ -7,6 +7,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('signup/', views.signup, name='signup'),
     path('reset-password/', views.reset_password, name='reset-password'),
+    path('logout/', views.frontend_logout, name='frontend_logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('esims/', views.esim_list, name='esim_list'),
     path('esims/purchase/', views.esim_purchase, name='esim_purchase'),

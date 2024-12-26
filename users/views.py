@@ -1,7 +1,9 @@
 from rest_framework import generics, status
+from magic_esim.permissions import IsAuthenticatedWithSessionOrJWT
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.contrib.auth import logout
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 from .models import User
 from .serializers import (
     UserRegistrationSerializer,
@@ -10,6 +12,8 @@ from .serializers import (
     UserDetailSerializer,
     UserLoginSerializer,
 )
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from .utils import api_response
 
 
@@ -103,7 +107,12 @@ class LoginView(generics.GenericAPIView):
             password = serializer.validated_data.get("password")
             user = authenticate(request, email=email, password=password)
             if user is not None:
+                # Log the user in and create a session
+                login(request, user)
+
+                # Generate JWT tokens
                 refresh = RefreshToken.for_user(user)
+
                 return api_response(
                     True,
                     "Login successful.",
@@ -128,10 +137,16 @@ class LoginView(generics.GenericAPIView):
         )
 
 
+class LogoutView(APIView):
+    def post(self, request, *args, **kwargs):
+        logout(request)
+        return Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
+    
+
 class UserMeView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserDetailSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedWithSessionOrJWT]
 
     def retrieve(self, request, *args, **kwargs):
         user = self.get_object()

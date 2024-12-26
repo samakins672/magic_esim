@@ -2,7 +2,8 @@
 
 <!DOCTYPE html>
 <html lang="en" class="layout-navbar-fixed layout-compact light-style layout-menu-fixed" dir="ltr"
-  data-theme="theme-default" data-assets-path="{% static '' %}" data-template="vertical-menu-template" data-style="light">
+  data-theme="theme-default" data-assets-path="{% static '' %}" data-template="vertical-menu-template"
+  data-style="light">
 
 <head>
   <meta charset="utf-8" />
@@ -61,7 +62,7 @@
             <div class="app-brand justify-content-center mt-5">
               <a href="/" class="app-brand-link gap-2">
                 <span class="app-brand-logo demo">
-                  <img src="{% static 'img/logo.png' %}" alt="logo" class="img-fluid" width="160"/>
+                  <img src="{% static 'img/logo.png' %}" alt="logo" class="img-fluid" width="160" />
                 </span>
               </a>
             </div>
@@ -86,7 +87,7 @@
               OR
             </div>
 
-            <form id="formAuthentication" class="mb-3" action="/" method="POST">
+            <form id="signInForm" class="mb-3">
               <div class="mb-3">
                 <input type="text" class="form-control form-control-lg rounded-pill" id="email" name="email"
                   placeholder="Email" autofocus />
@@ -108,7 +109,7 @@
                 </a>
               </div>
               <div class="mb-3">
-                <button class="btn btn-lg btn-primary d-grid w-100 rounded-pill" type="submit">Log in</button>
+                <button id="submitBtn" class="btn btn-lg btn-primary d-grid w-100 rounded-pill" type="submit">Log in</button>
               </div>
             </form>
 
@@ -141,8 +142,13 @@
 
   <!-- Main JS -->
   <script src="{% static 'js/main.js' %}"></script>
-
+  
   <!-- Page JS -->
+  <script src="{% static 'backend/app.js' %}"></script>
+  <script src="{% static 'backend/app.js' %}"></script>
+  <script>
+    
+  </script>
 
 </body>
 

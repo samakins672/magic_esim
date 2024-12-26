@@ -1,5 +1,5 @@
 from rest_framework import generics, status
-from rest_framework.permissions import IsAuthenticated
+from magic_esim.permissions import IsAuthenticatedWithSessionOrJWT
 from rest_framework.response import Response
 from .models import Payment
 from .serializers import PaymentSerializer
@@ -10,7 +10,7 @@ class PaymentListCreateView(generics.ListCreateAPIView):
     Handles listing all payments and creating a new payment.
     """
     serializer_class = PaymentSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedWithSessionOrJWT]
 
     def get_queryset(self):
         # Only return payments belonging to the authenticated user
@@ -26,7 +26,7 @@ class PaymentDetailView(generics.RetrieveUpdateAPIView):
     Handles retrieving and updating a specific payment.
     """
     serializer_class = PaymentSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedWithSessionOrJWT]
 
     def get_queryset(self):
         # Only allow access to payments belonging to the authenticated user

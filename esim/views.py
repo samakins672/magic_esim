@@ -2,7 +2,8 @@ import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from magic_esim.permissions import IsAuthenticatedWithSessionOrJWT
+from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from .models import eSIMPlan
@@ -132,7 +133,7 @@ class eSIMPlanListCreateView(generics.ListCreateAPIView):
     Handles listing all eSIM plans and creating a new eSIM plan.
     """
     serializer_class = eSIMPlanSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedWithSessionOrJWT]
 
     def get_queryset(self):
         # Return only the eSIM plans associated with the authenticated user
@@ -144,7 +145,7 @@ class eSIMPlanDetailView(generics.RetrieveUpdateDestroyAPIView):
     Handles retrieving, updating, and deleting a specific eSIM plan.
     """
     serializer_class = eSIMPlanSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedWithSessionOrJWT]
 
     def get_queryset(self):
         # Return only the eSIM plans associated with the authenticated user

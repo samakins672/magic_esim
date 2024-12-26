@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.contrib.auth import logout
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 import json
 import os
@@ -31,6 +32,13 @@ def signup(request):
 
 def reset_password(request):
     return render(request, 'reset-password.html')
+
+@login_required
+def frontend_logout(request):
+    # Log out the user
+    logout(request)
+    # Redirect to login page
+    return redirect('frontend_login')
 
 @login_required
 def dashboard(request):
