@@ -16,6 +16,9 @@
     content="Get the best eSIM and VoIP solutions for international travels. Stay connected anywhere in the world with Magic eSIM." />
   <meta name="keywords" content="eSIM, VoIP, international travel, global connectivity, Magic eSIM">
   
+  <!-- csrf -->
+  <meta name="csrf-token" content="{{ csrf_token }}">
+
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="{% static 'img/favicon/favicon.ico' %}" />
 
@@ -116,7 +119,7 @@
               OR
             </div>
 
-            <form id="formAuthentication" class="mb-3">
+            <form id="userAuth" class="mb-3">
               <div class="my-5 row gap-md-0 gap-5">
                 <div class="col-md">
                   <input type="text" class="form-control form-control-lg rounded-pill" id="first_name" name="first_name"
@@ -126,6 +129,10 @@
                   <input type="text" class="form-control form-control-lg rounded-pill" id="last_name" name="last_name"
                     placeholder="Last name" required>
                 </div>
+              </div>
+              <div class="my-5">
+                <input type="tel" class="form-control form-control-lg rounded-pill" id="phone_number" name="phone_number"
+                  placeholder="Phone number" required />
               </div>
               <div class="my-5">
                 <input type="email" class="form-control form-control-lg rounded-pill" id="email" name="email"
@@ -145,15 +152,14 @@
 
               <div class="my-3">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" />
+                  <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" required/>
                   <label class="form-check-label" for="terms-conditions">
                     I agree to
                     <a href="javascript:void(0);">privacy policy & terms</a>
                   </label>
                 </div>
               </div>
-              <button class="btn btn-lg btn-primary d-grid w-100 mt-5 rounded-pill" data-bs-toggle="modal"
-                data-bs-target="#verificationModal">Sign up</button>
+              <button id="submitBtn" type="submit" class="btn btn-lg btn-primary d-grid w-100 mt-5 rounded-pill">Sign up</button>
             </form>
 
             <p class="text-center mb-5">
@@ -166,7 +172,7 @@
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="verificationModal" tabindex="-1" aria-labelledby="verificationModalLabel"
+      <div class="modal fade" id="verificationModal" tabindex="-1" aria-labelledby="verificationModalLabel"
           aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -179,6 +185,11 @@
                   <input type="number" maxlength="1" class="code-input" id="code3">
                   <input type="number" maxlength="1" class="code-input" id="code4">
                 </div>
+
+                <form id="resendForm" class="d-none">
+                  <input type="hidden" name="email"/>
+                  <input type="hidden" name="phone_number"/>
+                </form>
                 <p class="mb-5 pb-5">Yet to receive Code? <span id="resend-timer" class="text-info">Resend in
                     30secs</span></p>
               </div>
@@ -225,6 +236,8 @@
 
   <!-- Page JS -->
   <script src="{% static 'js/otp-handling.js' %}"></script>
+  <script src="{% static 'backend/app.js' %}"></script>
+  <script src="{% static 'backend/auth.js' %}"></script>
 
 </body>
 

@@ -1,40 +1,44 @@
-
 // Handle Personal Form submission
 $(document).on('submit', '#userAuth', function (e) {
     e.preventDefault();
 
-    var submitButton = $('#submitBtn2');
+    var submitButton = $('#submitBtn');
     submitButton.html('<span class="spinner-border mx-auto" role="status" aria-hidden="true"></span>').attr('disabled', true);
 
-    // Create a FormData object to gather form data
-    var formData = new FormData(this);
+    email = $('#userAuth [name="email"]').val();
+    phone_number = $('#userAuth [name="phone_number"]').val();
 
-    var password = formData.get('password');
-    formData.append('re_password', password);
-
-    // Check if a file is selected
-    var profileImageInput = $('#profileImage')[0];
-    if (profileImageInput.files.length === 0) {
-        // If no file is selected, remove the profile_image field from the FormData
-        formData.delete('profile_image');
-    }
+    var formData = JSON.stringify({
+        first_name: $('#userAuth [name="first_name"]').val(),
+        last_name: $('#userAuth [name="last_name"]').val(),
+        email: email,
+        phone_number: phone_number,
+        password: $('#userAuth [name="password"]').val(),
+        referral_code: $('#userAuth [name="referral_code"]').val()
+    });
 
     $.ajax({
-        url: `${mainURL}/api/users/`,
+        url: '/api/auth/register/',
         method: 'POST',
-        processData: false,
-        contentType: false,
         data: formData,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
         success: function (response) {
-            console.log('Sign In successfully:', response);
-            showToast('Your account has been created successful!', 'bg-success');
+            console.log(response.message);
+            showToast(response.message, 'bg-success');
+            
+            $('.user_email').text(email);
+            $('#resendForm [name="email"]').val(email);
+            $('#resendForm [name="phone_number"]').val(phone_number);
 
-            $('#userAuth').slideUp('fast', function () {
-                $('.message').slideDown('fast');
-            });
+            // Open modal on success
+            $('#verificationModal').modal('show');
         },
         error: function (error) {
-            showToast('User with email address already exists!', 'bg-danger');
+            console.error(error);
+            showToast("User with this email or phone number already exists", 'bg-danger');
         },
         complete: function() {
             // Revert button text and re-enable the button
@@ -72,12 +76,33 @@ $(document).on('submit', '#signInForm', function (e) {
         },
         error: function (error) {
             // On error, show error message
-            showToast(error.responseJSON?.detail || 'An error occurred.', 'bg-danger');
-            console.log('Error:', error.responseJSON.detail);
+            showToast(error, 'bg-danger');
         },
         complete: function () {
             // Revert button text and re-enable the button
             submitButton.html('Log in').attr('disabled', false);
+        }
+    });
+});
+
+$(document).on('click', '#resend-timer', function (e) {
+    var formData = JSON.stringify({
+        email: $('#resendForm [name="email"]').val(),
+        phone_number: $('#resendForm [name="phone_number"]').val()
+    });
+
+    $.ajax({
+        url: '/api/auth/otp/request/',
+        type: 'POST',
+        data: formData,
+        contentType: 'application/json',
+        success: function (response) {
+            console.log(response.message);
+            showToast(response.message, 'bg-success');
+        },
+        error: function (error) {
+            // On error, show error message
+            showToast(error, 'bg-danger');
         }
     });
 });

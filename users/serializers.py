@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import User
 from django.utils.timezone import now
+import uuid
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -12,6 +13,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             "last_name",
             "phone_number",
             "password",
+            "referral_code",
         ]
 
     def create(self, validated_data):
@@ -20,7 +22,9 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             first_name=validated_data["first_name"],
             last_name=validated_data["last_name"],
             phone_number=validated_data["phone_number"],
+            referral_code=validated_data["referral_code"],
         )
+        user.username = f"{user.first_name}_{user.last_name}_{uuid.uuid4()}"
         user.set_password(validated_data["password"])
         user.save()
         return user

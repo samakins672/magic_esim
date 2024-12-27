@@ -61,6 +61,22 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1",
+    "http://127.0.0.1:8000",
+    "http://localhost",
+    "http://localhost:8000",
+    "https://magicesim.onrender.com",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1",
+    "http://127.0.0.1:8000",
+    "http://localhost",
+    "http://localhost:8000",
+    "https://magicesim.onrender.com",
+]
+
 # Root URL Configuration
 ROOT_URLCONF = 'magic_esim.urls'
 

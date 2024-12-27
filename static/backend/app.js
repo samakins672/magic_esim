@@ -1,3 +1,5 @@
+const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
 // Function to show toast
 function showToast(message, bgClass) {
     var toastEl = $('#responseToast');
