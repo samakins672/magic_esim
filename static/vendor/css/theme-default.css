@@ -182,7 +182,7 @@ a.bg-primary:hover,a.bg-primary:focus {
 }
 
 .bg-gradient-primary {
-  background-image: linear-gradient(45deg, #030744, #b4b6ff) !important
+  background-image: linear-gradient(45deg, #1B1F6A, #212CF1) !important
 }
 
 .page-item .page-link:hover,.page-item .page-link:focus,.pagination li>a:not(.page-link):hover,.pagination li>a:not(.page-link):focus {
