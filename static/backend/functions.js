@@ -139,7 +139,7 @@ $(document).ready(function () {
                   <div class="card shadow border-1">
                     <div class="card-header d-flex align-items-center justify-content-between text-dark fw-bolder">
                       <h5 class="m-0">${plan.name}</h5>
-                      <img src="{% static 'img/regions/' %}${locationCode.toLowerCase()}.png" class="rounded" style="width: 50px; height: auto;">
+                      <img src="/static/img/regions/${locationCode.toLowerCase()}.png" class="rounded" style="width: 50px; height: auto;">
                     </div>
                     <div class="card-body text-center">
                       <ul class="list-unstyled text-start mb-4">
@@ -230,7 +230,7 @@ $(document).ready(function () {
                   <div class="card shadow border-1">
                     <div class="card-header d-flex align-items-center justify-content-between text-dark fw-bolder">
                       <h5 class="m-0">${plan.name}</h5>
-                      <img src="{% static 'img/regions/as.png' %}" class="rounded" style="width: 50px; height: auto;">
+                      <img src="/static/img/regions/as.png" class="rounded" style="width: 50px; height: auto;">
                     </div>
                     <div class="card-body text-center">
                       <ul class="list-unstyled text-start mb-4">
