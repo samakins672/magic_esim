@@ -30,6 +30,20 @@
         <div class="content-wrapper">
           <!-- Content -->
           <div class="container-xxl flex-grow-1 container-p-y">
+            <section class="row p-4">
+              <div class="col-12 col-md-6 col-lg-4 bg-gradient-info shadow rounded-5 p-5">
+                <a href="javascript:;" data-location_code="GL-13"
+                  class="d-flex justify-content-between py-2 align-items-center fw-bold text-white show-global-esims">
+                  <span class="fs-4">
+                    <img src="{% static 'img/illustrations/world_mobile_esim.png' %}" alt="world_mobile_esim" class="me-2 rounded" height="80px" />
+                    Global (130+ areas)
+                  </span>
+                  <i class="bx bx-md bx-chevron-right"></i>
+                </a>
+              </div>
+            </section>
+            
+            <!-- eSIMs -->
             <section class="mt-3">
               <span class="badge bg-label-primary mb-2">Magic eSIMs</span>
   
@@ -80,7 +94,6 @@
                       <!-- Dynamically rendered eSIM plan cards will go here -->
                     </div>
                   </div>
-  
   
                   <div class="tab-pane fade" id="navs-pills-justified-regions" role="tabpanel">
                     <div class="row g-5 text-center pt-3 pb-3" id="regions-list"> <!-- Added `g-3` for uniform spacing -->

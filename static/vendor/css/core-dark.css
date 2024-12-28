@@ -19032,7 +19032,15 @@ html:not([dir=rtl]) .toast.bs-toast .toast-header .btn-close {
 }
 
 .rounded-3 {
-    border-radius: .5rem !important
+    border-radius: .575rem !important
+}
+
+.rounded-4 {
+    border-radius: 1rem !important
+}
+
+.rounded-5 {
+    border-radius: 1.5rem !important
 }
 
 .rounded-circle {
@@ -34186,11 +34194,11 @@ html:not(.layout-menu-fixed) .menu-inner-shadow {
 }
 
 html:not([dir=rtl]) .menu-toggle::after {
-  content: "\ecb3";
+    content: "\ecb3";
 }
 
 [dir=rtl] .menu-toggle::after {
-  content: "\ecb0";
+    content: "\ecb0";
 }
 
 .menu:not(.menu-no-animation) .menu-toggle::after {
