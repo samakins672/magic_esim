@@ -45,7 +45,7 @@ $(document).ready(function () {
 
 						const card = `
                 <div class="col-md-4 mb-4">
-                  <div class="card shadow border-1">
+                  <div class="card shadow border-primary border-1">
                     <div class="card-header d-flex align-items-center justify-content-between text-dark fw-bolder">
                       <h5 class="m-0">${plan.name}</h5>
                       <img src="https://flagcdn.com/w320/${locationCode.toLowerCase()}.png" class="rounded" style="width: 80px; height: auto;">
@@ -136,7 +136,7 @@ $(document).ready(function () {
 
 						const card = `
                 <div class="col-md-4 mb-4">
-                  <div class="card shadow border-1">
+                  <div class="card shadow border-primary border-1">
                     <div class="card-header d-flex align-items-center justify-content-between text-dark fw-bolder">
                       <h5 class="m-0">${plan.name}</h5>
                       <img src="/static/img/regions/${locationCode.toLowerCase()}.png" class="rounded" style="width: 50px; height: auto;">
@@ -227,7 +227,7 @@ $(document).ready(function () {
 
 						const card = `
                 <div class="col-md-4 mb-4">
-                  <div class="card shadow border-1">
+                  <div class="card shadow border-primary border-1">
                     <div class="card-header d-flex align-items-center justify-content-between text-dark fw-bolder">
                       <h5 class="m-0">${plan.name}</h5>
                       <img src="/static/img/regions/as.png" class="rounded" style="width: 50px; height: auto;">
