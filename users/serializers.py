@@ -91,6 +91,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "last_name",
             "phone_number",
             "email",
+            "profile_image",
             "is_verified",
             "is_active",
             "date_joined",
