@@ -5,22 +5,22 @@ import json
 import os
 
 
+# Load all countries
+countries_json_path = os.path.join('static', 'vendor', 'locations', 'countries.json')
+with open(countries_json_path, 'r') as file:
+    countries = json.load(file)
+
+# Load popular countries
+popular_countries_json_path = os.path.join('static', 'vendor', 'locations', 'popular_countries.json')
+with open(popular_countries_json_path, 'r') as file:
+    popular_countries = json.load(file)
+
+# Add `is_popular` key to each country
+popular_country_codes = {country.get('alpha_2') for country in popular_countries if 'alpha_2' in country}
+for country in countries:
+    country['is_popular'] = country.get('alpha_2') in popular_country_codes if 'alpha_2' in country else False
+
 def index(request):
-    # Load all countries
-    countries_json_path = os.path.join('static', 'vendor', 'locations', 'countries.json')
-    with open(countries_json_path, 'r') as file:
-        countries = json.load(file)
-
-    # Load popular countries
-    popular_countries_json_path = os.path.join('static', 'vendor', 'locations', 'popular_countries.json')
-    with open(popular_countries_json_path, 'r') as file:
-        popular_countries = json.load(file)
-
-    # Add `is_popular` key to each country
-    popular_country_codes = {country.get('alpha_2') for country in popular_countries if 'alpha_2' in country}
-    for country in countries:
-        country['is_popular'] = country.get('alpha_2') in popular_country_codes if 'alpha_2' in country else False
-
     # Pass both datasets to the template
     return render(request, 'index.html', {
         'countries': countries,
@@ -42,10 +42,11 @@ def frontend_logout(request):
 
 @login_required
 def dashboard(request):
-    context = {
-        'user': request.user
-    }
-    return render(request, 'dashboard.html', context)
+    return render(request, 'dashboard.html', {
+        'user': request.user,
+        'countries': countries,
+        'popular_countries': popular_countries
+    })
 
 @login_required
 def esim_list(request):
