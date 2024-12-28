@@ -47,7 +47,7 @@ $(document).ready(function () {
                 <div class="col-md-4 mb-4">
                   <div class="card shadow border-primary border-1">
                     <div class="card-header d-flex align-items-center justify-content-between text-dark fw-bolder">
-                      <h5 class="m-0">${plan.name}</h5>
+                      <h5 class="m-0 text-primary fw-bold">${plan.locationNetworkList[0].locationCode} - ${formattedVolume} (${formattedDuration})</h5>
                       <img src="https://flagcdn.com/w320/${locationCode.toLowerCase()}.png" class="rounded" style="width: 80px; height: auto;">
                     </div>
                     <div class="card-body text-center">
