@@ -4,10 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     codeInputs.forEach((input, index) => {
         // Enforce single-digit rule
         input.addEventListener('input', (e) => {
-            if (input.value.length > 1) {
-                input.value = input.value[0]; // Keep only the first digit
-            }
-
             // Handle pasting data into the input
             if (e.inputType === 'insertFromPaste') {
                 const pastedData = e.target.value.trim();
@@ -25,6 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (input.value.length === 1 && index < codeInputs.length - 1) {
                 codeInputs[index + 1].focus(); // Move to the next input
             }
+            
+            if (input.value.length > 1) {
+                input.value = input.value[0]; // Keep only the first digit
+            }
         });
 
         // Handle backspace to move focus to the previous input
@@ -37,19 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Combine code values on confirmation
-    const confirmButton = document.getElementById('confirm-btn');
-    confirmButton.addEventListener('click', () => {
-        const code = Array.from(codeInputs).map(input => input.value).join('');
-        if (code.length === codeInputs.length) {
-            alert('Your verification code is: ' + code);
-        } else {
-            alert('Please enter all digits of the code.');
-        }
-    });
-
     // Resend timer logic
-    let timer = 30;
+    let timer = 60;
     const timerElement = document.getElementById('resend-timer');
     const updateTimer = () => {
         timer--;
@@ -66,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Resend click handler
     timerElement.addEventListener('click', () => {
         if (timer === 0) {
-            timer = 30;
+            timer = 60;
             timerElement.textContent = `Resend in ${timer}secs`;
             timerElement.style.cursor = 'default';
 
@@ -77,7 +66,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }, 1000);
 
-            alert('Verification code resent!');
+            var formData = JSON.stringify({
+                email: document.querySelector('#otpVerifyForm [name="email"]').value,
+                phone_number: document.querySelector('#otpVerifyForm [name="phone_number"]').value
+            });
+        
+            fetch('/api/auth/otp/request/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+                showToast(data.message, 'bg-success');
+            })
+            .catch(error => {
+                // showToast('OTP verification failed. Please try again.', 'bg-danger');
+                showToast(error, 'bg-danger');
+            })
+
+            // alert('Verification code resent!');
         }
     });
 });

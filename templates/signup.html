@@ -12,35 +12,11 @@
 
   <title>Sign Up - Magic eSIM</title>
 
-  <meta name="description"
-    content="Get the best eSIM and VoIP solutions for international travels. Stay connected anywhere in the world with Magic eSIM." />
-  <meta name="keywords" content="eSIM, VoIP, international travel, global connectivity, Magic eSIM">
-  
-  <!-- csrf -->
-  <meta name="csrf-token" content="{{ csrf_token }}">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="{% static 'img/favicon/favicon.ico' %}" />
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-    rel="stylesheet" />
-
-  <!-- Icons. Uncomment required icon fonts -->
-  <link rel="stylesheet" href="{% static 'vendor/fonts/boxicons.css' %}" />
-
-  <!-- Core CSS -->
-  <link rel="stylesheet" href="{% static 'vendor/css/core.css' %}" class="template-customizer-core-css" />
-  <link rel="stylesheet" href="{% static 'vendor/css/theme-default.css' %}" class="template-customizer-theme-css" />
-  <link rel="stylesheet" href="{% static 'css/demo.css' %}" />
-
-  <!-- Vendors CSS -->
-  <link rel="stylesheet" href="{% static 'vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+  {% include 'partials/head.html' %}
 
   <!-- Page CSS -->
+  <link rel="stylesheet" href="{% static 'vendor/css/pages/page-auth.css' %}" />
+
   <style>
     .code-input {
       width: 50px;
@@ -70,14 +46,6 @@
     }
   </style>
 
-  <!-- Page -->
-  <link rel="stylesheet" href="{% static 'vendor/css/pages/page-auth.css' %}" />
-  <!-- Helpers -->
-  <script src="{% static 'vendor/js/helpers.js' %}"></script>
-
-  <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-  <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-  <script src="{% static 'js/config.js' %}"></script>
 </head>
 
 <body>
@@ -172,30 +140,31 @@
         </div>
 
         <!-- Modal -->
-      <div class="modal fade" id="verificationModal" tabindex="-1" aria-labelledby="verificationModalLabel"
+        <div class="modal fade" id="verificationModal" tabindex="-1" aria-labelledby="verificationModalLabel"
           aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-              <div class="modal-body text-center">
-                <h3><b>Enter verification code</b></h3>
-                <p>Your verification code has been sent to <span class="text-info user_email">samuel@gmail.com</span></p>
-                <div class="d-flex justify-content-center mb-3">
-                  <input type="number" maxlength="1" class="code-input" id="code1">
-                  <input type="number" maxlength="1" class="code-input" id="code2">
-                  <input type="number" maxlength="1" class="code-input" id="code3">
-                  <input type="number" maxlength="1" class="code-input" id="code4">
+              <form id="otpVerifyForm">
+                <input type="hidden" name="email"/>
+                <input type="hidden" name="phone_number"/>
+
+                <div class="modal-body text-center">
+                  <h3><b>Enter verification code</b></h3>
+                  <p>Your verification code has been sent to <span class="text-info user_email">samuel@gmail.com</span></p>
+                  <div class="d-flex justify-content-center mb-3">
+                    <input type="number" maxlength="1" class="code-input" id="code1">
+                    <input type="number" maxlength="1" class="code-input" id="code2">
+                    <input type="number" maxlength="1" class="code-input" id="code3">
+                    <input type="number" maxlength="1" class="code-input" id="code4">
+                  </div>
+                  <p class="mb-5 pb-5">Yet to receive Code? <span id="resend-timer" class="text-info">Resend in
+                      60secs</span></p>
                 </div>
 
-                <form id="resendForm" class="d-none">
-                  <input type="hidden" name="email"/>
-                  <input type="hidden" name="phone_number"/>
-                </form>
-                <p class="mb-5 pb-5">Yet to receive Code? <span id="resend-timer" class="text-info">Resend in
-                    30secs</span></p>
-              </div>
-              <div class="modal-footer">
-                <button id="confirm-btn" class="btn btn-lg btn-primary d-grid w-100 mt-5 rounded-pill">Confirm</button>
-              </div>
+                <div class="modal-footer">
+                  <button id="confirm-btn" type="submit" class="btn btn-lg btn-primary d-grid w-100 mt-5 rounded-pill">Confirm</button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -206,37 +175,10 @@
 
   <!-- / Content -->
 
-  <div id="responseToast" class="position-fixed end-0 m-3 top-0 bs-toast toast" role="alert" aria-live="assertive"
-    aria-atomic="true">
-    <div class="toast-header">
-      <i class="bx bx-bell me-2"></i>
-      <div class="me-auto fw-semibold">Alert</div>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-      ---
-    </div>
-  </div>
-
-
-  <!-- Core JS -->
-  <!-- build:js assets/vendor/js/core.js -->
-  <script src="{% static 'vendor/libs/jquery/jquery.js' %}"></script>
-  <script src="{% static 'vendor/libs/popper/popper.js' %}"></script>
-  <script src="{% static 'vendor/js/bootstrap.js' %}"></script>
-  <script src="{% static 'vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
-
-  <script src="{% static 'vendor/js/menu.js' %}"></script>
-  <!-- endbuild -->
-
-  <!-- Vendors JS -->
-
-  <!-- Main JS -->
-  <script src="{% static 'js/main.js' %}"></script>
+  {% include 'partials/scripts.html' %}
 
   <!-- Page JS -->
   <script src="{% static 'js/otp-handling.js' %}"></script>
-  <script src="{% static 'backend/app.js' %}"></script>
   <script src="{% static 'backend/auth.js' %}"></script>
 
 </body>

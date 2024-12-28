@@ -30,8 +30,8 @@ $(document).on('submit', '#userAuth', function (e) {
             showToast(response.message, 'bg-success');
             
             $('.user_email').text(email);
-            $('#resendForm [name="email"]').val(email);
-            $('#resendForm [name="phone_number"]').val(phone_number);
+            $('#otpVerifyForm [name="email"]').val(email);
+            $('#otpVerifyForm [name="phone_number"]').val(phone_number);
 
             // Open modal on success
             $('#verificationModal').modal('show');
@@ -65,7 +65,10 @@ $(document).on('submit', '#signInForm', function (e) {
         url: '/api/auth/login/',
         type: 'POST',
         data: formData,
-        contentType: 'application/json',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
         success: function (response) {
             // On success, show success message
             showToast('Log In successful!', 'bg-success');
@@ -85,24 +88,47 @@ $(document).on('submit', '#signInForm', function (e) {
     });
 });
 
-$(document).on('click', '#resend-timer', function (e) {
+$(document).on('submit', '#otpVerifyForm', function (e) {
+    e.preventDefault();
+
+    // Get the button element
+    var submitButton = $('#confirm-btn');
+
+    // Change button text to spinner
+    submitButton.html('<span class="spinner-border mx-auto" role="status" aria-hidden="true"></span>').attr('disabled', true);
+
+    const code = $('.code-input').map(function () {
+        return $(this).val();
+    }).get().join('');
+    
     var formData = JSON.stringify({
-        email: $('#resendForm [name="email"]').val(),
-        phone_number: $('#resendForm [name="phone_number"]').val()
+        email: $('#otpVerifyForm [name="email"]').val(),
+        phone_number: $('#otpVerifyForm [name="phone_number"]').val(),
+        otp: code,
     });
 
     $.ajax({
-        url: '/api/auth/otp/request/',
+        url: '/api/auth/otp/verify/',
         type: 'POST',
         data: formData,
-        contentType: 'application/json',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
         success: function (response) {
             console.log(response.message);
             showToast(response.message, 'bg-success');
+
+            // Redirect to login after verification is successful
+            window.location.href = '/login';
         },
         error: function (error) {
             // On error, show error message
             showToast(error, 'bg-danger');
+        },
+        complete: function () {
+            // Revert button text and re-enable the button
+            submitButton.html('Confirm').attr('disabled', false);
         }
     });
 });

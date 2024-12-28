@@ -50,34 +50,7 @@
   </div>
   <!-- / Layout wrapper -->
 
-  <div id="responseToast" class="position-fixed end-0 m-3 top-0 bs-toast toast" role="alert" aria-live="assertive"
-    aria-atomic="true">
-    <div class="toast-header">
-      <i class="bx bx-bell me-2"></i>
-      <div class="me-auto fw-semibold">Alert</div>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-      ---
-    </div>
-  </div>
-
-
-  <!-- Core JS -->
-  <script src="{% static 'vendor/libs/jquery/jquery.js' %}"></script>
-  <script src="{% static 'vendor/libs/popper/popper.js' %}"></script>
-  <script src="{% static 'vendor/js/bootstrap.js' %}"></script>
-  <script src="{% static 'vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
-  <script src="{% static 'vendor/libs/hammer/hammer.js' %}"></script>
-  <script src="{% static 'vendor/libs/i18n/i18n.js' %}"></script>
-  <script src="{% static 'vendor/libs/typeahead-js/typeahead.js' %}"></script>
-  <script src="{% static 'vendor/js/menu.js' %}"></script>
-
-  <!-- Vendors JS -->
-  <script src="{% static 'vendor/libs/apex-charts/apexcharts.js' %}"></script>
-
-  <!-- Main JS -->
-  <script src="{% static 'js/main.js' %}"></script>
+  {% include 'partials/scripts.html' %}
 
   <!-- Page JS -->
   <script src="{% static 'js/dashboards-analytics.js' %}"></script>
