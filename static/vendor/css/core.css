@@ -32375,7 +32375,7 @@ html:not([dir=rtl]) .menu-toggle::after {
 }
 
 .menu-vertical .menu-inner>.menu-item {
-  margin: .125rem 0
+  margin: .5rem 0
 }
 
 .menu-vertical .menu-inner>.menu-item .menu-link {

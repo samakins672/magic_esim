@@ -34186,11 +34186,11 @@ html:not(.layout-menu-fixed) .menu-inner-shadow {
 }
 
 html:not([dir=rtl]) .menu-toggle::after {
-    content: ""
+  content: "\ecb3";
 }
 
 [dir=rtl] .menu-toggle::after {
-    content: ""
+  content: "\ecb0";
 }
 
 .menu:not(.menu-no-animation) .menu-toggle::after {
@@ -34225,7 +34225,7 @@ html:not([dir=rtl]) .menu-toggle::after {
 }
 
 .menu-vertical .menu-inner>.menu-item {
-    margin: .125rem 0
+    margin: .5rem 0
 }
 
 .menu-vertical .menu-inner>.menu-item .menu-link {

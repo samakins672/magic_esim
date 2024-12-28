@@ -508,73 +508,38 @@
             </div>
 
             <div class="tab-pane fade" id="navs-pills-justified-services" role="tabpanel">
-              <div class="row g-5 text-center pt-3 pb-3"> <!-- Added `g-3` for uniform spacing -->
-                <div class="col-12 col-md-6 col-lg-4">
-                  <a href="javascript:;"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
-                    <span>
-                      <img src="{% static 'img/icons/brands/facebook.png' %}" alt="facebook" class="me-2 rounded"
-                        width="40px" />
-                      Facebook
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4">
-                  <a href="javascript:;"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
-                    <span>
-                      <img src="{% static 'img/icons/brands/facebook.png' %}" alt="facebook" class="me-2 rounded"
-                        width="40px" />
-                      Facebook
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4">
-                  <a href="javascript:;"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
-                    <span>
-                      <img src="{% static 'img/icons/brands/facebook.png' %}" alt="facebook" class="me-2 rounded"
-                        width="40px" />
-                      Facebook
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4">
-                  <a href="javascript:;"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
-                    <span>
-                      <img src="{% static 'img/icons/brands/facebook.png' %}" alt="facebook" class="me-2 rounded"
-                        width="40px" />
-                      Facebook
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4">
-                  <a href="javascript:;"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
-                    <span>
-                      <img src="{% static 'img/icons/brands/facebook.png' %}" alt="facebook" class="me-2 rounded"
-                        width="40px" />
-                      Facebook
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4">
-                  <a href="javascript:;"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
-                    <span>
-                      <img src="{% static 'img/icons/brands/facebook.png' %}" alt="facebook" class="me-2 rounded"
-                        width="40px" />
-                      Facebook
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
-                </div>
+              <div class="row justify-content-center">
+                <form class="col-12 col-md-6">
+                  <div class="row g-4">
+                    <div class="col-md-6">
+                      <label class="form-label" for="fullname">Full Name</label>
+                      <input type="text" class="form-control" name="fullname" placeholder="Fisrt & Last name" />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="email">Email</label>
+                      <input type="email" name="email" class="form-control"
+                        placeholder="name@domain.com" />
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label" for="nationality">Nationality:</label>
+                      <input type="text" name="nationality" class="form-control"
+                        placeholder="Kenyan" />
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label" for="purpose">Purpose/Service:</label>
+                      <textarea name="purpose" class="form-control" rows="3"
+                      placeholder="Write your purpose/service for the virtual number here"></textarea>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label" for="service_country">Service Country</label>
+                      <input type="text" name="service_country" class="form-control"
+                        placeholder="United Kingdom" />
+                    </div>
+                    <div class="col-12">
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
