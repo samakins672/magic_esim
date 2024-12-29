@@ -15,7 +15,7 @@
 
   <ul class="menu-inner py-1 ps ps--active-y">
     <!-- Store -->
-    <li class="menu-item active">
+    <li class="menu-item {% if request.path == '/dashboard/' %}active{% endif %}">
       <a href="/dashboard" class="menu-link">
         <i class="menu-icon tf-icons bx bx-store"></i>
         <div class="text-truncate">Store</div>
@@ -23,7 +23,7 @@
     </li>
     
     <!-- eSIMS -->
-    <li class="menu-item">
+    <li class="menu-item {% if request.path == '/my_esims/' %}active{% endif %}">
       <a href="/my_esims" class="menu-link">
         <i class="menu-icon tf-icons bx bx-mobile"></i>
         <div class="text-truncate">My eSIMs</div>
@@ -31,10 +31,18 @@
     </li>
 
     <!-- Virtual Numbers -->
-    <li class="menu-item">
-      <a href="/my_numbers" class="menu-link">
+    <li class="menu-item {% if request.path == '/numbers/' %}active{% endif %}">
+      <a href="/numbers" class="menu-link">
         <i class="menu-icon tf-icons bx bx-phone-call"></i>
-        <div class="text-truncate">My Numbers</div>
+        <div class="text-truncate">Numbers</div>
+      </a>
+    </li>
+    
+    <!-- My Profile -->
+    <li class="menu-item {% if request.path == '/profile/' %}active{% endif %}">
+      <a href="/profile" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-phone-call"></i>
+        <div class="text-truncate">My Profile</div>
       </a>
     </li>
     

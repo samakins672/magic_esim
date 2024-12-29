@@ -49,6 +49,12 @@ def dashboard(request):
     })
 
 @login_required
+def profile(request):
+    return render(request, 'profile.html', {
+        'user': request.user,
+    })
+
+@login_required
 def esim_list(request):
     context = {
         'user': request.user
