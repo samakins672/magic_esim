@@ -78,8 +78,8 @@ $(document).on('submit', '#signInForm', function (e) {
             window.location.href = '/dashboard';
         },
         error: function (error) {
-            // On error, show error message
-            showToast(error, 'bg-danger');
+            // On error show error message
+            showToast(error.responseJSON.message.error, 'bg-danger');
         },
         complete: function () {
             // Revert button text and re-enable the button
@@ -123,12 +123,51 @@ $(document).on('submit', '#otpVerifyForm', function (e) {
             window.location.href = '/login';
         },
         error: function (error) {
-            // On error, show error message
-            showToast(error, 'bg-danger');
+            // On error show error message
+            showToast(error.responseJSON.message.error, 'bg-danger');
         },
         complete: function () {
             // Revert button text and re-enable the button
             submitButton.html('Confirm').attr('disabled', false);
+        }
+    });
+});
+
+$(document).on('submit', '#formAccountSettings', function (e) {
+    e.preventDefault();
+
+    var submitButton = $('#submitBtn');
+    submitButton.html('<span class="spinner-border mx-auto" role="status" aria-hidden="true"></span>').attr('disabled', true);
+
+    var formData = new FormData(this);
+
+    // Check if a file is selected
+    var profileImageInput = $('#upload')[0];
+    if (profileImageInput.files.length === 0) {
+        formData.delete('profile_image');
+    }
+
+    $.ajax({
+        url: '/api/auth/user/me/',
+        method: 'PATCH',
+        processData: false,
+        contentType: false,
+        data: formData,
+        headers: {
+            'X-CSRFToken': csrfToken
+        },
+        success: function (response) {
+            console.log(response.message);
+            showToast(response.message, 'bg-success');
+            location.reload();
+        },
+        error: function (error) {
+            console.error(error);
+            showToast("User with this email or phone number already exists", 'bg-danger');
+        },
+        complete: function() {
+            // Revert button text and re-enable the button
+            submitButton.html('Submit changes').attr('disabled', false);
         }
     });
 });

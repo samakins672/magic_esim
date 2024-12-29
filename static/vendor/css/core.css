@@ -34756,6 +34756,7 @@ html:not([dir=rtl]) .switches-stacked .switch {
 
 .avatar img {
   width: 100%;
+  object-fit: cover;
   height: 100%
 }
 

@@ -57,19 +57,19 @@
                       <ul class="list-unstyled mb-6">
                         <li class="mb-2">
                           <span class="h6">Username:</span>
-                          <span>@violet.dev</span>
+                          <span>{{ user.username }}</span>
                         </li>
                         <li class="mb-2">
                           <span class="h6">Email:</span>
-                          <span>vafgot@vultukir.org</span>
+                          <span>{{ user.email }}</span>
                         </li>
                         <li class="mb-2">
                           <span class="h6">Status:</span>
-                          <span>Active</span>
+                          <span class="badge bg-label-success">Active</span>
                         </li>
                         <li class="mb-2">
                           <span class="h6">Phone:</span>
-                          <span>08055512345</span>
+                          <span>{{ user.phone_number }}</span>
                         </li>
                       </ul>
                       <div class="d-flex justify-content-center">
@@ -158,14 +158,14 @@
                   <div class="modal-body">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     
-                    <form class="row g-6" id="formEditUser">
+                    <form class="row g-6" id="formAccountSettings">
                       <div class="d-flex align-items-start align-items-sm-center gap-6 pb-4 border-bottom">
                         <img src="{{ user.profile_image.url }}" alt="user-avatar" class="d-block w-px-100 h-px-100 rounded" id="uploadedAvatar">
                         <div class="button-wrapper">
                           <label for="upload" class="btn btn-primary me-3 mb-4" tabindex="0">
                             <span class="d-none d-sm-block">Upload new photo</span>
                             <i class="bx bx-upload d-block d-sm-none"></i>
-                            <input type="file" id="upload" class="account-file-input" hidden="" accept="image/png, image/jpeg">
+                            <input type="file" id="upload" name="profile_image" class="account-file-input" hidden="" accept="image/png, image/jpeg">
                           </label>
                           <button type="button" class="btn btn-label-secondary account-image-reset mb-4">
                             <i class="bx bx-reset d-block d-sm-none"></i>
@@ -177,36 +177,28 @@
                       </div>
                       
                       <div class="col-12 col-md-6">
-                        <label class="form-label" for="modalEditUserFirstName">First Name</label>
-                        <input type="text" id="modalEditUserFirstName" name="modalEditUserFirstName"
-                          class="form-control" placeholder="John" value="John">
+                        <label class="form-label" for="first_name">First Name</label>
+                        <input type="text" id="first_name" name="first_name"
+                          class="form-control" placeholder="John" value="{{ user.first_name }}" required>
                       </div>
                       <div class="col-12 col-md-6">
-                        <label class="form-label" for="modalEditUserLastName">Last Name</label>
-                        <input type="text" id="modalEditUserLastName" name="modalEditUserLastName" class="form-control"
-                          placeholder="Doe" value="Doe">
-                      </div>
-                      <div class="col-12">
-                        <label class="form-label" for="modalEditUserName">Username</label>
-                        <input type="text" id="modalEditUserName" name="modalEditUserName" class="form-control"
-                          placeholder="johndoe007" value="johndoe007">
+                        <label class="form-label" for="last_name">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" class="form-control"
+                          placeholder="Doe" value="{{ user.last_name }}" required>
                       </div>
                       <div class="col-12 col-md-6">
-                        <label class="form-label" for="modalEditUserEmail">Email</label>
-                        <input type="text" id="modalEditUserEmail" name="modalEditUserEmail" class="form-control"
-                          placeholder="example@domain.com" value="example@domain.com">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="text" class="form-control"
+                          placeholder="example@domain.com" value="{{ user.email }}" readonly>
                       </div>
                       <div class="col-12 col-md-6">
-                        <label class="form-label" for="modalEditUserPhone">Phone Number</label>
-                        <div class="input-group">
-                          <span class="input-group-text">US (+1)</span>
-                          <input type="text" id="modalEditUserPhone" name="modalEditUserPhone"
-                            class="form-control phone-number-mask" placeholder="202 555 0111" value="202 555 0111">
-                        </div>
+                        <label class="form-label" for="phone_number">Phone Number</label>
+                        <input type="text" id="phone_number" name="phone_number"
+                          class="form-control" placeholder="+12025550111" value="{{ user.phone_number }}" required>
                       </div>
                       
-                      <div class="col-12 text-center">
-                        <button type="submit" class="btn btn-primary me-3">Submit</button>
+                      <div class="col-12 text-left">
+                        <button id="submitBtn" type="submit" class="btn btn-primary me-3">Submit</button>
                         <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
                           aria-label="Close">Cancel</button>
                       </div>
@@ -239,6 +231,7 @@
   {% include 'partials/scripts.html' %}
 
   <!-- Page JS -->
+  <script src="{% static 'backend/auth.js' %}"></script>
   <script src="{% static 'js/modal-edit-user.js' %}"></script>
   <script src="{% static 'js/app-user-view.js' %}"></script>
   <script src="{% static 'js/app-user-view-security.js' %}"></script>

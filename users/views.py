@@ -133,7 +133,7 @@ class LoginView(generics.GenericAPIView):
                 False, "Invalid credentials.", None, status.HTTP_401_UNAUTHORIZED
             )
         return api_response(
-            False, "Login failed.", serializer.errors, status.HTTP_400_BAD_REQUEST
+            False, serializer.errors, None, status.HTTP_400_BAD_REQUEST
         )
 
 

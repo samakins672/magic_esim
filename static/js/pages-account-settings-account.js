@@ -5,14 +5,14 @@ document.addEventListener("DOMContentLoaded", function(e) {
         , n = t.querySelector(".deactivate-account")
         , o = (e && FormValidation.formValidation(e, {
           fields: {
-              firstName: {
+              first_name: {
                   validators: {
                       notEmpty: {
                           message: "Please enter first name"
                       }
                   }
               },
-              lastName: {
+              last_name: {
                   validators: {
                       notEmpty: {
                           message: "Please enter last name"
@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function(e) {
                   eleValidClass: "",
                   rowSelector: ".col-md-6"
               }),
-              submitButton: new FormValidation.plugins.SubmitButton,
               autoFocus: new FormValidation.plugins.AutoFocus
           },
           init: e => {
@@ -67,34 +66,70 @@ document.addEventListener("DOMContentLoaded", function(e) {
       document.querySelector("#accountActivation"));
       n && (n.onclick = function() {
           1 == o.checked && Swal.fire({
-              text: "Are you sure you would like to deactivate your account?",
-              icon: "warning",
-              showCancelButton: !0,
-              confirmButtonText: "Yes",
-              customClass: {
-                  confirmButton: "btn btn-primary me-2",
-                  cancelButton: "btn btn-label-secondary"
-              },
-              buttonsStyling: !1
+          text: "Are you sure you would like to deactivate your account?",
+          icon: "warning",
+          showCancelButton: !0,
+          confirmButtonText: "Yes",
+          customClass: {
+          confirmButton: "btn btn-primary me-2",
+          cancelButton: "btn btn-label-secondary"
+          },
+          buttonsStyling: !1
           }).then(function(e) {
-              e.value ? Swal.fire({
-                  icon: "success",
-                  title: "Deleted!",
-                  text: "Your file has been deleted.",
-                  customClass: {
-                      confirmButton: "btn btn-success"
-                  }
-              }) : e.dismiss === Swal.DismissReason.cancel && Swal.fire({
-                  title: "Cancelled",
-                  text: "Deactivation Cancelled!!",
-                  icon: "error",
-                  customClass: {
-                      confirmButton: "btn btn-success"
-                  }
-              })
+          if (e.value) {
+          fetch('/api/auth/user/me/', {
+              method: 'DELETE',
+              headers: {
+              'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+              }
           })
-      }
-      );
+          .then(response => {
+              if (response.status === 204) {
+              Swal.fire({
+              icon: "success",
+              title: "Deleted!",
+              text: "Your account has been deactivated.",
+              customClass: {
+                  confirmButton: "btn btn-success"
+              }
+              }).then(() => {
+                  window.location.href = '/';
+              });
+              } else {
+              response.json().then(data => {
+                  Swal.fire({
+                  icon: "error",
+                  title: "Error!",
+                  text: data.message || "There was an error deactivating your account.",
+                  customClass: {
+                      confirmButton: "btn btn-danger"
+                  }
+                  });
+              });
+              }
+          })
+          .catch(error => {
+              Swal.fire({
+              icon: "error",
+              title: "Error!",
+              text: "There was an error deactivating your account.",
+              customClass: {
+              confirmButton: "btn btn-danger"
+              }
+              });
+          });
+          } else if (e.dismiss === Swal.DismissReason.cancel) {
+          Swal.fire({
+              title: "Cancelled",
+              text: "Deactivation Cancelled!!",
+              icon: "error",
+              customClass: {
+              confirmButton: "btn btn-success"
+              }
+          });
+          }
+          });
+      });
       let a = document.getElementById("uploadedAvatar")
         , i = document.querySelector(".account-file-input")
         , l = document.querySelector(".account-image-reset");

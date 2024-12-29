@@ -24,7 +24,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             phone_number=validated_data["phone_number"],
             referral_code=validated_data["referral_code"],
         )
-        user.username = f"{user.first_name}_{user.last_name}_{uuid.uuid4()}"
+        user.username = f"{user.first_name}_{str(uuid.uuid4())[:6]}"
         user.set_password(validated_data["password"])
         user.save()
         return user
@@ -39,9 +39,7 @@ class OTPRequestSerializer(serializers.Serializer):
         phone_number = data.get("phone_number")
 
         if not email and not phone_number:
-            raise serializers.ValidationError(
-                "Either email or phone number is required."
-            )
+            raise serializers.ValidationError({"error": "Either email or phone number is required."})
 
         # Check if the user exists
         user = (
@@ -50,7 +48,7 @@ class OTPRequestSerializer(serializers.Serializer):
             else User.objects.filter(phone_number=phone_number)
         )
         if not user.exists():
-            raise serializers.ValidationError("User does not exist.")
+            raise serializers.ValidationError({"error": "User does not exist."})
 
         return data
 
@@ -71,13 +69,13 @@ class OTPVerifySerializer(serializers.Serializer):
             else User.objects.filter(phone_number=phone_number)
         )
         if not user.exists():
-            raise serializers.ValidationError("User does not exist.")
+            raise serializers.ValidationError({"error": "User does not exist."})
 
         user = user.first()
         if user.otp != otp:
-            raise serializers.ValidationError("Invalid OTP.")
+            raise serializers.ValidationError({"error": "Invalid OTP."})
         if user.otp_expiry < now():
-            raise serializers.ValidationError("OTP has expired.")
+            raise serializers.ValidationError({"error": "OTP has expired."})
 
         return user
 
@@ -103,21 +101,19 @@ class UserLoginSerializer(serializers.Serializer):
         password = data.get("password")
 
         if not email or not password:
-            raise serializers.ValidationError("Email and password are required.")
+            raise serializers.ValidationError({"error": "Email and password are required."})
 
         # Check if the user exists
         user = User.objects.filter(email=email).first()
         if user is None:
-            raise serializers.ValidationError("User with this email does not exist.")
+            raise serializers.ValidationError({"error": "User with this email does not exist."})
 
         # Verify the user is active
         if not user.is_active:
-            raise serializers.ValidationError("This account is inactive.")
+            raise serializers.ValidationError({"error": "This account is inactive."})
 
         # Verify the user is verified
         if not user.is_verified:
-            raise serializers.ValidationError(
-                "Please verify your email before logging in."
-            )
+            raise serializers.ValidationError({"error": "Please verify your email before logging in."})
 
         return data
