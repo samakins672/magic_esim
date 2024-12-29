@@ -79,7 +79,11 @@ $(document).on('submit', '#signInForm', function (e) {
         },
         error: function (error) {
             // On error show error message
-            showToast(error.responseJSON.message.error, 'bg-danger');
+            if (error.responseJSON.message.error !== undefined) {
+                showToast(error.responseJSON.message.error, 'bg-danger');
+            } else {
+                showToast('Invalid email or password', 'bg-danger');
+            }
         },
         complete: function () {
             // Revert button text and re-enable the button

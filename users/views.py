@@ -11,10 +11,14 @@ from .serializers import (
     OTPVerifySerializer,
     UserDetailSerializer,
     UserLoginSerializer,
+    PasswordResetRequestSerializer,
+    PasswordResetConfirmSerializer,
+    ChangePasswordSerializer,
 )
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .utils import api_response
+from django.utils.timezone import now
 
 
 class UserRegistrationView(generics.CreateAPIView):
@@ -80,6 +84,7 @@ class OTPVerifyView(generics.GenericAPIView):
         if serializer.is_valid():
             user = serializer.validated_data
             user.is_verified = True
+            user.otp = None  # Clear OTP
             user.save()
             refresh = RefreshToken.for_user(user)
             return api_response(
@@ -188,4 +193,113 @@ class UserMeView(generics.RetrieveUpdateDestroyAPIView):
             "User account deactivated successfully.",
             None,
             status.HTTP_204_NO_CONTENT,
+        )
+
+class PasswordResetRequestView(generics.GenericAPIView):
+    serializer_class = PasswordResetRequestSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            user = User.objects.get(email=email)
+            user.set_otp()  # Generate new OTP
+            # TODO: Send OTP via email (implement email sending logic)
+            print(f"Password reset OTP for {email}: {user.otp}")  # Debug only
+            return api_response(
+                True,
+                "Password reset OTP has been sent to your email.",
+                None,
+                status.HTTP_200_OK
+            )
+        return api_response(
+            False,
+            "Password reset request failed.",
+            serializer.errors,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+class PasswordResetConfirmView(generics.GenericAPIView):
+    serializer_class = PasswordResetConfirmSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            otp = serializer.validated_data['otp']
+            new_password = serializer.validated_data['new_password']
+            
+            try:
+                user = User.objects.get(email=email)
+                if user.otp != otp:
+                    return api_response(
+                        False,
+                        "Invalid OTP.",
+                        None,
+                        status.HTTP_400_BAD_REQUEST
+                    )
+                if user.otp_expiry < now():
+                    return api_response(
+                        False,
+                        "OTP has expired.",
+                        None,
+                        status.HTTP_400_BAD_REQUEST
+                    )
+                
+                user.set_password(new_password)
+                user.otp = None  # Clear OTP
+                user.save()
+                
+                return api_response(
+                    True,
+                    "Password has been reset successfully.",
+                    None,
+                    status.HTTP_200_OK
+                )
+            except User.DoesNotExist:
+                return api_response(
+                    False,
+                    "User not found.",
+                    None,
+                    status.HTTP_404_NOT_FOUND
+                )
+        return api_response(
+            False,
+            "Password reset failed.",
+            serializer.errors,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+class ChangePasswordView(generics.GenericAPIView):
+    serializer_class = ChangePasswordSerializer
+    permission_classes = [IsAuthenticatedWithSessionOrJWT]
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            user = request.user
+            if not user.check_password(serializer.validated_data['old_password']):
+                return api_response(
+                    False,
+                    "Current password is incorrect.",
+                    None,
+                    status.HTTP_400_BAD_REQUEST
+                )
+            
+            user.set_password(serializer.validated_data['new_password'])
+            user.save()
+            
+            return api_response(
+                True,
+                "Password changed successfully.",
+                None,
+                status.HTTP_200_OK
+            )
+        return api_response(
+            False,
+            "Password change failed.",
+            serializer.errors,
+            status.HTTP_400_BAD_REQUEST
         )

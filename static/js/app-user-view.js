@@ -1,1 +1,48 @@
-!function(){var n=document.querySelector(".suspend-user"),n=(n&&(n.onclick=function(){Swal.fire({title:"Are you sure?",text:"You won't be able to revert user!",icon:"warning",showCancelButton:!0,confirmButtonText:"Yes, Suspend user!",customClass:{confirmButton:"btn btn-primary me-2",cancelButton:"btn btn-label-secondary"},buttonsStyling:!1}).then(function(n){n.value?Swal.fire({icon:"success",title:"Suspended!",text:"User has been suspended.",customClass:{confirmButton:"btn btn-success"}}):n.dismiss===Swal.DismissReason.cancel&&Swal.fire({title:"Cancelled",text:"Cancelled Suspension :)",icon:"error",customClass:{confirmButton:"btn btn-success"}})})}),document.querySelectorAll(".cancel-subscription"));n&&n.forEach(n=>{n.onclick=function(){Swal.fire({text:"Are you sure you would like to cancel your subscription?",icon:"warning",showCancelButton:!0,confirmButtonText:"Yes",customClass:{confirmButton:"btn btn-primary me-2",cancelButton:"btn btn-label-secondary"},buttonsStyling:!1}).then(function(n){n.value?Swal.fire({icon:"success",title:"Unsubscribed!",text:"Your subscription cancelled successfully.",customClass:{confirmButton:"btn btn-success"}}):n.dismiss===Swal.DismissReason.cancel&&Swal.fire({title:"Cancelled",text:"Unsubscription Cancelled!!",icon:"error",customClass:{confirmButton:"btn btn-success"}})})}})}();
+!function() {
+    let e = document.querySelector("#formChangePassword");
+    e && FormValidation.formValidation(e, {
+        fields: {
+            new_password: {
+                validators: {
+                    notEmpty: {
+                        message: "Please enter new password"
+                    },
+                    stringLength: {
+                        min: 8,
+                        message: "Password must be more than 8 characters"
+                    }
+                }
+            },
+            confirm_password: {
+                validators: {
+                    notEmpty: {
+                        message: "Please confirm new password"
+                    },
+                    identical: {
+                        compare: function() {
+                            return e.querySelector('[name="new_password"]').value
+                        },
+                        message: "The password and its confirm are not the same"
+                    },
+                    stringLength: {
+                        min: 8,
+                        message: "Password must be more than 8 characters"
+                    }
+                }
+            }
+        },
+        plugins: {
+            trigger: new FormValidation.plugins.Trigger,
+            bootstrap5: new FormValidation.plugins.Bootstrap5({
+                eleValidClass: "",
+                rowSelector: ".form-password-toggle"
+            }),
+            autoFocus: new FormValidation.plugins.AutoFocus
+        },
+        init: e => {
+            e.on("plugins.message.placed", function(e) {
+                e.element.parentElement.classList.contains("input-group") && e.element.parentElement.insertAdjacentElement("afterend", e.messageElement)
+            })
+        }
+    })
+}();
