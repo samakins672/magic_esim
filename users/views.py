@@ -142,8 +142,7 @@ class LogoutView(APIView):
         logout(request)
         return Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
     
-
-class UserMeView(generics.RetrieveAPIView):
+class UserMeView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserDetailSerializer
     permission_classes = [IsAuthenticatedWithSessionOrJWT]
@@ -160,3 +159,33 @@ class UserMeView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        if serializer.is_valid():
+            self.perform_update(serializer)
+            return api_response(
+                True,
+                "User details updated successfully.",
+                serializer.data,
+                status.HTTP_200_OK,
+            )
+        return api_response(
+            False,
+            "Update failed.",
+            serializer.errors,
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    def destroy(self, request, *args, **kwargs):
+        user = self.get_object()
+        user.is_active = False
+        user.save()
+        return api_response(
+            True,
+            "User account deactivated successfully.",
+            None,
+            status.HTTP_204_NO_CONTENT,
+        )

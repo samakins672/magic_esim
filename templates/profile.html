@@ -90,13 +90,7 @@
                 <div class="card mb-6">
                   <h5 class="card-header">Change Password</h5>
                   <div class="card-body">
-                    <form id="formChangePassword" method="GET" onsubmit="return false"
-                      class="fv-plugins-bootstrap5 fv-plugins-framework" novalidate="novalidate">
-                      <div class="alert alert-warning alert-dismissible" role="alert">
-                        <h5 class="alert-heading mb-1">Ensure that these requirements are met</h5>
-                        <span>Minimum 8 characters long, uppercase &amp; symbol</span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                      </div>
+                    <form id="formChangePassword" class="fv-plugins-bootstrap5 fv-plugins-framework" novalidate="novalidate">
                       <div class="row gx-6">
                         <div class="mb-4 col-12 col-sm-6 form-password-toggle fv-plugins-icon-container">
                           <label class="form-label" for="newPassword">New Password</label>
@@ -131,30 +125,27 @@
                 </div>
                 <!--/ Change Password -->
 
-                <!-- Two-steps verification -->
+                <!-- Delete Account -->
                 <div class="card mb-6">
-                  <div class="card-header">
-                    <h5 class="mb-0">Two-steps verification</h5>
-                    <span class="card-subtitle mt-0">Keep your account secure with authentication step.</span>
-                  </div>
+                  <h5 class="card-header">Delete Account</h5>
                   <div class="card-body pt-0">
-                    <h6 class="mb-1">SMS</h6>
-                    <div class="mb-4">
-                      <div class="d-flex w-100 action-icons">
-                        <input id="defaultInput" class="form-control me-4" type="text" placeholder="+1(968) 945-8832">
-                        <a href="javascript:;" class="btn btn-icon text-secondary" data-bs-target="#enableOTP"
-                          data-bs-toggle="modal"><i class="bx bx-edit"></i></a>
-                        <a href="javascript:;" class="btn btn-icon text-secondary"><i
-                            class="bx bx-user-plus"></i></a>
+                    <div class="mb-6 col-12 mb-0">
+                      <div class="alert alert-warning">
+                        <h5 class="alert-heading mb-1">Are you sure you want to delete your account?</h5>
+                        <p class="mb-0">Once you delete your account, there is no going back. Please be certain.</p>
                       </div>
                     </div>
-                    <p class="mb-0">Two-factor authentication adds an additional layer of security to your account by
-                      requiring more than just a password to log in.
-                      <a href="javascript:void(0);" class="text-primary">Learn more.</a>
-                    </p>
+                    <form id="formAccountDeactivation" onsubmit="return false" class="fv-plugins-bootstrap5 fv-plugins-framework" novalidate="novalidate">
+                      <div class="form-check my-8 ms-2">
+                        <input class="form-check-input" type="checkbox" name="accountActivation" id="accountActivation">
+                        <label class="form-check-label" for="accountActivation">I confirm my account deactivation</label>
+                      <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div></div>
+                      <button type="submit" class="btn btn-danger deactivate-account">Deactivate Account</button>
+                    <input type="hidden"></form>
                   </div>
                 </div>
-                <!--/ Two-steps verification -->
+                <!--/ Delete Account -->
+                
               </div>
               <!--/ User Content -->
             </div>
@@ -166,11 +157,25 @@
                 <div class="modal-content">
                   <div class="modal-body">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="text-center mb-6">
-                      <h4 class="mb-2">Edit User Information</h4>
-                      <p>Updating user details will receive a privacy audit.</p>
-                    </div>
-                    <form class="row g-6" onsubmit="false">
+                    
+                    <form class="row g-6" id="formEditUser">
+                      <div class="d-flex align-items-start align-items-sm-center gap-6 pb-4 border-bottom">
+                        <img src="{{ user.profile_image.url }}" alt="user-avatar" class="d-block w-px-100 h-px-100 rounded" id="uploadedAvatar">
+                        <div class="button-wrapper">
+                          <label for="upload" class="btn btn-primary me-3 mb-4" tabindex="0">
+                            <span class="d-none d-sm-block">Upload new photo</span>
+                            <i class="bx bx-upload d-block d-sm-none"></i>
+                            <input type="file" id="upload" class="account-file-input" hidden="" accept="image/png, image/jpeg">
+                          </label>
+                          <button type="button" class="btn btn-label-secondary account-image-reset mb-4">
+                            <i class="bx bx-reset d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Reset</span>
+                          </button>
+              
+                          <div>Allowed JPG, GIF or PNG. Max size of 800K</div>
+                        </div>
+                      </div>
+                      
                       <div class="col-12 col-md-6">
                         <label class="form-label" for="modalEditUserFirstName">First Name</label>
                         <input type="text" id="modalEditUserFirstName" name="modalEditUserFirstName"
@@ -192,31 +197,6 @@
                           placeholder="example@domain.com" value="example@domain.com">
                       </div>
                       <div class="col-12 col-md-6">
-                        <label class="form-label" for="modalEditUserStatus">Status</label>
-                        <div class="position-relative"><select id="modalEditUserStatus" name="modalEditUserStatus"
-                            class="select2 form-select select2-hidden-accessible" aria-label="Default select example"
-                            data-select2-id="modalEditUserStatus" tabindex="-1" aria-hidden="true">
-                            <option selected="" data-select2-id="2">Status</option>
-                            <option value="1">Active</option>
-                            <option value="2">Inactive</option>
-                            <option value="3">Suspended</option>
-                          </select><span class="select2 select2-container select2-container--default" dir="ltr"
-                            data-select2-id="1" style="width: auto;"><span class="selection"><span
-                                class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true"
-                                aria-expanded="false" tabindex="0" aria-disabled="false"
-                                aria-labelledby="select2-modalEditUserStatus-container"><span
-                                  class="select2-selection__rendered" id="select2-modalEditUserStatus-container"
-                                  role="textbox" aria-readonly="true" title="Status">Status</span><span
-                                  class="select2-selection__arrow" role="presentation"><b
-                                    role="presentation"></b></span></span></span><span class="dropdown-wrapper"
-                              aria-hidden="true"></span></span></div>
-                      </div>
-                      <div class="col-12 col-md-6">
-                        <label class="form-label" for="modalEditTaxID">Tax ID</label>
-                        <input type="text" id="modalEditTaxID" name="modalEditTaxID"
-                          class="form-control modal-edit-tax-id" placeholder="123 456 7890" value="123 456 7890">
-                      </div>
-                      <div class="col-12 col-md-6">
                         <label class="form-label" for="modalEditUserPhone">Phone Number</label>
                         <div class="input-group">
                           <span class="input-group-text">US (+1)</span>
@@ -224,82 +204,7 @@
                             class="form-control phone-number-mask" placeholder="202 555 0111" value="202 555 0111">
                         </div>
                       </div>
-                      <div class="col-12 col-md-6">
-                        <label class="form-label" for="modalEditUserLanguage">Language</label>
-                        <div class="position-relative"><select id="modalEditUserLanguage" name="modalEditUserLanguage"
-                            class="select2 form-select select2-hidden-accessible" multiple=""
-                            data-select2-id="modalEditUserLanguage" tabindex="-1" aria-hidden="true">
-                            <option value="">Select</option>
-                            <option value="english" selected="" data-select2-id="4">English</option>
-                            <option value="spanish">Spanish</option>
-                            <option value="french">French</option>
-                            <option value="german">German</option>
-                            <option value="dutch">Dutch</option>
-                            <option value="hebrew">Hebrew</option>
-                            <option value="sanskrit">Sanskrit</option>
-                            <option value="hindi">Hindi</option>
-                          </select><span class="select2 select2-container select2-container--default" dir="ltr"
-                            data-select2-id="3" style="width: auto;"><span class="selection"><span
-                                class="select2-selection select2-selection--multiple" role="combobox"
-                                aria-haspopup="true" aria-expanded="false" tabindex="-1" aria-disabled="false">
-                                <ul class="select2-selection__rendered">
-                                  <li class="select2-selection__choice" title="English" data-select2-id="5"><span
-                                      class="select2-selection__choice__remove" role="presentation">×</span>English</li>
-                                  <li class="select2-search select2-search--inline"><input class="select2-search__field"
-                                      type="search" tabindex="0" autocomplete="off" autocorrect="off"
-                                      autocapitalize="none" spellcheck="false" role="searchbox" aria-autocomplete="list"
-                                      placeholder="" style="width: 0.75em;"></li>
-                                </ul>
-                              </span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span></div>
-                      </div>
-                      <div class="col-12 col-md-6">
-                        <label class="form-label" for="modalEditUserCountry">Country</label>
-                        <div class="position-relative"><select id="modalEditUserCountry" name="modalEditUserCountry"
-                            class="select2 form-select select2-hidden-accessible" data-allow-clear="true"
-                            data-select2-id="modalEditUserCountry" tabindex="-1" aria-hidden="true">
-                            <option value="">Select</option>
-                            <option value="Australia">Australia</option>
-                            <option value="Bangladesh">Bangladesh</option>
-                            <option value="Belarus">Belarus</option>
-                            <option value="Brazil">Brazil</option>
-                            <option value="Canada">Canada</option>
-                            <option value="China">China</option>
-                            <option value="France">France</option>
-                            <option value="Germany">Germany</option>
-                            <option value="India" selected="" data-select2-id="7">India</option>
-                            <option value="Indonesia">Indonesia</option>
-                            <option value="Israel">Israel</option>
-                            <option value="Italy">Italy</option>
-                            <option value="Japan">Japan</option>
-                            <option value="Korea">Korea, Republic of</option>
-                            <option value="Mexico">Mexico</option>
-                            <option value="Philippines">Philippines</option>
-                            <option value="Russia">Russian Federation</option>
-                            <option value="South Africa">South Africa</option>
-                            <option value="Thailand">Thailand</option>
-                            <option value="Turkey">Turkey</option>
-                            <option value="Ukraine">Ukraine</option>
-                            <option value="United Arab Emirates">United Arab Emirates</option>
-                            <option value="United Kingdom">United Kingdom</option>
-                            <option value="United States">United States</option>
-                          </select><span class="select2 select2-container select2-container--default" dir="ltr"
-                            data-select2-id="6" style="width: auto;"><span class="selection"><span
-                                class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true"
-                                aria-expanded="false" tabindex="0" aria-disabled="false"
-                                aria-labelledby="select2-modalEditUserCountry-container"><span
-                                  class="select2-selection__rendered" id="select2-modalEditUserCountry-container"
-                                  role="textbox" aria-readonly="true" title="India"><span
-                                    class="select2-selection__clear" title="Remove all items"
-                                    data-select2-id="8">×</span>India</span><span class="select2-selection__arrow"
-                                  role="presentation"><b role="presentation"></b></span></span></span><span
-                              class="dropdown-wrapper" aria-hidden="true"></span></span></div>
-                      </div>
-                      <div class="col-12">
-                        <div class="form-check form-switch my-2 ms-2">
-                          <input type="checkbox" class="form-check-input" id="editBillingAddress" checked="">
-                          <label for="editBillingAddress" class="switch-label">Use as a billing address?</label>
-                        </div>
-                      </div>
+                      
                       <div class="col-12 text-center">
                         <button type="submit" class="btn btn-primary me-3">Submit</button>
                         <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
@@ -311,85 +216,6 @@
               </div>
             </div>
             <!--/ Edit User Modal -->
-
-            <!-- Enable OTP Modal -->
-            <div class="modal fade" id="enableOTP" tabindex="-1" aria-hidden="true">
-              <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
-                <div class="modal-content">
-                  <div class="modal-body">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="text-center mb-6">
-                      <h4 class="mb-2">Enable One Time Password</h4>
-                      <p>Verify Your Mobile Number for SMS</p>
-                    </div>
-                    <p>Enter your mobile phone number with country code and we will send you a verification code.</p>
-                    <form id="enableOTPForm" class="row g-6 fv-plugins-bootstrap5 fv-plugins-framework"
-                      onsubmit="return false" novalidate="novalidate">
-                      <div class="col-12 fv-plugins-icon-container">
-                        <label class="form-label" for="modalEnableOTPPhone">Phone Number</label>
-                        <div class="input-group has-validation">
-                          <span class="input-group-text">US (+1)</span>
-                          <input type="text" id="modalEnableOTPPhone" name="modalEnableOTPPhone"
-                            class="form-control phone-number-otp-mask" placeholder="202 555 0111">
-                        </div>
-                        <div
-                          class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
-                        </div>
-                      </div>
-                      <div class="col-12">
-                        <button type="submit" class="btn btn-primary me-3">Submit</button>
-                        <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
-                          aria-label="Close">Cancel</button>
-                      </div>
-                      <input type="hidden">
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!--/ Enable OTP Modal -->
-
-            <!-- Add New Credit Card Modal -->
-            <div class="modal fade" id="upgradePlanModal" tabindex="-1" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered modal-simple modal-upgrade-plan">
-                <div class="modal-content">
-                  <div class="modal-body">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="text-center mb-6">
-                      <h4 class="mb-2">Upgrade Plan</h4>
-                      <p>Choose the best plan for user.</p>
-                    </div>
-                    <form id="upgradePlanForm" class="row g-4" onsubmit="return false">
-                      <div class="col-sm-9">
-                        <label class="form-label" for="choosePlan">Choose Plan</label>
-                        <select id="choosePlan" name="choosePlan" class="form-select" aria-label="Choose Plan">
-                          <option selected="">Choose Plan</option>
-                          <option value="standard">Standard - $99/month</option>
-                          <option value="exclusive">Exclusive - $249/month</option>
-                          <option value="Enterprise">Enterprise - $499/month</option>
-                        </select>
-                      </div>
-                      <div class="col-sm-3 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary">Upgrade</button>
-                      </div>
-                    </form>
-                  </div>
-                  <hr class="mx-5 my-2">
-                  <div class="modal-body">
-                    <p class="mb-0">User current plan is standard plan</p>
-                    <div class="d-flex justify-content-between align-items-center flex-wrap">
-                      <div class="d-flex justify-content-center me-2 mt-1">
-                        <sup class="h6 pricing-currency pt-1 mt-2 mb-0 me-1 text-primary fw-normal">$</sup>
-                        <h1 class="mb-0 text-primary">99</h1>
-                        <sub class="pricing-duration mt-auto mb-5 pb-1 small text-body">/month</sub>
-                      </div>
-                      <button class="btn btn-label-danger cancel-subscription">Cancel Subscription</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!--/ Add New Credit Card Modal -->
 
             <!-- /Modals -->
           </div>
@@ -416,6 +242,8 @@
   <script src="{% static 'js/modal-edit-user.js' %}"></script>
   <script src="{% static 'js/app-user-view.js' %}"></script>
   <script src="{% static 'js/app-user-view-security.js' %}"></script>
+  <script src="{% static 'js/pages-account-settings-account.js' %}"></script>
+
 </body>
 
 </html>
