@@ -95,7 +95,7 @@
                         <div class="mb-4 col-12 col-sm-6 form-password-toggle fv-plugins-icon-container">
                           <label class="form-label" for="new_password">New Password</label>
                           <div class="input-group input-group-merge has-validation">
-                            <input class="form-control" type="password" id="new_password" name="new_password"
+                            <input class="form-control" type="password" name="new_password"
                               placeholder="············" required>
                             <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                           </div>
@@ -107,7 +107,7 @@
                         <div class="mb-4 col-12 col-sm-6 form-password-toggle fv-plugins-icon-container">
                           <label class="form-label" for="confirm_password">Confirm New Password</label>
                           <div class="input-group input-group-merge has-validation">
-                            <input class="form-control" type="password" name="confirm_password" id="confirm_password"
+                            <input class="form-control" type="password" name="confirm_password"
                               placeholder="············" required>
                             <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                           </div>
@@ -116,7 +116,7 @@
                           </div>
                         </div>
                         <div>
-                          <button type="submit" class="btn btn-primary me-2">Change Password</button>
+                          <button id="submitBtn2" type="submit" class="btn btn-primary me-2">Change Password</button>
                         </div>
                       </div>
                       <input type="hidden">
@@ -208,6 +208,35 @@
               </div>
             </div>
             <!--/ Edit User Modal -->
+
+            <!-- Change Password Modal -->
+            <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-simple modal-change-password">
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <h4>Action required!</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    
+                    <form class="row g-6" id="changePasswordForm">
+                      <input type="hidden" class="form-control" name="new_password">
+                      <input type="hidden" class="form-control" name="confirm_password">
+
+                      <div class="col-12">
+                        <label class="form-label" for="old_password">Current Password</label>
+                        <input type="password" class="form-control" name="old_password" required>
+                      </div>
+                      
+                      <div class="col-12 text-left">
+                        <button id="submitBtn3" type="submit" class="btn btn-primary me-3">Submit</button>
+                        <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
+                          aria-label="Close">Cancel</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--/ Change Password Modal -->
 
             <!-- /Modals -->
           </div>

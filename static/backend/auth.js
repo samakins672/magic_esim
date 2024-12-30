@@ -128,7 +128,11 @@ $(document).on('submit', '#otpVerifyForm', function (e) {
         },
         error: function (error) {
             // On error show error message
-            showToast(error.responseJSON.message.error, 'bg-danger');
+            if (error.responseJSON.message.error !== undefined) {
+                showToast(error.responseJSON.message.error, 'bg-danger');
+            } else {
+                showToast('Server error! Try again later.', 'bg-danger');
+            }
         },
         complete: function () {
             // Revert button text and re-enable the button
@@ -168,6 +172,61 @@ $(document).on('submit', '#formAccountSettings', function (e) {
         error: function (error) {
             console.error(error);
             showToast("User with this email or phone number already exists", 'bg-danger');
+        },
+        complete: function() {
+            // Revert button text and re-enable the button
+            submitButton.html('Submit changes').attr('disabled', false);
+        }
+    });
+});
+
+$(document).on('submit', '#formChangePassword', function (e) {
+    e.preventDefault();
+
+    var submitButton = $('#submitBtn2');
+    submitButton.html('<span class="spinner-border mx-auto" role="status" aria-hidden="true"></span>').attr('disabled', true);
+
+    new_password = $('#formChangePassword [name="new_password"]').val();
+    confirm_password = $('#formChangePassword [name="confirm_password"]').val();
+
+    $('#changePasswordForm [name="new_password"]').val(new_password);
+    $('#changePasswordForm [name="confirm_password"]').val(confirm_password);
+
+    $('#changePasswordModal').modal('show');
+});
+
+$(document).on('submit', '#changePasswordForm', function (e) {
+    e.preventDefault();
+
+    var submitButton = $('#submitBtn3');
+    submitButton.html('<span class="spinner-border mx-auto" role="status" aria-hidden="true"></span>').attr('disabled', true);
+
+    var formData = JSON.stringify({
+        old_password: $('#changePasswordForm [name="old_password"]').val(),
+        new_password: $('#changePasswordForm [name="new_password"]').val(),
+        confirm_password: $('#changePasswordForm [name="confirm_password"]').val(),
+    });
+
+    $.ajax({
+        url: '/api/auth/password/change/',
+        method: 'POST',
+        data: formData,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        success: function (response) {
+            console.log(response.message);
+            showToast(response.message, 'bg-success');
+            location.reload();
+        },
+        error: function (error) {
+            console.error(error);
+            if (error.responseJSON.message.error !== undefined) {
+                showToast(error.responseJSON.message.error, 'bg-danger');
+            } else {
+                showToast('Server error! Try again later.', 'bg-danger');
+            }
         },
         complete: function() {
             // Revert button text and re-enable the button
