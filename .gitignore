@@ -1,3 +1,28 @@
 /.venv
 .env
-# /templates/
+
+# Python cache files and directories
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+frontend/__pycache__/
+users/__pycache__/
+magic_esim/__pycache__/
+api/__pycache__/
+*/*/__pycache__/
+*/*/*/__pycache__/
+
+# Django stuff
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
