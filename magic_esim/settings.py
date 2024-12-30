@@ -19,6 +19,7 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = [
     "magicesim.onrender.com",
+    "magicesim.com",
     "localhost",
     "127.0.0.1",
     "localhost:8080",
@@ -67,6 +68,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost",
     "http://localhost:8000",
     "https://magicesim.onrender.com",
+    "https://magicesim.com",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -75,6 +77,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
     "http://localhost:8000",
     "https://magicesim.onrender.com",
+    "https://magicesim.com",
 ]
 
 # Root URL Configuration
@@ -213,3 +216,13 @@ EMAIL_USE_SSL = config('EMAIL_USE_SSL')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+
+# CoinPayments Configuration
+COINPAYMENT_MERCHANT_ID = config('COINPAYMENT_MERCHANT_ID')
+COINPAYMENT_PUBLIC_KEY = config('COINPAYMENT_PUBLIC_KEY')
+COINPAYMENT_PRIVATE_KEY = config('COINPAYMENT_PRIVATE_KEY')
+COINPAYMENTS_IPN_URL = config('COINPAYMENTS_IPN_URL')
+
+# Stripe Configuration
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
