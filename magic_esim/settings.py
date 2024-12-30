@@ -104,16 +104,33 @@ TEMPLATES = [
 WSGI_APPLICATION = 'magic_esim.wsgi.application'
 
 # Database (PostgreSQL Configuration)
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='esim_db'),
-        'USER': config('DB_USER', default='postgres'),
-        'PASSWORD': config('DB_PASSWORD', default='yourpassword'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
+if DEBUG:
+    # Development environment (local database)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': config('DB_HOST'),
+            'PORT': config('DB_PORT', default=5432),
+        }
     }
-}
+else:
+    # Production environment (External database)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': config('DB_HOST'),
+            'PORT': config('DB_PORT', default=5432),
+            'OPTIONS': {
+                'sslmode': 'require',  # Enforce SSL in production
+            },
+        }
+    }
 
 # Password Validation
 AUTH_PASSWORD_VALIDATORS = [
