@@ -10,6 +10,7 @@ __pycache__/
 frontend/__pycache__/
 users/__pycache__/
 magic_esim/__pycache__/
+billing/__pycache__/
 api/__pycache__/
 */*/__pycache__/
 */*/*/__pycache__/
