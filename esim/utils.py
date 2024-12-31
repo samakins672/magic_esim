@@ -18,15 +18,44 @@ def fetch_esim_plan_details(package_code):
     esim_host = config('ESIMACCESS_HOST')
     api_token = config('ESIMACCESS_ACCESS_CODE')
     
-    url = esim_host + "/api/v1/open/package/details"
+    url = esim_host + "/api/v1/open/package/list"
     headers = {"RT-AccessCode": api_token}
     params = {"packageCode": package_code}
 
     try:
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.post(url, json=params, headers=headers)
         response.raise_for_status()  # Raise an error for non-200 responses
         data = response.json()
         return data
     except requests.RequestException as e:
         print(f"Error fetching eSIM plan details: {e}")
+        return None
+
+
+def order_esim_profile(package_code, ref_id, amount):
+    """
+    Order new plan from the eSIM API.
+    """
+    esim_host = config('ESIMACCESS_HOST')
+    api_token = config('ESIMACCESS_ACCESS_CODE')
+    
+    url = esim_host + "/api/v1/open/esim/order"
+    headers = {"RT-AccessCode": api_token}
+    params = {
+        "transactionId": str(ref_id),
+        "amount": amount,
+        "packageInfoList": [{
+            "packageCode": package_code,
+            "count": 1,
+            "price": amount,
+        }]
+    }
+
+    try:
+        response = requests.post(url, json=params, headers=headers)
+        response.raise_for_status()  # Raise an error for non-200 responses
+        data = response.json().get('obj', {}) 
+        return data.get('orderNo')
+    except requests.RequestException as e:
+        print(f"Error ordering eSIM plan: {e}")
         return None

@@ -20,8 +20,9 @@ class eSIMPlan(models.Model):
     esim_status = models.CharField(max_length=25, default='PAID')
     smdp_status = models.CharField(max_length=25, default='RELEASED')
     seller = models.CharField(max_length=25, default='esimaccess')
+    order_no = models.CharField(max_length=25, default=None, blank=True, null=True)
     activated_on = models.DateTimeField(auto_now_add=True)
     expires_on = models.DateTimeField()
 
     def __str__(self):
-        return f"eSIM Plan {self.name} ({self.status})"
+        return f"eSIM Plan {self.name} ({self.esim_status})"

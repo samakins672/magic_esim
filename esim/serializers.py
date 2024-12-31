@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import eSIMPlan
 from billing.models import Payment
-from .utils import fetch_esim_plan_details, calculate_expiry_date
+from .utils import fetch_esim_plan_details, calculate_expiry_date, order_esim_profile
 from django.contrib.auth import get_user_model
 
 
@@ -27,7 +27,6 @@ class eSIMProfileSerializer(serializers.Serializer):
     
 
 class eSIMPlanSerializer(serializers.ModelSerializer):
-    user_id = serializers.IntegerField(write_only=True)
     package_code = serializers.CharField(write_only=True)
     payment_ref_id = serializers.UUIDField(write_only=True)
     seller = serializers.CharField(write_only=True)
@@ -36,53 +35,56 @@ class eSIMPlanSerializer(serializers.ModelSerializer):
         model = eSIMPlan
         fields = '__all__'
         read_only_fields = [
-            'name', 'slug', 'currency_code', 'speed', 'description', 'price', 'volume',
+            'name', 'slug', 'order_no', 'currency_code', 'speed', 'description', 'price', 'volume',
             'esim_status', 'duration', 'duration_unit', 'support_top_up_type', 'payment',
             'activated_on', 'expires_on', 'smdp_status'
         ]
 
     def create(self, validated_data):
-        user_id = validated_data.pop('user_id')
+        user = validated_data.pop('user')
         package_code = validated_data.pop('package_code')
         payment_ref_id = validated_data.pop('payment_ref_id')
         seller = validated_data.pop('seller')
 
         # Fetch user and payment
-        user = self.context['request'].user
-        User = get_user_model()
-        user = User.objects.get(id=user_id)
-        payment = Payment.objects.filter(ref_id=payment_ref_id, user=user).first()
-        if not payment or payment.status != 'PENDING':
-            raise serializers.ValidationError("Invalid or non-pending payment reference.")
+        payment = Payment.objects.filter(ref_id=payment_ref_id, package_code=package_code, user=user).first()
+        if not payment or payment.status == 'PENDING':
+            raise serializers.ValidationError({'status': False, 'message': "Invalid or pending payment reference."})
+        
+        if payment.status == 'FAILED':
+            raise serializers.ValidationError({'status': False, 'message': "Payment expired."})
 
         # Fetch eSIM plan details
         plan_details = fetch_esim_plan_details(package_code)
-        if not plan_details:
-            raise serializers.ValidationError("Failed to fetch plan details from the eSIM API.")
-
-        # Update payment status to 'COMPLETED'
-        payment.status = 'COMPLETED'
-        payment.save()
+        print(plan_details)
+        if not plan_details or plan_details['success'] == False:
+            raise serializers.ValidationError({'status': False, 'message': "Failed to fetch plan details from the eSIM API."})
 
         # Calculate expiry date
+        plan_details = plan_details['obj']['packageList'][0]
         expiry_date = calculate_expiry_date(plan_details['duration'])
+
+        plan_price = plan_details['price']
+        print(plan_price)
+        order_no = order_esim_profile(package_code, payment_ref_id, plan_price)
+        print(order_no)
 
         # Create and save the eSIM plan
         esim_plan = eSIMPlan.objects.create(
             user=user,
             payment=payment,
+            order_no=order_no,
             name=plan_details['name'],
             package_code=package_code,
             slug=plan_details['slug'],
-            currency_code=plan_details['currency_code'],
+            currency_code=plan_details['currencyCode'],
             speed=plan_details['speed'],
             description=plan_details['description'],
             price=plan_details['price'],
             volume=plan_details['volume'],
-            smdp_status=plan_details['smdp_status'],
             duration=plan_details['duration'],
-            duration_unit=plan_details['duration_unit'],
-            support_top_up_type=plan_details['support_top_up_type'],
+            duration_unit=plan_details['durationUnit'],
+            support_top_up_type=plan_details['supportTopUpType'],
             expires_on=expiry_date,
             seller=seller,
             esim_status='PAID'
