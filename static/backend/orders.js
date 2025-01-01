@@ -49,25 +49,35 @@ function populateOrdersTable(orders) {
           data-ref_id="${order.ref_id}"
           data-date_created="${order.date_created}"
           data-expiry_datetime="${order.expiry_datetime}"
+          data-esim_plan="${order.esim_plan}"
           data-bs-toggle="modal" 
           data-bs-target="#orderDetailsModal">
-          View Details
+          <i class="bx bx-show"></i>
+        </button>`;
+
+        const confirmPaymentButton = `
+        <button class="btn btn-success btn-sm confirm-payment-btn" 
+          data-id="${order.ref_id}" 
+          data-payment_url="${order.payment_url}">
+          Confirm Payment
         </button>`;
 
         const expiryCountdown =
             expiryTime && expiryTime > 0
-                ? `<span class="countdown-timer" data-id="${order.id}">${expiryTime}s</span>`
-                : `<span class="text-danger">Expired</span>`;
+                ? `<span class="countdown-timer" data-id="${order.id}">${expiryTime}s</span>` :
+            order.status == "COMPLETED" ? `<span class="text-success">Done</span>` : `<span class="text-danger">Exp.</span>`;
 
         const row = `
         <tr>
           <td>${truncateText(order.gateway_transaction_id, 10)}</td>
           <td class="text-primary">${order.price} ${order.currency}</td>
           <td>${formatDateTime(order.date_created)}</td>
-          <td><span class="badge ${order.status === "PENDING" ? "bg-warning" : "bg-success"
-            }">${order.status}</span></td>
+          <td><span class="badge ${order.status === "PENDING" ? "bg-label-warning" : order.status === "FAILED" ?  "bg-label-danger" : "bg-label-success"}">${order.status}</span></td>
           <td>${expiryCountdown}</td>
-          <td>${viewDetailsButton}</td>
+          <td>
+            ${viewDetailsButton}
+            ${order.status === "PENDING" ? confirmPaymentButton : ""}
+          </td>
         </tr>
       `;
 
@@ -91,20 +101,22 @@ $(document).on("click", ".view-details-btn", function () {
     const payment_gateway = $(this).data("payment_gateway");
     const status = $(this).data("status");
     const date_paid = $(this).data("date_paid");
-    const ref_id = $(this).data("ref_id");
     const date_created = $(this).data("date_created");
     const expiry_datetime = $(this).data("expiry_datetime");
+    const esim_plan = $(this).data("esim_plan");
 
     // Populate modal with order details
     $("#modal-order-id").text(gateway_transaction_id);
     $("#modal-order-status")
         .text(status)
-        .removeClass("bg-success bg-warning")
-        .addClass(status === "PENDING" ? "bg-warning" : "bg-success");
+        .removeClass("bg-label-success bg-label-warning bg-label-danger")
+        .addClass(status === "PENDING" ? "bg-label-warning" : status === "FAILED" ?  "bg-label-danger" : "bg-label-success");
     $("#modal-order-price").text(`${price} ${currency}`);
     $("#modal-payment-gateway").text(payment_gateway);
+    $("#modal-date-created").text(formatDateTime(date_created));
     $("#modal-expiry-date").text(formatDateTime(expiry_datetime));
-    $("#modal-payment-method").text(payment_method);
+    $("#modal-date-paid").text(status === "COMPLETED" ? `${formatDateTime(date_paid)}` : "N/A");
+    $("#modal-esim-plan").text(esim_plan);
     $("#modal-payment-url").attr("href", payment_url);
 });
 
@@ -113,7 +125,7 @@ function getCountdown(expiryDate) {
     const now = new Date().getTime();
     const expiry = new Date(expiryDate).getTime();
     const diff = expiry - now;
-    return diff > 0 ? Math.floor(diff / 1000) : 0;
+    return diff > 0 ? diff : 0;
 }
 
 // Function to start countdown
@@ -122,9 +134,15 @@ function startCountdown(orderId, expiryDate) {
     const interval = setInterval(() => {
         const remaining = getCountdown(expiryDate);
         if (remaining > 0) {
-            $countdownElement.text(`${remaining}s`);
+            const minutes = Math.floor(remaining / 60000);
+            const seconds = Math.floor((remaining % 60000) / 1000);
+            if (minutes > 0) {
+                $countdownElement.text(`${minutes}m ${seconds}s`);
+            } else {
+                $countdownElement.text(`${seconds}s`);
+            }
         } else {
-            $countdownElement.text("Expired").addClass("text-danger");
+            $countdownElement.text("Exp.").addClass("text-danger");
             clearInterval(interval); // Stop the timer
         }
     }, 1000);

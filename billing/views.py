@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from magic_esim.permissions import IsAuthenticatedWithSessionOrJWT
 from rest_framework.response import Response
 from .models import Payment
+from esim.utils import fetch_esim_plan_details
 from .serializers import PaymentSerializer
 from billing.utils import CoinPayments
 from django.conf import settings
@@ -47,10 +48,14 @@ class PaymentListCreateView(generics.ListCreateAPIView):
                 'ipn_url': settings.COINPAYMENTS_IPN_URL,
             })
             print(response)
+            
+            plan_details = fetch_esim_plan_details(payment.package_code)
+            esim_plan = plan_details['obj']['packageList'][0]['name']
 
             if response.get('error') == 'ok':
                 # Save transaction details if creation is successful
                 payment.status = 'PENDING'
+                payment.esim_plan = esim_plan
                 payment.payment_address = response['address']
                 payment.payment_url = response['checkout_url']
                 payment.gateway_transaction_id = response['txn_id']
@@ -110,8 +115,10 @@ class PaymentStatusCheckView(APIView):
                 
                 if (response['status_text'] == 'Waiting for buyer funds...'):
                     payment_status = 'PENDING'
+                elif (response['status_text'] == 'Cancelled / Timed Out'):
+                    payment_status = 'FAILED'
                 else:
-                    payment_status = response['COMPLETED']
+                    payment_status = 'COMPLETED'
                     payment.date_paid = now()
 
                 payment.status = payment_status

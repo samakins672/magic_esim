@@ -57,7 +57,7 @@ function formatDateTime(dateString) {
     hours = hours % 12;
     hours = hours ? hours : 12; // Hour '0' should be '12'
     
-    return `${day}${daySuffix} ${month}, ${hours}:${minutes} ${ampm}`;
+    return `${day} ${month}. ${hours}:${minutes} ${ampm}`;
 }
 
 // Function to determine the suffix for the day (e.g., 'st', 'nd', 'rd', 'th')

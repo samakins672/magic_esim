@@ -22,6 +22,7 @@ class Payment(models.Model):
     currency = models.CharField(max_length=50, default='USD')
     seller = models.CharField(max_length=25, default=None, blank=True, null=True)
     package_code = models.CharField(max_length=25, default=None, blank=True, null=True)
+    esim_plan = models.CharField(max_length=255, default=None, blank=True, null=True)
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='CARD')
     payment_gateway = models.CharField(max_length=50, default='Stripe')
     payment_address = models.CharField(max_length=200, default=None, blank=True, null=True)

@@ -579,30 +579,6 @@ $(document).ready(function () {
 	});
 });
 
-function formatDateTime(dateTimeStr) {
-	// Parse the datetime string into a Date object
-	const date = new Date(dateTimeStr);
-
-	// Array of month names for formatting
-	const monthNames = [
-		"Jan", "Feb", "Mar", "Apr", "May", "Jun",
-		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-	];
-
-	// Extract components
-	const day = date.getDate();
-	const month = monthNames[date.getMonth()];
-	const hours = date.getHours();
-	const minutes = date.getMinutes();
-
-	// Format hours to 12-hour format
-	const period = hours >= 12 ? "PM" : "AM";
-	const formattedHours = hours % 12 || 12; // Convert 0 to 12 for 12-hour clock
-
-	// Return formatted string
-	return `${month} ${day}, ${formattedHours}:${minutes.toString().padStart(2, "0")} ${period}`;
-}
-
 function truncateText(text, charLimit) {
 	// Handle null or undefined text
 	if (!text) {
