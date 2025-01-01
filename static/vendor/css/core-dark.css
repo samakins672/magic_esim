@@ -33,7 +33,7 @@
     --bs-warning-rgb: 255, 171, 0;
     --bs-danger-rgb: 255, 62, 29;
     --bs-light-rgb: 73, 74, 93;
-    --bs-dark-rgb: 160, 180, 255;
+    --bs-dark-rgb: 213 213 226;
     --bs-gray-rgb: 230, 230, 241;
     --bs-primary-text-emphasis: #2a2b66;
     --bs-secondary-text-emphasis: #353a41;
@@ -8328,11 +8328,11 @@ h6,
 }
 
 .bg-gradient-info {
-    background-image: linear-gradient(45deg, #007AFF, #81e1f6) !important
+    background-image: linear-gradient(45deg, #004da0, #00d0ff) !important
 }
 
 .bg-gradient-warning {
-    background-image: linear-gradient(45deg, #ffab00, #ffd580) !important
+    background-image: linear-gradient(45deg, #553900, #dd9300) !important
 }
 
 .bg-gradient-danger {
@@ -18637,8 +18637,7 @@ html:not([dir=rtl]) .toast.bs-toast .toast-header .btn-close {
 }
 
 .text-dark {
-    --bs-text-opacity: 1;
-    color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity)) !important
+    color: rgba(var(--bs-dark-rgb)) !important
 }
 
 .text-gray {

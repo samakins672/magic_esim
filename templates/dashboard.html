@@ -30,11 +30,13 @@
         <div class="content-wrapper">
           <!-- Content -->
           <div class="container-xxl flex-grow-1 container-p-y">
+            <!-- Steps to get eSIM -->
             <section class="row gap-5 justify-content-center p-3 mb-5">
               <div class="col-12 col-md-4 bg-gradient-info shadow rounded-5 p-5">
                 <a href="javascript:;" data-location_code="GL-13"
                   class="d-flex flex-row justify-content-between py-2 align-items-center fw-bold text-white show-global-esims">
-                  <img src="{% static 'img/illustrations/world_mobile_esim.png' %}" alt="world_mobile_esim" class="me-2 rounded" height="70px" />
+                  <img src="{% static 'img/illustrations/world_mobile_esim.png' %}" alt="world_mobile_esim"
+                    class="me-2 rounded" height="70px" />
                   <span class="fs-4">Steps to get your Magic eSIM</span>
                   <i class="bx bx-md bx-chevron-right"></i>
                 </a>
@@ -43,17 +45,19 @@
               <div class="col-12 col-md-4 bg-gradient-primary shadow rounded-5 p-5">
                 <a href="javascript:;" data-location_code="GL-13"
                   class="d-flex flex-row justify-content-between py-2 align-items-center fw-bold text-white show-global-esims">
-                  <img src="{% static 'img/illustrations/interactive_esim.png' %}" alt="interactive_esim" class="me-2 rounded" height="70px" />
+                  <img src="{% static 'img/illustrations/interactive_esim.png' %}" alt="interactive_esim"
+                    class="me-2 rounded" height="70px" />
                   <span class="fs-4">Invite friends now & earn USD $3</span>
                   <i class="bx bx-md bx-chevron-right"></i>
                 </a>
               </div>
             </section>
-            
+            <!-- / Steps to get eSIM -->
+
             <!-- eSIMs -->
             <section class="mt-5 pt-5" id="landingESIM">
               <span class="badge bg-label-primary mb-2">Get eSIMs</span>
-  
+
               <div class="nav-align-top mb-6">
                 <ul class="nav nav-pills mb-4 gap-3" role="tablist">
                   <li class="nav-item mb-1 mb-sm-0" role="presentation">
@@ -72,13 +76,14 @@
                       aria-selected="false" tabindex="-1"><i class="tf-icons bx bx-globe me-2"></i> Global</button>
                   </li>
                 </ul>
-  
+
                 <div class="tab-content">
                   <div class="tab-pane fade show active" id="navs-pills-justified-local" role="tabpanel">
                     <!-- Country List -->
                     <div class="row g-5 text-center pt-3 pb-3" id="countries-list">
                       {% for country in countries %}
-                      <div class="col-12 col-md-4 col-lg-3 country-item {% if not country.is_popular %}d-none{% endif %}"
+                      <div
+                        class="col-12 col-md-4 col-lg-3 country-item {% if not country.is_popular %}d-none{% endif %}"
                         data-popular="{{ country.is_popular }}">
                         <a href="javascript:;" data-location_code="{{ country.alpha_2 }}"
                           class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark show-country-esims">
@@ -92,23 +97,26 @@
                       </div>
                       {% endfor %}
                       <div class="text-center">
-                        <button id="toggle-countries-btn" class="btn btn-md rounded-pill btn-primary">Show 200+ Countries</button>
+                        <button id="toggle-countries-btn" class="btn btn-md rounded-pill btn-primary">Show 200+
+                          Countries</button>
                       </div>
                     </div>
-  
+
                     <!-- eSIM Plan Cards -->
                     <div class="row g-5 text-center pt-3 pb-3 d-none" id="esim-plan-cards">
                       <!-- Dynamically rendered eSIM plan cards will go here -->
                     </div>
                   </div>
-  
+
                   <div class="tab-pane fade" id="navs-pills-justified-regions" role="tabpanel">
-                    <div class="row g-5 text-center pt-3 pb-3" id="regions-list"> <!-- Added `g-3` for uniform spacing -->
+                    <div class="row g-5 text-center pt-3 pb-3" id="regions-list">
+                      <!-- Added `g-3` for uniform spacing -->
                       <div class="col-12 col-md-6 col-lg-4">
                         <a href="javascript:;" data-location_code="AF"
                           class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark show-region-esims">
                           <span>
-                            <img src="{% static 'img/regions/af.png' %}" alt="Africa" class="me-2 rounded" width="50px" />
+                            <img src="{% static 'img/regions/af.png' %}" alt="Africa" class="me-2 rounded"
+                              width="50px" />
                             Africa
                           </span>
                           <i class="bx bx-md bx-chevron-right"></i>
@@ -128,7 +136,8 @@
                         <a href="javascript:;" data-location_code="EU"
                           class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark show-region-esims">
                           <span>
-                            <img src="{% static 'img/regions/eu.png' %}" alt="Europe" class="me-2 rounded" width="50px" />
+                            <img src="{% static 'img/regions/eu.png' %}" alt="Europe" class="me-2 rounded"
+                              width="50px" />
                             Europe
                           </span>
                           <i class="bx bx-md bx-chevron-right"></i>
@@ -168,15 +177,16 @@
                         </a>
                       </div>
                     </div>
-  
+
                     <!-- eSIM Region Plan Cards -->
                     <div class="row g-5 text-center pt-3 pb-3 d-none" id="esim-region-cards">
                       <!-- Dynamically rendered eSIM plan cards will go here -->
                     </div>
                   </div>
-  
+
                   <div class="tab-pane fade" id="navs-pills-justified-global" role="tabpanel">
-                    <div class="row g-5 text-center pt-3 pb-3" id="global-list"> <!-- Added `g-3` for uniform spacing -->
+                    <div class="row g-5 text-center pt-3 pb-3" id="global-list">
+                      <!-- Added `g-3` for uniform spacing -->
                       <div class="col-12 col-md-6 col-lg-4">
                         <a href="javascript:;" data-location_code="GL-12"
                           class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark show-global-esims">
@@ -208,7 +218,7 @@
                         </a>
                       </div>
                     </div>
-  
+
                     <!-- eSIM Global Plan Cards -->
                     <div class="row g-5 text-center pt-3 pb-3 d-none" id="esim-global-cards">
                       <!-- Dynamically rendered eSIM plan cards will go here -->
@@ -217,30 +227,37 @@
                 </div>
               </div>
             </section>
+            <!-- / eSIMs -->
 
             <hr class="py-5">
-            <hr>
-            
-            <form action="https://www.coinpayments.net/index.php" method="post">
-              <input type="hidden" name="cmd" value="_pay_simple">
-              <input type="hidden" name="reset" value="1">
-              <input type="hidden" name="merchant" value="ff46b1f29ffc43162c5a3ed6db061978">
-              <input type="hidden" name="item_name" value="dfddf dfds daf">
-              <input type="hidden" name="item_number" value="xfzxfgsfgsfvsfvzxfgsfr">
-              <input type="hidden" name="invoice" value="xfzxfgsfgsfvsfvzxfgsfr">
-              <input type="hidden" name="currency" value="USD">
-              <input type="hidden" name="amountf" value="5.00000000">
-              <input type="hidden" name="want_shipping" value="0">
-              <input type="hidden" name="success_url" value="esimmagic.com/checkout/confirm">
-              <input type="hidden" name="cancel_url" value="esimmagic.com/checkout/confirm">
-              <input type="image" src="https://www.coinpayments.net/images/pub/buynow-grey.png" alt="Buy Now with CoinPayments.net">
-            </form>
-            
-            
+            <!-- Steps to get eSIM -->
+            <section class="row gap-5 justify-content-center p-3 mb-5">
+              <div class="col-12 col-md-4 bg-gradient-warning shadow rounded-5 p-5">
+                <a href="javascript:;" data-location_code="GL-13"
+                  class="d-flex flex-row justify-content-between py-2 align-items-center fw-bold text-dark show-global-esims">
+                  <img src="{% static 'img/illustrations/world_mobile_esim.png' %}" alt="world_mobile_esim"
+                    class="me-2 rounded" height="70px" />
+                  <span class="fs-4">Steps to get your Virtual Numbers</span>
+                  <i class="bx bx-md bx-chevron-right"></i>
+                </a>
+              </div>
+
+              <div class="col-12 col-md-4 bg-gradient-primary shadow rounded-5 p-5">
+                <a href="javascript:;" data-location_code="GL-13"
+                  class="d-flex flex-row justify-content-between py-2 align-items-center fw-bold text-white show-global-esims">
+                  <img src="{% static 'img/illustrations/interactive_esim.png' %}" alt="interactive_esim"
+                    class="me-2 rounded" height="70px" />
+                  <span class="fs-4">Invite friends now & earn USD $3</span>
+                  <i class="bx bx-md bx-chevron-right"></i>
+                </a>
+              </div>
+            </section>
+            <!-- / Steps to get eSIM -->
+
             <!-- Virtual Numbers -->
             <section class="mt-5">
               <span class="badge bg-label-primary mb-2">Get Virtual Numbers</span>
-  
+
               <div class="nav-align-top mb-5">
                 <ul class="nav nav-pills mb-4 gap-3" role="tablist">
                   <li class="nav-item mb-1 mb-sm-0" role="presentation">
@@ -251,15 +268,17 @@
                   <li class="nav-item mb-1 mb-sm-0" role="presentation">
                     <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                       data-bs-target="#navs-pills-justified-services" aria-controls="navs-pills-justified-services"
-                      aria-selected="false" tabindex="-1"><i class="tf-icons bx bx-message-rounded me-2"></i>Numbers for Services</button>
+                      aria-selected="false" tabindex="-1"><i class="tf-icons bx bx-message-rounded me-2"></i>Numbers for
+                      Services</button>
                   </li>
                 </ul>
-      
+
                 <div class="tab-content">
                   <div class="tab-pane fade show active" id="navs-pills-justified-countries" role="tabpanel">
                     <div class="row g-5 text-center pt-3 pb-3">
                       {% for country in countries %}
-                      <div class="col-12 col-md-4 col-lg-3 country-item {% if not country.is_popular %}d-none{% endif %}"
+                      <div
+                        class="col-12 col-md-4 col-lg-3 country-item {% if not country.is_popular %}d-none{% endif %}"
                         data-popular="{{ country.is_popular }}">
                         <a href="javascript:;"
                           class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
@@ -274,7 +293,7 @@
                       {% endfor %}
                     </div>
                   </div>
-      
+
                   <div class="tab-pane fade" id="navs-pills-justified-services" role="tabpanel">
                     <div class="row justify-content-center">
                       <form class="col-12 col-md-6">
@@ -285,18 +304,16 @@
                           </div>
                           <div class="col-md-6">
                             <label class="form-label" for="email">Email</label>
-                            <input type="email" name="email" class="form-control"
-                              placeholder="name@domain.com" />
+                            <input type="email" name="email" class="form-control" placeholder="name@domain.com" />
                           </div>
                           <div class="col-12">
                             <label class="form-label" for="nationality">Nationality:</label>
-                            <input type="text" name="nationality" class="form-control"
-                              placeholder="Kenyan" />
+                            <input type="text" name="nationality" class="form-control" placeholder="Kenyan" />
                           </div>
                           <div class="col-12">
                             <label class="form-label" for="purpose">Purpose/Service:</label>
                             <textarea name="purpose" class="form-control" rows="3"
-                            placeholder="Write your purpose/service for the virtual number here"></textarea>
+                              placeholder="Write your purpose/service for the virtual number here"></textarea>
                           </div>
                           <div class="col-12">
                             <label class="form-label" for="service_country">Service Country</label>
@@ -313,8 +330,150 @@
                 </div>
               </div>
             </section>
+            <!-- / Virtual Numbers -->
           </div>
           <!-- / Content -->
+
+          <!-- Plan details Modal -->
+          <div class="modal modal-lg fade" id="planDetailsModal" tabindex="-1" role="dialog"
+            aria-labelledby="planDetailsModalLabel">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title text-dark fw-bold" id="planDetailsModalLabel">Plan Details</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form id="planDetailsForm">
+                    <input type="hidden" name="user" value="{{ user.id }}">
+                    <input type="hidden" name="price">
+                    <input type="hidden" name="currency">
+                    <input type="hidden" name="package_code">
+                    <input type="hidden" name="seller">
+                    <div class="row g-5">
+
+                      <div class="col-12" id="esim_plan_details">
+                        <div class="card shadow flex-md-row align-items-center border-primary border-1">
+                          <div class="col-12 col-md-6 text-center pt-md-0 pt-5">
+                            <img src="https://flagcdn.com/w320/gb.png" class="img-fluid rounded-4">
+                          </div>
+                          <div class="card-body col-12 col-md-6">
+                            <ul class="list-unstyled text-start mb-4">
+                              <li class="d-flex flex-row justify-content-between fw-bold py-4">
+                                <strong>Coverage:</strong> <span>United Kingdom</span>
+                              </li>
+                              <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top">
+                                <strong>Data:</strong> <span>500 MB</span>
+                              </li>
+                              <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top">
+                                <strong>Validity:</strong> <span>1 Day</span>
+                              </li>
+                              <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top">
+                                <strong>Price:</strong> <span class="fs-5 text-primary">$3.40 USD</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-12 g-5 d-flex flex-column flex-md-row" id="esim_plan_other_details">
+                        <div class="col-12 col-md-6 p-5">
+                          <h5 class="m-0 text-primary fw-bold">Supported Countries</h5>
+                          <div class="text-center overflow-auto" style="max-height: 350px">
+                            <ul class="list-unstyled text-start mb-0" id="vertical-scroll_bar">
+                              <li class="py-2 border-bottom d-flex align-items-center justify-content-between">
+                                <p class="mb-0">United Kingdom</p> <img src="https://flagcdn.com/w320/gb.png" class="rounded"
+                                  height="30px">
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-6 card bg-lighter">
+                          <div class="card-header pb-2 text-dark fw-bolder">
+                            <h5 class="m-0 text-primary fw-bold">Additional Information</h5>
+                          </div>
+                          <div class="card-body text-center">
+                            <ul class="list-unstyled text-start mb-0">
+                              <li class="py-2 d-flex align-items-center text-dark">
+                                <i class="bx bx-broadcast me-3"></i>
+                                <div>
+                                  <p class="mb-0">Network(s):</p>
+                                  <span class="fw-bold">United Kingdom</span>
+                                </div>
+                              </li>
+                              <li class="py-2 d-flex align-items-center text-dark">
+                                <i class="bx bx-message-alt-detail me-3"></i>
+                                <div>
+                                  <p class="mb-0">Plan Type:
+                                  </p>
+                                  <span class="fw-bold">United Kingdom</span>
+                                </div>
+                              </li>
+                              <li class="py-2 d-flex align-items-center text-dark">
+                                <i class="bx bx-list-check me-3"></i>
+                                <div>
+                                  <p class="mb-0">Validity Policy:</p>
+                                  <span class="fw-bold">The validity period starts when the eSIM connects to a mobile
+                                    network in its coverage area. If you install the eSIM outside of the coverage area,
+                                    you can connect to a network when you arrive.</span>
+                                </div>
+                              </li>
+                              <li class="py-2 d-flex align-items-center text-dark">
+                                <i class="bx bxs-layer-plus me-3"></i>
+                                <div>
+                                  <p class="mb-0">Top-Up Option</p>
+                                  <span class="fw-bold">Available</span>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-12 mt-0 py-8" id="payment_method_card">
+                        <h5>Choose Payment Gateway:</h5>
+                        <div class="row g-5">
+                          <div class="col-md col-lg-12 col-xl-6">
+                            <div class="form-check custom-option custom-option-basic checked">
+                              <label
+                                class="form-check-label custom-option-content form-check-input-payment d-flex gap-4 align-items-center"
+                                for="CoinPayments">
+                                <input name="payment_gateway" class="form-check-input" type="radio" value="CoinPayments"
+                                  id="CoinPayments" checked="">
+                                <span class="custom-option-body">
+                                  <img src="https://www.coinpayments.net/images/pub/buynow-grey.png"
+                                    alt="Buy Now with CoinPayments.net" height="40">
+                                </span>
+                              </label>
+                            </div>
+                          </div>
+                          <div class="col-md col-lg-12 col-xl-6">
+                            <div class="form-check custom-option custom-option-basic">
+                              <label
+                                class="form-check-label custom-option-content form-check-input-payment d-flex gap-4 align-items-center"
+                                for="Stripe" data-toggle="tooltip" data-placement="top">
+                                <input name="payment_gateway" class="form-check-input" type="radio" value="Stripe"
+                                  id="Stripe" disabled="">
+                                <span class="custom-option-body">
+                                  <img src="/static/img/icons/brands/stripe.png" alt="Buy Now with Stripe" height="40">
+                                </span>
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-12">
+                        <button id="submitBtn" type="submit" class="btn btn-success mt-3 w-100 btn-lg">Checkout</button>
+                      </div>
+
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
 
           {% include 'partials/footer.html' %}
 
@@ -335,6 +494,7 @@
 
   <!-- Page JS -->
   <script src="{% static 'js/dashboards-analytics.js' %}"></script>
+  <script src="{% static 'js/perfect-scrollbar.js' %}"></script>
 </body>
 
 </html>
