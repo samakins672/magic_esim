@@ -1,27 +1,3 @@
-// Example API response with `payment_url`
-const apiResponse = [
-    {
-        id: 40,
-        price: "10.00",
-        currency: "USD",
-        payment_gateway: "CoinPayments",
-        payment_method: "CARD",
-        status: "PENDING",
-        expiry_datetime: "2025-12-31T12:00:00.000Z",
-        payment_url: "https://example.com/payment/40",
-    },
-    {
-        id: 41,
-        price: "10.00",
-        currency: "USD",
-        payment_gateway: "CoinPayments",
-        payment_method: "CARD",
-        status: "COMPLETED",
-        expiry_datetime: "2024-12-31T12:30:00.000Z",
-        payment_url: "https://example.com/payment/41",
-    },
-];
-
 // Function to populate the table
 function populateOrdersTable(orders) {
     const $tableBody = $("#orders-table-body");
@@ -57,22 +33,21 @@ function populateOrdersTable(orders) {
 
         const confirmPaymentButton = `
         <button class="btn btn-success btn-sm confirm-payment-btn" 
-          data-id="${order.ref_id}" 
-          data-payment_url="${order.payment_url}">
+          data-ref_id="${order.ref_id}">
           Confirm Payment
         </button>`;
 
         const expiryCountdown =
             expiryTime && expiryTime > 0
                 ? `<span class="countdown-timer" data-id="${order.id}">${expiryTime}s</span>` :
-            order.status == "COMPLETED" ? `<span class="text-success">Done</span>` : `<span class="text-danger">Exp.</span>`;
+                order.status == "COMPLETED" ? `<span class="text-success">Done</span>` : `<span class="text-danger">Exp.</span>`;
 
         const row = `
         <tr>
           <td>${truncateText(order.gateway_transaction_id, 10)}</td>
           <td class="text-primary">${order.price} ${order.currency}</td>
           <td>${formatDateTime(order.date_created)}</td>
-          <td><span class="badge ${order.status === "PENDING" ? "bg-label-warning" : order.status === "FAILED" ?  "bg-label-danger" : "bg-label-success"}">${order.status}</span></td>
+          <td><span class="badge ${order.status === "PENDING" ? "bg-label-warning" : order.status === "FAILED" ? "bg-label-danger" : "bg-label-success"}">${order.status}</span></td>
           <td>${expiryCountdown}</td>
           <td>
             ${viewDetailsButton}
@@ -110,7 +85,7 @@ $(document).on("click", ".view-details-btn", function () {
     $("#modal-order-status")
         .text(status)
         .removeClass("bg-label-success bg-label-warning bg-label-danger")
-        .addClass(status === "PENDING" ? "bg-label-warning" : status === "FAILED" ?  "bg-label-danger" : "bg-label-success");
+        .addClass(status === "PENDING" ? "bg-label-warning" : status === "FAILED" ? "bg-label-danger" : "bg-label-success");
     $("#modal-order-price").text(`${price} ${currency}`);
     $("#modal-payment-gateway").text(payment_gateway);
     $("#modal-date-created").text(formatDateTime(date_created));
@@ -157,6 +132,39 @@ $(document).ready(function () {
             console.log(response);
             populateOrdersTable(response);
         }
+    });
+
+    $(document).on('click', '.confirm-payment-btn', function (e) {
+		const ref_id = $(this).data("ref_id");
+
+        var submitButton = $(this);
+        submitButton.html('<span class="spinner-border m-2 mx-auto" role="status" aria-hidden="true"></span>').attr('disabled', true);
+
+        $.ajax({
+            url: `/api/payments/status/${ref_id}/`,
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            success: function (response) {
+                console.log(response.message);
+                showToast(response.message, 'bg-success');
+                location.reload();
+            },
+            error: function (error) {
+                console.error(error);
+                if (error.responseJSON.message.error !== undefined) {
+                    showToast(error.responseJSON.message.error, 'bg-danger');
+                } else {
+                    showToast('Server error! Try again later.', 'bg-danger');
+                }
+            },
+            complete: function () {
+                // Revert button text and re-enable the button
+                submitButton.html('Confirm Payment').attr('disabled', false);
+            }
+        });
     });
 
 });

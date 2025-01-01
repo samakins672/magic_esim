@@ -578,16 +578,3 @@ $(document).ready(function () {
 		});
 	});
 });
-
-function truncateText(text, charLimit) {
-	// Handle null or undefined text
-	if (!text) {
-		return "";
-	}
-
-	// Ensure the text is truncated if it exceeds the character limit
-	if (text.length > charLimit) {
-		return text.slice(0, charLimit) + "...";
-	}
-	return text; // Return the text as-is if it's within the limit
-}
