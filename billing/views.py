@@ -52,6 +52,7 @@ class PaymentListCreateView(generics.ListCreateAPIView):
                 # Save transaction details if creation is successful
                 payment.status = 'PENDING'
                 payment.payment_address = response['address']
+                payment.payment_url = response['checkout_url']
                 payment.gateway_transaction_id = response['txn_id']
                 payment.expiry_datetime = now() + timedelta(seconds=response['timeout'])
                 payment.save()

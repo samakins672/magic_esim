@@ -30,6 +30,14 @@
       </a>
     </li>
 
+    <!-- My Orders -->
+    <li class="menu-item {% if request.path == '/orders/' %}active{% endif %}">
+      <a href="/orders" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-cart-alt"></i>
+        <div class="text-truncate">My Orders</div>
+      </a>
+    </li>
+
     <!-- Virtual Numbers -->
     <li class="menu-item {% if request.path == '/numbers/' %}active{% endif %}">
       <a href="#" class="menu-link">

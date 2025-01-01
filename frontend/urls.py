@@ -10,9 +10,8 @@ urlpatterns = [
     path('logout/', views.frontend_logout, name='frontend_logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('esims/', views.esim_list, name='esim_list'),
-    path('esims/purchase/', views.esim_purchase, name='esim_purchase'),
+    path('orders/', views.orders, name='esim_orders'),
     path('numbers/', views.number_list, name='number_list'),
-    path('numbers/purchase/', views.number_purchase, name='number_purchase'),
     path('profile/', views.profile, name='profile'),
     path('settings/', views.settings, name='settings'),
 ]

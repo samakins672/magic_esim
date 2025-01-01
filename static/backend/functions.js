@@ -370,7 +370,7 @@ $(document).ready(function () {
 					planCards.empty();
 					planCardsOther.empty();
 
-					
+
 					// Filter and sort plans
 					const sortedPlans = response.data.packageList
 						.sort((a, b) => a.price - b.price); // Sort by price (ascending)
@@ -391,48 +391,48 @@ $(document).ready(function () {
 						}
 						planName = locationCount > 1 ? `${locationCount} Countries` : `${locationCount} Country`;
 					}
-					
+
 					// Determine Plan Type
 					const planType = plan.smsStatus === 1 ? "Data and SMS" : "Data Only";
 
 					// Generate Supported Countries List
 					const supportedCountriesList = locationDetails
-					.map(
-						(location) => `
+						.map(
+							(location) => `
 						<li class="py-2 border-bottom d-flex align-items-center justify-content-between">
 						<p class="mb-0">${location.locationName}</p>
 						<img src="https://flagcdn.com/w320/${location.locationCode.toLowerCase()}.png" class="img-fluid rounded" style="height:35px; width:60px;">
 						</li>
 					`
-					)
-					.join("");
+						)
+						.join("");
 
 					// Process the `locationNetworkList` to merge networks globally and group by network type
 					const networkGroups = {};
 
 					// Iterate through all locations and their operators
 					locationDetails.forEach((location) => {
-					location.operatorList.forEach((operator) => {
-						const networkType = operator.networkType;
-						const operatorName = operator.operatorName.toLowerCase(); // Normalize case
+						location.operatorList.forEach((operator) => {
+							const networkType = operator.networkType;
+							const operatorName = operator.operatorName.toLowerCase(); // Normalize case
 
-						if (!networkGroups[networkType]) {
-						networkGroups[networkType] = new Set(); // Use a Set to avoid duplicates
-						}
-						networkGroups[networkType].add(operatorName);
-					});
+							if (!networkGroups[networkType]) {
+								networkGroups[networkType] = new Set(); // Use a Set to avoid duplicates
+							}
+							networkGroups[networkType].add(operatorName);
+						});
 					});
 
 					// Convert the networkGroups map to a formatted string
 					const networkDetails = Object.entries(networkGroups)
-					.map(
-						([networkType, operators]) =>
-						`${networkType}: ${Array.from(operators)
-							.map((name) => name.charAt(0).toUpperCase() + name.slice(1)) // Capitalize operator names
-							.join(", ")}`
-					)
-					.join("<hr class='my-2'>");
-					
+						.map(
+							([networkType, operators]) =>
+								`${networkType}: ${Array.from(operators)
+									.map((name) => name.charAt(0).toUpperCase() + name.slice(1)) // Capitalize operator names
+									.join(", ")}`
+						)
+						.join("<hr class='my-2'>");
+
 
 					const formattedPrice = ((plan.price / 10000) * 2).toFixed(2);
 
@@ -507,9 +507,8 @@ $(document).ready(function () {
                                 <i class="bx bxs-layer-plus me-3"></i>
                                 <div>
                                   <p class="mb-0">Top-Up Option</p>
-                                  <span class="fw-bold">${
-									plan.supportTopUpType === 2 ? "Available" : "Not Available"
-								  }</span>
+                                  <span class="fw-bold">${plan.supportTopUpType === 2 ? "Available" : "Not Available"
+						}</span>
                                 </div>
                               </li>
                             </ul>
@@ -535,10 +534,10 @@ $(document).ready(function () {
 
 	$(document).on('submit', '#planDetailsForm', function (e) {
 		e.preventDefault();
-	
+
 		var submitButton = $('#submitBtn');
 		submitButton.html('<span class="spinner-border mx-auto" role="status" aria-hidden="true"></span>').attr('disabled', true);
-	
+
 		var formData = JSON.stringify({
 			user: $('#planDetailsForm [name="user"]').val(),
 			price: $('#planDetailsForm [name="price"]').val(),
@@ -547,7 +546,7 @@ $(document).ready(function () {
 			seller: $('#planDetailsForm [name="seller"]').val(),
 			payment_gateway: $('#planDetailsForm [name="payment_gateway"]').val(),
 		});
-	
+
 		$.ajax({
 			url: '/api/payments/',
 			method: 'POST',
@@ -572,10 +571,47 @@ $(document).ready(function () {
 					showToast('Server error! Try again later.', 'bg-danger');
 				}
 			},
-			complete: function() {
+			complete: function () {
 				// Revert button text and re-enable the button
 				submitButton.html('Submit changes').attr('disabled', false);
 			}
 		});
 	});
 });
+
+function formatDateTime(dateTimeStr) {
+	// Parse the datetime string into a Date object
+	const date = new Date(dateTimeStr);
+
+	// Array of month names for formatting
+	const monthNames = [
+		"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+	];
+
+	// Extract components
+	const day = date.getDate();
+	const month = monthNames[date.getMonth()];
+	const hours = date.getHours();
+	const minutes = date.getMinutes();
+
+	// Format hours to 12-hour format
+	const period = hours >= 12 ? "PM" : "AM";
+	const formattedHours = hours % 12 || 12; // Convert 0 to 12 for 12-hour clock
+
+	// Return formatted string
+	return `${month} ${day}, ${formattedHours}:${minutes.toString().padStart(2, "0")} ${period}`;
+}
+
+function truncateText(text, charLimit) {
+	// Handle null or undefined text
+	if (!text) {
+		return "";
+	}
+
+	// Ensure the text is truncated if it exceeds the character limit
+	if (text.length > charLimit) {
+		return text.slice(0, charLimit) + "...";
+	}
+	return text; // Return the text as-is if it's within the limit
+}

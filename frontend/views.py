@@ -49,6 +49,12 @@ def dashboard(request):
     })
 
 @login_required
+def orders(request):
+    return render(request, 'orders.html', {
+        'user': request.user
+    })
+
+@login_required
 def esim_list(request):
     context = {
         'user': request.user

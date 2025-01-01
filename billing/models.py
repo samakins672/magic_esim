@@ -25,6 +25,7 @@ class Payment(models.Model):
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='CARD')
     payment_gateway = models.CharField(max_length=50, default='Stripe')
     payment_address = models.CharField(max_length=200, default=None, blank=True, null=True)
+    payment_url = models.CharField(max_length=255, default=None, blank=True, null=True)
     gateway_transaction_id = models.CharField(max_length=200, default=None, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     date_created = models.DateTimeField(default=now)
