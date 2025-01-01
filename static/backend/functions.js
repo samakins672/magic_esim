@@ -515,7 +515,7 @@ $(document).ready(function () {
                           </div>
                         </div>
 					`;
-					$('#planDetailsModalLabel').html(plan.description);
+					$('#planDetailsModalLabel').html(plan.name);
 					planCards.html(details);
 					planCardsOther.html(otherDetails);
 				} else {
@@ -559,7 +559,7 @@ $(document).ready(function () {
 				console.log(response.message);
 				showToast(response.message, 'bg-success');
 				if (response.data.payment_gateway === 'CoinPayments') {
-					window.open(response.transaction.checkout_url, '_blank');
+					window.open(response.data.payment_url, '_blank');
 				}
 				window.location.href = '/orders';
 			},
