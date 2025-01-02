@@ -28,12 +28,12 @@ const esimsData = [
         <tr>
           <td>${esim.plan}</td>
           <td><span class="badge ${
-            esim.status === "In Use" ? "bg-success" : "bg-warning"
+            esim.status === "In Use" ? "bg-label-success" : "bg-label-warning"
           }">${esim.status}</span></td>
           <td>≈ ${esim.dataLeft.gb}GB (${esim.dataLeft.percentage}%)</td>
           <td>${esim.timeLeft.days} days ${esim.timeLeft.hours} hours</td>
           <td>${formatDate(esim.activateBefore)}</td>
-          <td>${esim.iccid}...</td>
+          <td>${esim.iccid}</td>
         </tr>
       `;
   
