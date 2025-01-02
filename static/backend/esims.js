@@ -33,7 +33,7 @@ const esimsData = [
           <td>≈ ${esim.dataLeft.gb}GB (${esim.dataLeft.percentage}%)</td>
           <td>${esim.timeLeft.days} days ${esim.timeLeft.hours} hours</td>
           <td>${formatDate(esim.activateBefore)}</td>
-          <td>${truncateText(esim.iccid, 10)}...</td>
+          <td>${esim.iccid}...</td>
         </tr>
       `;
   
