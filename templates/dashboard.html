@@ -464,7 +464,11 @@
                       </div>
 
                       <div class="col-12">
+                        {% if user.is_authenticated %}
                         <button id="submitBtn" type="submit" class="btn btn-success mt-3 w-100 btn-lg">Checkout</button>
+                        {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-success mt-3 w-100 btn-lg">Login to Checkout</a>
+                        {% endif %}
                       </div>
 
                     </div>
