@@ -20,6 +20,7 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 ALLOWED_HOSTS = [
     "esimmagic.onrender.com",
     "esimmagic.com",
+    "www.esimmagic.com",
     "localhost",
     "127.0.0.1",
     "localhost:8080",
@@ -68,6 +69,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost",
     "http://localhost:8000",
     "https://magicesim.onrender.com",
+    "https://www.esimmagic.com",
     "https://esimmagic.com",
 ]
 
@@ -77,6 +79,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
     "http://localhost:8000",
     "https://magicesim.onrender.com",
+    "https://www.esimmagic.com",
     "https://esimmagic.com",
 ]
 
