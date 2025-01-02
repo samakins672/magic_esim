@@ -59,7 +59,7 @@ def esim_list(request):
     context = {
         'user': request.user
     }
-    return render(request, 'esim_list.html', context)
+    return render(request, 'esims.html', context)
 
 @login_required
 def esim_purchase(request):
