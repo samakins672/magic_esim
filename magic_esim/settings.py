@@ -18,7 +18,7 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = [
-    "esimmagic.onrender.com",
+    "magicesim.onrender.com",
     "esimmagic.com",
     "www.esimmagic.com",
     "localhost",
