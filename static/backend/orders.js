@@ -95,34 +95,6 @@ $(document).on("click", ".view-details-btn", function () {
     $("#modal-payment-url").attr("href", payment_url);
 });
 
-// Function to calculate time difference
-function getCountdown(expiryDate) {
-    const now = new Date().getTime();
-    const expiry = new Date(expiryDate).getTime();
-    const diff = expiry - now;
-    return diff > 0 ? diff : 0;
-}
-
-// Function to start countdown
-function startCountdown(orderId, expiryDate) {
-    const $countdownElement = $(`.countdown-timer[data-id="${orderId}"]`);
-    const interval = setInterval(() => {
-        const remaining = getCountdown(expiryDate);
-        if (remaining > 0) {
-            const minutes = Math.floor(remaining / 60000);
-            const seconds = Math.floor((remaining % 60000) / 1000);
-            if (minutes > 0) {
-                $countdownElement.text(`${minutes}m ${seconds}s`);
-            } else {
-                $countdownElement.text(`${seconds}s`);
-            }
-        } else {
-            $countdownElement.text("Exp.").addClass("text-danger");
-            clearInterval(interval); // Stop the timer
-        }
-    }, 1000);
-}
-
 // Populate the table on page load
 $(document).ready(function () {
     $.ajax({

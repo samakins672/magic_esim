@@ -18,8 +18,8 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = [
-    "magicesim.onrender.com",
-    "magicesim.com",
+    "esimmagic.onrender.com",
+    "esimmagic.com",
     "localhost",
     "127.0.0.1",
     "localhost:8080",
@@ -68,7 +68,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost",
     "http://localhost:8000",
     "https://magicesim.onrender.com",
-    "https://magicesim.com",
+    "https://esimmagic.com",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -77,7 +77,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
     "http://localhost:8000",
     "https://magicesim.onrender.com",
-    "https://magicesim.com",
+    "https://esimmagic.com",
 ]
 
 # Root URL Configuration
