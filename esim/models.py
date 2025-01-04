@@ -13,6 +13,7 @@ class eSIMPlan(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     volume = models.IntegerField()  # In Bytes
+    volume_left = models.IntegerField(default=None, blank=True, null=True)  # In Bytes
     duration = models.IntegerField()  # In days
     duration_unit = models.CharField(max_length=25)
     support_top_up_type = models.IntegerField()  # In days
@@ -21,6 +22,7 @@ class eSIMPlan(models.Model):
     smdp_status = models.CharField(max_length=25, default='RELEASED')
     seller = models.CharField(max_length=25, default='esimaccess')
     order_no = models.CharField(max_length=25, default=None, blank=True, null=True)
+    location_code = models.CharField(max_length=25, default=None, blank=True, null=True)
     activated_on = models.DateTimeField(auto_now_add=True)
     expires_on = models.DateTimeField()
 

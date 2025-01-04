@@ -137,7 +137,40 @@ class eSIMPlanListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         # Return only the eSIM plans associated with the authenticated user
-        return eSIMPlan.objects.filter(user=self.request.user)
+        user = self.request.user
+        plans = eSIMPlan.objects.filter(user=user)
+        
+        # Update volume_left field for each plan
+        for plan in plans:
+            try:
+                esim_host = config('ESIMACCESS_HOST')
+                api_token = config('ESIMACCESS_ACCESS_CODE')
+                params = {
+                    "orderNo": plan.order_no,
+                    "iccid": "",
+                    "pager":{
+                        "pageNum":1,
+                        "pageSize":20
+                    }
+                }
+
+                response = requests.post(
+                    f"{esim_host}/api/v1/open/esim/query",
+                    json=params,
+                    headers={"RT-AccessCode": api_token},
+                )
+                if response.status_code == 200 and response.json().get('success', False):
+                    profile_data = response.json().get('obj', {})
+                    profile_data = profile_data.get('esimList', {})[0]
+                # Log the profile data
+                print(f"Profile data: {profile_data}")
+                plan.volume_left = profile_data.get('orderUsage', plan.volume_left)
+                plan.save()
+            except requests.RequestException as e:
+                # Log the error
+                print(f"Error fetching eSIM profile: {e}")
+        
+        return plans
 
 
 class eSIMPlanDetailView(generics.RetrieveUpdateDestroyAPIView):

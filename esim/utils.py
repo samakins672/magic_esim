@@ -4,6 +4,9 @@ from datetime import timedelta
 from django.utils.timezone import now
 
 
+esim_host = config('ESIMACCESS_HOST')
+api_token = config('ESIMACCESS_ACCESS_CODE')
+
 def calculate_expiry_date(duration):
     """
     Calculate the expiry date based on the current time and duration in days.
@@ -15,9 +18,6 @@ def fetch_esim_plan_details(package_code):
     """
     Fetch plan details from the eSIM API using the package code.
     """
-    esim_host = config('ESIMACCESS_HOST')
-    api_token = config('ESIMACCESS_ACCESS_CODE')
-    
     url = esim_host + "/api/v1/open/package/list"
     headers = {"RT-AccessCode": api_token}
     params = {"packageCode": package_code}
@@ -36,9 +36,6 @@ def order_esim_profile(package_code, ref_id, amount):
     """
     Order new plan from the eSIM API.
     """
-    esim_host = config('ESIMACCESS_HOST')
-    api_token = config('ESIMACCESS_ACCESS_CODE')
-    
     url = esim_host + "/api/v1/open/esim/order"
     headers = {"RT-AccessCode": api_token}
     params = {

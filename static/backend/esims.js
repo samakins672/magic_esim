@@ -20,23 +20,37 @@ const esimsData = [
 
 // Function to populate the eSIMs table
 function populateEsimsTable(esims) {
-    const $tableBody = $("#esims-table-body");
-    $tableBody.empty(); // Clear any existing rows
+    const $esimListCard = $("#esim_lists");
+    $esimListCard.empty(); // Clear any existing rows
 
     esims.forEach((esim) => {
         const row = `
-        <tr>
-          <td>${esim.plan}</td>
-          <td><span class="badge ${esim.status === "In Use" ? "bg-label-success" : "bg-label-warning"
-            }">${esim.status}</span></td>
-          <td>≈ ${esim.dataLeft.gb}GB (${esim.dataLeft.percentage}%)</td>
-          <td>${esim.timeLeft.days} days ${esim.timeLeft.hours} hours</td>
-          <td>${formatDate(esim.activateBefore)}</td>
-          <td>${esim.iccid}</td>
-        </tr>
+        <div class="col-lg-4 col-md-6 col-12">
+            <div class="card mb-4 shadow rounded-5 border border-primary border-1 plan-card"
+                style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#planDetailsOffcanvas"
+                aria-controls="planDetailsOffcanvas">
+                <div class="card-body p-4">
+                <div class="d-flex flex-column justify-content-between p-4 rounded-4 mb-4 text-dark fw-bold"
+                    style="overflow: hidden; height: 200px; background: linear-gradient(to right, #BB1600 30%, #ffaba0 30%);">
+                    <span class="d-flex align-items-center">
+                    <img class="me-2 rounded" src="https://flagcdn.com/w320/gb.png" height="30px" width="45px">
+                    <span>
+                        United Kingdom <br>
+                        <small class="fw-light">Order No: ${esim.order_no}</small>
+                    </span>
+                    </span>
+                    <span>
+                    <span class="fs-4 fw-bolder mb-1 me-2">750 MB</span>
+                    <span>Left for 2 days</span>
+                    </span>
+                </div>
+                <a href="#" class="btn btn-primary w-100 rounded-5">Buy more data</a>
+                </div>
+            </div>
+        </div>
       `;
 
-        $tableBody.append(row);
+        $esimListCard.append(row);
     });
 }
 
@@ -57,45 +71,12 @@ function formatDate(dateStr) {
 // Populate the table on page load
 $(document).ready(function () {
     $.ajax({
-        url: '/api/payments/',
+        url: '/api/esim/user/plans/',
         type: 'GET',
         success: function (response) {
             console.log(response);
             populateEsimsTable(response);
         }
-    });
-
-    $(document).on('click', '.confirm-payment-btn', function (e) {
-        const ref_id = $(this).data("ref_id");
-
-        var submitButton = $(this);
-        submitButton.html('<span class="spinner-border m-2 mx-auto" role="status" aria-hidden="true"></span>').attr('disabled', true);
-
-        $.ajax({
-            url: `/api/payments/status/${ref_id}/`,
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            success: function (response) {
-                console.log(response.message);
-                showToast(response.message, 'bg-success');
-                location.reload();
-            },
-            error: function (error) {
-                console.error(error);
-                if (error.responseJSON.message.error !== undefined) {
-                    showToast(error.responseJSON.message.error, 'bg-danger');
-                } else {
-                    showToast('Server error! Try again later.', 'bg-danger');
-                }
-            },
-            complete: function () {
-                // Revert button text and re-enable the button
-                submitButton.html('Confirm Payment').attr('disabled', false);
-            }
-        });
     });
 
 });

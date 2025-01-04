@@ -21759,6 +21759,22 @@ html:not([dir=rtl]) .toast.bs-toast .toast-header .btn-close {
         padding-bottom: 3rem !important
     }
 
+    .w-md-25 {
+        width: 25% !important;
+      }
+    
+    .w-md-50 {
+        width: 50% !important;
+    }
+
+    .w-md-75 {
+        width: 75% !important;
+    }
+
+    .w-md-100 {
+        width: 100% !important;
+    }
+    
     .gap-md-0 {
         gap: 0 !important
     }
@@ -23175,6 +23191,22 @@ html:not([dir=rtl]) .toast.bs-toast .toast-header .btn-close {
         padding-bottom: 3rem !important
     }
 
+    .w-lg-25 {
+        width: 25% !important;
+    }
+    
+    .w-lg-50 {
+        width: 50% !important;
+    }
+    
+    .w-lg-75 {
+        width: 75% !important;
+    }
+    
+    .w-lg-100 {
+        width: 100% !important;
+    }
+    
     .gap-lg-0 {
         gap: 0 !important
     }
