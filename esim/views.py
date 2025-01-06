@@ -100,10 +100,25 @@ class eSIMProfileView(APIView):
                 )
                 if response.status_code == 200 and response.json().get('success', False):
                     # Return the data from the external API
+                    data = response.json().get('obj', {}).get('esimList', [])
+
+                    # Enrich data with time_created from the database
+                    enriched_data = []
+                    for item in data:
+                        order_no = item.get('orderNo')  # Extract order number
+                        if order_no:
+                            try:
+                                esim_plan = eSIMPlan.objects.get(order_no=order_no)
+                                item['price'] = esim_plan.price
+                            except eSIMPlan.DoesNotExist:
+                                item['price'] = None
+                        enriched_data.append(item)
+
+                    print(enriched_data)
                     return Response({
                         "status": True,
                         "message": "eSIM profile fetched successfully.",
-                        "data": response.json().get('obj', {})  # Extract 'obj' object from the API response
+                        "data": data
                     }, status=status.HTTP_200_OK)
                 else:
                     # Handle non-200 responses or status is not True from the external API
@@ -140,7 +155,7 @@ class eSIMPlanListCreateView(generics.ListCreateAPIView):
         user = self.request.user
         plans = eSIMPlan.objects.filter(user=user)
         
-        # Update volume_left field for each plan
+        # Update volume_used field for each plan
         for plan in plans:
             try:
                 esim_host = config('ESIMACCESS_HOST')
@@ -164,7 +179,8 @@ class eSIMPlanListCreateView(generics.ListCreateAPIView):
                     profile_data = profile_data.get('esimList', {})[0]
                 # Log the profile data
                 print(f"Profile data: {profile_data}")
-                plan.volume_left = profile_data.get('orderUsage', plan.volume_left)
+                plan.activated_on = profile_data.get('activateTime', plan.activated_on)
+                plan.volume_used = profile_data.get('orderUsage', plan.volume_used)
                 plan.save()
             except requests.RequestException as e:
                 # Log the error

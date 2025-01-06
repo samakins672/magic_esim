@@ -35,7 +35,7 @@ class eSIMPlanSerializer(serializers.ModelSerializer):
         model = eSIMPlan
         fields = '__all__'
         read_only_fields = [
-            'name', 'slug', 'order_no', 'currency_code', 'speed', 'description', 'price', 'volume', 'volume_left',
+            'name', 'slug', 'order_no', 'currency_code', 'speed', 'description', 'price', 'volume',            
             'esim_status', 'duration', 'duration_unit', 'support_top_up_type', 'payment',
             'activated_on', 'expires_on', 'smdp_status'
         ]
@@ -92,10 +92,3 @@ class eSIMPlanSerializer(serializers.ModelSerializer):
         )
         return esim_plan
 
-
-    def update(self, instance, validated_data):
-        # Allow updating only the status
-        if 'status' in validated_data:
-            instance.status = validated_data['status']
-        instance.save()
-        return instance
