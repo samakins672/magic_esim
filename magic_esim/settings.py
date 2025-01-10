@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "esim",
     "billing",
     "frontend",
+    "virtual_number",
 ]
 
 # Middleware

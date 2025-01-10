@@ -14,6 +14,7 @@ urlpatterns = [
     path("api/auth/", include("users.urls")),
     path("api/esim/", include("esim.urls")),
     path("api/", include("billing.urls")),
+    path("api/number/", include("virtual_number.urls")),
 
     # OpenAPI Schema and Swagger UI
     path("api/schema/", SpectacularAPIView.as_view(), name="openapi-schema"),
