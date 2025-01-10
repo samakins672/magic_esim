@@ -18,7 +18,7 @@ class User(AbstractUser):
     is_verified = models.BooleanField(default=False)
     otp = models.CharField(max_length=6, null=True, blank=True)
     otp_expiry = models.DateTimeField(null=True, blank=True)
-    referral_code = models.CharField(max_length=15, unique=True, null=True, blank=True)
+    referral_code = models.CharField(max_length=15, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     profile_image = CloudinaryField(
         "attachment",
