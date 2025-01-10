@@ -9,21 +9,21 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from .models import NumberRequests
 from .serializers import NumberRequestSerializer
+from users.utils import api_response
 
 class NumberRequestView(APIView):
     """
-    View to fetch eSIM plans from the external API and filter based on supported fields.
+    View to create and save number requests in the database.
     """
     permission_classes = [AllowAny]
 
     @extend_schema(
-        parameters=[
-            OpenApiParameter("full_name", OpenApiTypes.STR, description="full_name)", required=True),
-            OpenApiParameter("email", OpenApiTypes.STR, description="email", required=True),
-            OpenApiParameter("nationality", OpenApiTypes.STR, description="nationality", required=True),
-            OpenApiParameter("purpose", OpenApiTypes.STR, description="purpose", required=True),
-            OpenApiParameter("service_country", OpenApiTypes.STR, description="service_country", required=True),
-        ],
+        request=NumberRequestSerializer,  # Use the serializer for the request body
+        responses={
+            201: OpenApiTypes.OBJECT,
+            400: OpenApiTypes.OBJECT,
+        },
+        description="Endpoint to create a new number request.",
     )
     def post(self, request):
         serializer = NumberRequestSerializer(data=request.data)
@@ -61,4 +61,9 @@ class NumberRequestView(APIView):
                 return Response({"status": False, "message": "Request saved but email failed.", "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             return Response({"status": True, "message": "Request saved and email sent."}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return api_response(
+            False,
+            "Virtual number request failed.",
+            serializer.errors,
+            status.HTTP_400_BAD_REQUEST
+        )

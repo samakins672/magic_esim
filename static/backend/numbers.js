@@ -22,7 +22,11 @@ $(document).on('submit', '#virtualNumberRequestForm', function (e) {
         },
         success: function (response) {
             console.log(response.message);
-            showToast(response.message, 'bg-success');
+            if (response.status) {
+                showToast(response.message, 'bg-success');
+            } else {
+                showToast(response.message, 'bg-danger');
+            }
         },
         error: function (error) {
             console.error(error);
