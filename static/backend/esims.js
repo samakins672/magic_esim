@@ -26,7 +26,7 @@ function populateEsimsTable(esims) {
             durationDisplay = esim.duration > 1 ? `${esim.duration} Days` : `${esim.duration} Day`;
         } else {
             const { isExpired, durationLeft } = calculateRemainingDuration(esim.activated_on, esim.duration);
-            durationDisplay = isExpired ? "Plan Expired" : `Left for ${durationLeft}`;
+            durationDisplay = isExpired ? "Plan Expired" : `${durationLeft}`;
         }
 
         // Output the results
