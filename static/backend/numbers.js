@@ -13,7 +13,7 @@ $(document).on('submit', '#virtualNumberRequestForm', function (e) {
     });
 
     $.ajax({
-        url: '/api/numbers/request/',
+        url: '/api/number/request/',
         method: 'POST',
         data: formData,
         headers: {
@@ -24,6 +24,7 @@ $(document).on('submit', '#virtualNumberRequestForm', function (e) {
             console.log(response.message);
             if (response.status) {
                 showToast(response.message, 'bg-success');
+                $('#virtualNumberRequestForm')[0].reset();
             } else {
                 showToast(response.message, 'bg-danger');
             }
