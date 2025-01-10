@@ -259,7 +259,7 @@
               <span class="badge bg-label-primary mb-2">Get Virtual Numbers</span>
 
               <div class="nav-align-top mb-5">
-                <ul class="nav nav-pills mb-4 gap-3" role="tablist">
+                <!-- <ul class="nav nav-pills mb-4 gap-3" role="tablist">
                   <li class="nav-item mb-1 mb-sm-0" role="presentation">
                     <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
                       data-bs-target="#navs-pills-justified-countries" aria-controls="navs-pills-justified-countries"
@@ -271,10 +271,10 @@
                       aria-selected="false" tabindex="-1"><i class="tf-icons bx bx-message-rounded me-2"></i>Numbers for
                       Services</button>
                   </li>
-                </ul>
+                </ul> -->
 
                 <div class="tab-content">
-                  <div class="tab-pane fade show active" id="navs-pills-justified-countries" role="tabpanel">
+                  <!-- <div class="tab-pane fade" id="navs-pills-justified-countries" role="tabpanel">
                     <div class="row g-5 text-center pt-3 pb-3">
                       {% for country in countries %}
                       <div
@@ -292,11 +292,11 @@
                       </div>
                       {% endfor %}
                     </div>
-                  </div>
+                  </div> -->
 
-                  <div class="tab-pane fade" id="navs-pills-justified-services" role="tabpanel">
+                  <div class="tab-pane fade show active" id="navs-pills-justified-services" role="tabpanel">
                     <div class="row justify-content-center">
-                      <form class="col-12 col-md-6">
+                      <form id="virtualNumberRequestForm" class="col-12 col-md-6">
                         <div class="row g-4">
                           <div class="col-md-6">
                             <label class="form-label" for="fullname">Full Name</label>
@@ -499,6 +499,7 @@
   <!-- Page JS -->
   <script src="{% static 'js/dashboards-analytics.js' %}"></script>
   <script src="{% static 'js/perfect-scrollbar.js' %}"></script>
+  <script src="{% static 'backend/numbers.js' %}"></script>
 </body>
 
 </html>
