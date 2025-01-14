@@ -90,7 +90,17 @@ class OTPVerifyView(generics.GenericAPIView):
             return api_response(
                 True,
                 "Verification successful. User logged in.",
-                {"refresh": str(refresh), "access": str(refresh.access_token)},
+                {
+                    "refresh": str(refresh), 
+                    "access": str(refresh.access_token),
+                    "user": {
+                        "id": user.id,
+                        "first_name": user.first_name,
+                        "last_name": user.last_name,
+                        "phone_number": user.phone_number,
+                        "email": user.email
+                    }
+                },
                 status.HTTP_200_OK,
             )
         return api_response(
@@ -128,6 +138,7 @@ class LoginView(generics.GenericAPIView):
                             "id": user.id,
                             "first_name": user.first_name,
                             "last_name": user.last_name,
+                            "phone_number": user.phone_number,
                             "email": user.email,
                             "is_verified": user.is_verified,
                         },
