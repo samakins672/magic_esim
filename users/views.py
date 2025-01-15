@@ -18,6 +18,7 @@ from .serializers import (
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .utils import api_response
+from datetime import datetime
 from django.utils.timezone import now
 
 
@@ -86,13 +87,29 @@ class OTPVerifyView(generics.GenericAPIView):
             user.is_verified = True
             user.otp = None  # Clear OTP
             user.save()
+        
+            # Log the user in and create a session
+            login(request, user)
+
+            # Generate JWT tokens
             refresh = RefreshToken.for_user(user)
+            access_token = refresh.access_token
+
+            # Include access token expiry time
+            access_token_expiry = access_token.payload.get("exp")
+            
+            # Convert Unix timestamp to a datetime object
+            expiry_datetime = datetime.fromtimestamp(access_token_expiry)
+            
+            # Print readable expiry time
+            print(f"Access Token Expiry Time: {expiry_datetime}")
+
             return api_response(
                 True,
                 "Verification successful. User logged in.",
                 {
                     "refresh": str(refresh), 
-                    "access": str(refresh.access_token),
+                    "access": str(access_token),
                     "user": {
                         "id": user.id,
                         "first_name": user.first_name,
@@ -127,13 +144,24 @@ class LoginView(generics.GenericAPIView):
 
                 # Generate JWT tokens
                 refresh = RefreshToken.for_user(user)
+                access_token = refresh.access_token
+
+                # Include access token expiry time
+                access_token_expiry = access_token.payload.get("exp")
+                
+                # Convert Unix timestamp to a datetime object
+                expiry_datetime = datetime.fromtimestamp(access_token_expiry)
+                
+                # Print readable expiry time
+                print(f"Access Token Expiry Time: {expiry_datetime}")
 
                 return api_response(
                     True,
                     "Login successful.",
                     {
                         "refresh": str(refresh),
-                        "access": str(refresh.access_token),
+                        "access": str(access_token),
+                        "access_token_expiry": access_token_expiry,
                         "user": {
                             "id": user.id,
                             "first_name": user.first_name,
