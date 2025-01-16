@@ -184,21 +184,9 @@ class LoginView(generics.GenericAPIView):
 
 class LogoutView(APIView):
     @extend_schema(
-        request={
-            "type": "object",
-            "properties": {
-                "refresh": {
-                    "type": "string",
-                    "description": "The refresh token to be blacklisted",
-                    "example": "your_refresh_token_here"
-                }
-            },
-            "required": ["refresh"]
-        },
-        responses={
-            200: {"description": "Successfully logged out."},
-            400: {"description": "Error occurred during logout."}
-        }
+        parameters=[
+            OpenApiParameter("refresh", OpenApiTypes.STR, description="The refresh token to be blacklisted", required=True),
+        ],
     )
     def post(self, request, *args, **kwargs):
         try:
