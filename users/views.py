@@ -1,4 +1,5 @@
 from rest_framework import generics, status
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from magic_esim.permissions import IsAuthenticatedWithSessionOrJWT
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import logout
@@ -182,9 +183,41 @@ class LoginView(generics.GenericAPIView):
 
 
 class LogoutView(APIView):
+    @extend_schema(
+        request={
+            "type": "object",
+            "properties": {
+                "refresh": {
+                    "type": "string",
+                    "description": "The refresh token to be blacklisted",
+                    "example": "your_refresh_token_here"
+                }
+            },
+            "required": ["refresh"]
+        },
+        responses={
+            200: {"description": "Successfully logged out."},
+            400: {"description": "Error occurred during logout."}
+        }
+    )
     def post(self, request, *args, **kwargs):
-        logout(request)
-        return Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
+        try:
+            # Blacklist the refresh token
+            refresh_token = request.data.get("refresh")
+            if refresh_token:
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+
+            # Log out the user
+            logout(request)
+            return api_response(
+                True, "Successfully logged out..", None, status.HTTP_200_OK
+            )
+        except Exception as e:
+            return api_response(
+            False, "An error occurred during logout.", str(e), status.HTTP_400_BAD_REQUEST
+        )
+
     
 class UserMeView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
