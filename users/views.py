@@ -215,8 +215,8 @@ class LogoutView(APIView):
             )
         except Exception as e:
             return api_response(
-            False, "An error occurred during logout.", str(e), status.HTTP_400_BAD_REQUEST
-        )
+                False, "An error occurred during logout.", str(e), status.HTTP_400_BAD_REQUEST
+            )
 
     
 class UserMeView(generics.RetrieveUpdateDestroyAPIView):
