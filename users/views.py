@@ -1,7 +1,7 @@
 from rest_framework import generics, status
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from magic_esim.permissions import IsAuthenticatedWithSessionOrJWT
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from django.contrib.auth import logout
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -18,7 +18,6 @@ from .serializers import (
     ChangePasswordSerializer,
 )
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from .utils import api_response
 from datetime import datetime
 from django.utils.timezone import now
@@ -198,6 +197,7 @@ class LogoutView(APIView):
         # Retrieve the refresh token from the request
         refresh_token = request.data.get("refresh")
 
+        print(refresh_token)
         if not refresh_token:
             return api_response(
                 False, "Refresh token is required.", None, status.HTTP_400_BAD_REQUEST
