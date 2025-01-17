@@ -4,6 +4,7 @@ from magic_esim.permissions import IsAuthenticatedWithSessionOrJWT
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import logout
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 from django.contrib.auth import authenticate, login
 from .models import User
 from .serializers import (
@@ -188,21 +189,39 @@ class LogoutView(APIView):
         ],
     )
     def post(self, request, *args, **kwargs):
+        # Retrieve the refresh token from the request
+        refresh_token = request.data.get("refresh")
+
+        if not refresh_token:
+            return api_response(
+                False, "Refresh token is required.", None, status.HTTP_400_BAD_REQUEST
+            )
+
         try:
-            # Blacklist the refresh token
-            refresh_token = request.data.get("refresh")
-            if refresh_token:
-                token = RefreshToken(refresh_token)
-                token.blacklist()
+            # Attempt to blacklist the refresh token
+            token = RefreshToken(refresh_token)
+            token.blacklist()
 
             # Log out the user
             logout(request)
             return api_response(
-                True, "Successfully logged out..", None, status.HTTP_200_OK
+                True, "Successfully logged out.", None, status.HTTP_200_OK
+            )
+        except TokenError as e:
+            # Handle invalid or expired token errors
+            return api_response(
+                False,
+                "Invalid or expired refresh token.",
+                str(e),
+                status.HTTP_400_BAD_REQUEST,
             )
         except Exception as e:
+            # Handle any other unexpected errors
             return api_response(
-                False, "An error occurred during logout.", str(e), status.HTTP_400_BAD_REQUEST
+                False,
+                "An error occurred during logout.",
+                str(e),
+                status.HTTP_400_BAD_REQUEST,
             )
 
     
