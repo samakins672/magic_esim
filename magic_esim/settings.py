@@ -21,6 +21,7 @@ ALLOWED_HOSTS = [
     "magicesim.onrender.com",
     "esimmagic.com",
     "www.esimmagic.com",
+    "esimmagic.flutterflow.app",
     "localhost",
     "127.0.0.1",
     "localhost:8080",
@@ -72,6 +73,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "https://magicesim.onrender.com",
     "https://www.esimmagic.com",
+    "https://esimmagic.flutterflow.app",
     "https://esimmagic.com",
 ]
 
@@ -82,6 +84,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "https://magicesim.onrender.com",
     "https://www.esimmagic.com",
+    "https://esimmagic.flutterflow.app",
     "https://esimmagic.com",
 ]
 
