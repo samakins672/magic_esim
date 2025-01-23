@@ -23,7 +23,7 @@ $(document).ready(function () {
 			data: { locationCode: locationCode }, // Send location code as query parameter
 			success: function (response) {
 				if (response.status) {
-					if (!response.data || !response.data.packageList || response.data.packageList.length === 0) {
+					if (!response.data || !response.data.packageList || response.data.packageList.length === 0 || !response.data.packageList[0].slug.startsWith(`${locationCode}_`)) {
 						showToast('No eSIM plans available for this location.', 'bg-danger');
 						return;
 					}
