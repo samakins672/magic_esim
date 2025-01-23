@@ -169,7 +169,7 @@ class LoginView(generics.GenericAPIView):
                             "last_name": user.last_name,
                             "phone_number": user.phone_number,
                             "email": user.email,
-                            "profile_image": user.profile_image,
+                            "profile_image": user.profile_image.url if user.profile_image else None,
                             "is_verified": user.is_verified,
                         },
                     },
