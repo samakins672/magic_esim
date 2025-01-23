@@ -248,7 +248,19 @@ class UserMeView(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        data = request.data.copy()
+
+        # Exclude fields if they are empty or if email is passed
+        excluded_fields = ['email']
+        for field in ['first_name', 'last_name', 'phone_number', 'profile_image']:
+            if field in data and not data[field]:
+                excluded_fields.append(field)
+
+        for field in excluded_fields:
+            if field in data:
+                data.pop(field)
+
+        serializer = self.get_serializer(instance, data=data, partial=partial)
         if serializer.is_valid():
             self.perform_update(serializer)
             return api_response(
