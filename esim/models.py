@@ -12,8 +12,8 @@ class eSIMPlan(models.Model):
     speed = models.CharField(max_length=25)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    volume = models.IntegerField()  # In Bytes
-    volume_used = models.IntegerField(default=None, blank=True, null=True)  # In Bytes
+    volume = models.CharField(max_length=255)  # In Bytes
+    volume_used = models.CharField(max_length=255, default=None, blank=True, null=True)  # In Bytes
     duration = models.IntegerField()  # In days
     duration_unit = models.CharField(max_length=25)
     support_top_up_type = models.IntegerField()  # In days

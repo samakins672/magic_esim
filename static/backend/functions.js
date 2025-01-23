@@ -23,6 +23,10 @@ $(document).ready(function () {
 			data: { locationCode: locationCode }, // Send location code as query parameter
 			success: function (response) {
 				if (response.status) {
+					if (!response.data || !response.data.packageList) {
+						showToast('No eSIM plans available for this location.', 'bg-danger');
+						return;
+					}
 					// Populate eSIM cards
 					const planCards = $('#esim-plan-cards');
 					planCards.empty(); // Clear previous content
