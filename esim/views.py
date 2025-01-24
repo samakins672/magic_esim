@@ -9,6 +9,9 @@ from drf_spectacular.types import OpenApiTypes
 from .models import eSIMPlan
 from .serializers import eSIMPlanFilterSerializer, eSIMProfileSerializer, eSIMPlanSerializer
 from decouple import config
+import json
+import os
+from django.conf import settings
 
 
 class eSIMPlanListView(APIView):
@@ -211,3 +214,32 @@ class eSIMPlanDetailView(generics.RetrieveUpdateDestroyAPIView):
             "message": "eSIM plan updated successfully.",
             "data": serializer.data
         }, status=status.HTTP_200_OK)
+
+
+class CountriesListView(APIView):
+    """
+    View to fetch list of countries from JSON file.
+    """
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        responses={200: OpenApiTypes.OBJECT},
+        description="Get list of all countries"
+    )
+    def get(self, request):
+        try:
+            json_file_path = os.path.join(settings.BASE_DIR, 'static', 'vendor', 'locations', 'countries.json')
+            with open(json_file_path, 'r') as file:
+                countries = json.load(file)
+            
+            return Response({
+                "status": True,
+                "message": "Countries list fetched successfully.",
+                "data": countries
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({
+                "status": False,
+                "message": "Failed to fetch countries list.",
+                "error": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
