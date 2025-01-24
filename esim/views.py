@@ -232,6 +232,10 @@ class CountriesListView(APIView):
             with open(json_file_path, 'r') as file:
                 countries = json.load(file)
             
+            # Convert alpha_2 to lowercase
+            for country in countries:
+                country['alpha_2_lower'] = country['alpha_2'].lower()
+            
             return Response({
                 "status": True,
                 "message": "Countries list fetched successfully.",
@@ -260,6 +264,10 @@ class PopularCountriesListView(APIView):
             json_file_path = os.path.join(settings.BASE_DIR, 'static', 'vendor', 'locations', 'popular_countries.json')
             with open(json_file_path, 'r') as file:
                 countries = json.load(file)
+            
+            # Convert alpha_2 to lowercase
+            for country in countries:
+                country['alpha_2_lower'] = country['alpha_2'].lower()
             
             return Response({
                 "status": True,
