@@ -266,7 +266,15 @@ class UserMeView(generics.RetrieveUpdateDestroyAPIView):
             return api_response(
                 True,
                 "User details updated successfully.",
-                serializer.data,
+                {
+                    "id": instance.id,
+                    "first_name": instance.first_name,
+                    "last_name": instance.last_name,
+                    "phone_number": instance.phone_number,
+                    "email": instance.email,
+                    "profile_image": instance.profile_image.url if instance.profile_image else None,
+                    "is_verified": instance.is_verified,
+                },
                 status.HTTP_200_OK,
             )
         return api_response(
