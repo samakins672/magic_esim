@@ -15,36 +15,6 @@
         "slug": "nigeria"
     },
     {
-        "alpha_2": "AF",
-        "name": "Afghanistan",
-        "slug": "afghanistan"
-    },
-    {
-        "alpha_2": "AL",
-        "name": "Albania",
-        "slug": "albania"
-    },
-    {
-        "alpha_2": "DZ",
-        "name": "Algeria",
-        "slug": "algeria"
-    },
-    {
-        "alpha_2": "AD",
-        "name": "Andorra",
-        "slug": "andorra"
-    },
-    {
-        "alpha_2": "AO",
-        "name": "Angola",
-        "slug": "angola"
-    },
-    {
-        "alpha_2": "AG",
-        "name": "Antigua and Barbuda",
-        "slug": "antigua-and-barbuda"
-    },
-    {
         "alpha_2": "AR",
         "name": "Argentina",
         "slug": "argentina"
@@ -70,11 +40,6 @@
         "slug": "azerbaijan"
     },
     {
-        "alpha_2": "BS",
-        "name": "Bahamas",
-        "slug": "bahamas"
-    },
-    {
         "alpha_2": "BH",
         "name": "Bahrain",
         "slug": "bahrain"
@@ -85,11 +50,6 @@
         "slug": "bangladesh"
     },
     {
-        "alpha_2": "BB",
-        "name": "Barbados",
-        "slug": "barbados"
-    },
-    {
         "alpha_2": "BY",
         "name": "Belarus",
         "slug": "belarus"
@@ -98,26 +58,6 @@
         "alpha_2": "BE",
         "name": "Belgium",
         "slug": "belgium"
-    },
-    {
-        "alpha_2": "BZ",
-        "name": "Belize",
-        "slug": "belize"
-    },
-    {
-        "alpha_2": "BJ",
-        "name": "Benin",
-        "slug": "benin"
-    },
-    {
-        "alpha_2": "BT",
-        "name": "Bhutan",
-        "slug": "bhutan"
-    },
-    {
-        "alpha_2": "BO",
-        "name": "Bolivia",
-        "slug": "bolivia"
     },
     {
         "alpha_2": "BA",
@@ -148,16 +88,6 @@
         "alpha_2": "BF",
         "name": "Burkina Faso",
         "slug": "burkina-faso"
-    },
-    {
-        "alpha_2": "BI",
-        "name": "Burundi",
-        "slug": "burundi"
-    },
-    {
-        "alpha_2": "CV",
-        "name": "Cabo Verde",
-        "slug": "cabo-verde"
     },
     {
         "alpha_2": "KH",
@@ -210,11 +140,6 @@
         "slug": "congo-congo-brazzaville"
     },
     {
-        "alpha_2": "CD",
-        "name": "Congo (Congo-Kinshasa)",
-        "slug": "congo-congo-kinshasa"
-    },
-    {
         "alpha_2": "CR",
         "name": "Costa Rica",
         "slug": "costa-rica"
@@ -223,11 +148,6 @@
         "alpha_2": "HR",
         "name": "Croatia",
         "slug": "croatia"
-    },
-    {
-        "alpha_2": "CU",
-        "name": "Cuba",
-        "slug": "cuba"
     },
     {
         "alpha_2": "CY",
@@ -243,16 +163,6 @@
         "alpha_2": "DK",
         "name": "Denmark",
         "slug": "denmark"
-    },
-    {
-        "alpha_2": "DJ",
-        "name": "Djibouti",
-        "slug": "djibouti"
-    },
-    {
-        "alpha_2": "DM",
-        "name": "Dominica",
-        "slug": "dominica"
     },
     {
         "alpha_2": "DO",
@@ -275,16 +185,6 @@
         "slug": "el-salvador"
     },
     {
-        "alpha_2": "GQ",
-        "name": "Equatorial Guinea",
-        "slug": "equatorial-guinea"
-    },
-    {
-        "alpha_2": "ER",
-        "name": "Eritrea",
-        "slug": "eritrea"
-    },
-    {
         "alpha_2": "EE",
         "name": "Estonia",
         "slug": "estonia"
@@ -293,16 +193,6 @@
         "alpha_2": "SZ",
         "name": "Eswatini",
         "slug": "eswatini"
-    },
-    {
-        "alpha_2": "ET",
-        "name": "Ethiopia",
-        "slug": "ethiopia"
-    },
-    {
-        "alpha_2": "FJ",
-        "name": "Fiji",
-        "slug": "fiji"
     },
     {
         "alpha_2": "FI",
@@ -320,11 +210,6 @@
         "slug": "gabon"
     },
     {
-        "alpha_2": "GM",
-        "name": "Gambia",
-        "slug": "gambia"
-    },
-    {
         "alpha_2": "GE",
         "name": "Georgia",
         "slug": "georgia"
@@ -335,44 +220,14 @@
         "slug": "germany"
     },
     {
-        "alpha_2": "GH",
-        "name": "Ghana",
-        "slug": "ghana"
-    },
-    {
         "alpha_2": "GR",
         "name": "Greece",
         "slug": "greece"
     },
     {
-        "alpha_2": "GD",
-        "name": "Grenada",
-        "slug": "grenada"
-    },
-    {
         "alpha_2": "GT",
         "name": "Guatemala",
         "slug": "guatemala"
-    },
-    {
-        "alpha_2": "GN",
-        "name": "Guinea",
-        "slug": "guinea"
-    },
-    {
-        "alpha_2": "GW",
-        "name": "Guinea-Bissau",
-        "slug": "guinea-bissau"
-    },
-    {
-        "alpha_2": "GY",
-        "name": "Guyana",
-        "slug": "guyana"
-    },
-    {
-        "alpha_2": "HT",
-        "name": "Haiti",
-        "slug": "haiti"
     },
     {
         "alpha_2": "HN",
@@ -400,11 +255,6 @@
         "slug": "indonesia"
     },
     {
-        "alpha_2": "IR",
-        "name": "Iran",
-        "slug": "iran"
-    },
-    {
         "alpha_2": "IQ",
         "name": "Iraq",
         "slug": "iraq"
@@ -423,11 +273,6 @@
         "alpha_2": "IT",
         "name": "Italy",
         "slug": "italy"
-    },
-    {
-        "alpha_2": "JM",
-        "name": "Jamaica",
-        "slug": "jamaica"
     },
     {
         "alpha_2": "JP",
@@ -450,16 +295,6 @@
         "slug": "kenya"
     },
     {
-        "alpha_2": "KI",
-        "name": "Kiribati",
-        "slug": "kiribati"
-    },
-    {
-        "alpha_2": "KP",
-        "name": "Korea (North)",
-        "slug": "korea-north"
-    },
-    {
         "alpha_2": "KR",
         "name": "Korea (South)",
         "slug": "korea-south"
@@ -475,34 +310,14 @@
         "slug": "kyrgyzstan"
     },
     {
-        "alpha_2": "LA",
-        "name": "Laos",
-        "slug": "laos"
-    },
-    {
         "alpha_2": "LV",
         "name": "Latvia",
         "slug": "latvia"
     },
     {
-        "alpha_2": "LB",
-        "name": "Lebanon",
-        "slug": "lebanon"
-    },
-    {
-        "alpha_2": "LS",
-        "name": "Lesotho",
-        "slug": "lesotho"
-    },
-    {
         "alpha_2": "LR",
         "name": "Liberia",
         "slug": "liberia"
-    },
-    {
-        "alpha_2": "LY",
-        "name": "Libya",
-        "slug": "libya"
     },
     {
         "alpha_2": "LI",
@@ -535,11 +350,6 @@
         "slug": "malaysia"
     },
     {
-        "alpha_2": "MV",
-        "name": "Maldives",
-        "slug": "maldives"
-    },
-    {
         "alpha_2": "ML",
         "name": "Mali",
         "slug": "mali"
@@ -550,16 +360,6 @@
         "slug": "malta"
     },
     {
-        "alpha_2": "MH",
-        "name": "Marshall Islands",
-        "slug": "marshall-islands"
-    },
-    {
-        "alpha_2": "MR",
-        "name": "Mauritania",
-        "slug": "mauritania"
-    },
-    {
         "alpha_2": "MU",
         "name": "Mauritius",
         "slug": "mauritius"
@@ -568,11 +368,6 @@
         "alpha_2": "MX",
         "name": "Mexico",
         "slug": "mexico"
-    },
-    {
-        "alpha_2": "FM",
-        "name": "Micronesia",
-        "slug": "micronesia"
     },
     {
         "alpha_2": "MD",
@@ -603,21 +398,6 @@
         "alpha_2": "MZ",
         "name": "Mozambique",
         "slug": "mozambique"
-    },
-    {
-        "alpha_2": "MM",
-        "name": "Myanmar",
-        "slug": "myanmar"
-    },
-    {
-        "alpha_2": "NA",
-        "name": "Namibia",
-        "slug": "namibia"
-    },
-    {
-        "alpha_2": "NR",
-        "name": "Nauru",
-        "slug": "nauru"
     },
     {
         "alpha_2": "NP",
@@ -663,16 +443,6 @@
         "alpha_2": "PK",
         "name": "Pakistan",
         "slug": "pakistan"
-    },
-    {
-        "alpha_2": "PW",
-        "name": "Palau",
-        "slug": "palau"
-    },
-    {
-        "alpha_2": "PS",
-        "name": "Palestine",
-        "slug": "palestine"
     },
     {
         "alpha_2": "PA",

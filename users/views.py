@@ -1,8 +1,10 @@
 from rest_framework import generics, status
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from magic_esim.permissions import IsAuthenticatedWithSessionOrJWT
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from django.contrib.auth import logout
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 from django.contrib.auth import authenticate, login
 from .models import User
 from .serializers import (
@@ -16,8 +18,8 @@ from .serializers import (
     ChangePasswordSerializer,
 )
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from .utils import api_response
+from datetime import datetime
 from django.utils.timezone import now
 
 
@@ -86,11 +88,38 @@ class OTPVerifyView(generics.GenericAPIView):
             user.is_verified = True
             user.otp = None  # Clear OTP
             user.save()
+        
+            # Log the user in and create a session
+            login(request, user)
+
+            # Generate JWT tokens
             refresh = RefreshToken.for_user(user)
+            access_token = refresh.access_token
+
+            # Include access token expiry time
+            access_token_expiry = access_token.payload.get("exp")
+            
+            # Convert Unix timestamp to a datetime object
+            expiry_datetime = datetime.fromtimestamp(access_token_expiry)
+            
+            # Print readable expiry time
+            print(f"Access Token Expiry Time: {expiry_datetime}")
+
             return api_response(
                 True,
                 "Verification successful. User logged in.",
-                {"refresh": str(refresh), "access": str(refresh.access_token)},
+                {
+                    "refresh": str(refresh), 
+                    "access": str(access_token),
+                    "user": {
+                        "id": user.id,
+                        "first_name": user.first_name,
+                        "last_name": user.last_name,
+                        "phone_number": user.phone_number,
+                        "profile_image": user.profile_image.url if user.profile_image else None,
+                        "email": user.email
+                    }
+                },
                 status.HTTP_200_OK,
             )
         return api_response(
@@ -117,18 +146,31 @@ class LoginView(generics.GenericAPIView):
 
                 # Generate JWT tokens
                 refresh = RefreshToken.for_user(user)
+                access_token = refresh.access_token
+
+                # Include access token expiry time
+                access_token_expiry = access_token.payload.get("exp")
+                
+                # Convert Unix timestamp to a datetime object
+                expiry_datetime = datetime.fromtimestamp(access_token_expiry)
+                
+                # Print readable expiry time
+                print(f"Access Token Expiry Time: {expiry_datetime}")
 
                 return api_response(
                     True,
                     "Login successful.",
                     {
                         "refresh": str(refresh),
-                        "access": str(refresh.access_token),
+                        "access": str(access_token),
+                        "access_token_expiry": access_token_expiry,
                         "user": {
                             "id": user.id,
                             "first_name": user.first_name,
                             "last_name": user.last_name,
+                            "phone_number": user.phone_number,
                             "email": user.email,
+                            "profile_image": user.profile_image.url if user.profile_image else None,
                             "is_verified": user.is_verified,
                         },
                     },
@@ -143,9 +185,47 @@ class LoginView(generics.GenericAPIView):
 
 
 class LogoutView(APIView):
+    @extend_schema(
+        parameters=[
+            OpenApiParameter("refresh", OpenApiTypes.STR, description="The refresh token to be blacklisted", required=True),
+        ],
+    )
     def post(self, request, *args, **kwargs):
-        logout(request)
-        return Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
+        # Retrieve the refresh token from the request
+        refresh_token = request.data.get("refresh")
+
+        if not refresh_token:
+            return api_response(
+                False, "Refresh token is required.", None, status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            # Attempt to blacklist the refresh token
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            # Log out the user
+            logout(request)
+            return api_response(
+                True, "Successfully logged out.", None, status.HTTP_200_OK
+            )
+        except TokenError as e:
+            # Handle invalid or expired token errors
+            return api_response(
+                False,
+                "Invalid or expired refresh token.",
+                str(e),
+                status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception as e:
+            # Handle any other unexpected errors
+            return api_response(
+                False,
+                "An error occurred during logout.",
+                str(e),
+                status.HTTP_400_BAD_REQUEST,
+            )
+
     
 class UserMeView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
@@ -168,7 +248,19 @@ class UserMeView(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        data = request.data.copy()
+
+        # Exclude fields if they are empty or if email is passed
+        excluded_fields = ['email']
+        for field in ['first_name', 'last_name', 'phone_number', 'profile_image']:
+            if field in data and not data[field]:
+                excluded_fields.append(field)
+
+        for field in excluded_fields:
+            if field in data:
+                data.pop(field)
+
+        serializer = self.get_serializer(instance, data=data, partial=partial)
         if serializer.is_valid():
             self.perform_update(serializer)
             return api_response(
