@@ -8,10 +8,15 @@ __pycache__/
 *.so
 .Python
 frontend/__pycache__/
+frontend/migrations/__pycache__/
 users/__pycache__/
+users/migrations/__pycache__/
 magic_esim/__pycache__/
+magic_esim/migrations/__pycache__/
 billing/__pycache__/
-api/__pycache__/
+billing/migrations/__pycache__/
+esim/__pycache__/
+esim/migrations/__pycache__/
 */*/__pycache__/
 */*/*/__pycache__/
 

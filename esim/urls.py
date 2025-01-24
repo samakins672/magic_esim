@@ -4,7 +4,8 @@ from .views import (
     eSIMProfileView, 
     eSIMPlanListCreateView, 
     eSIMPlanDetailView,
-    CountriesListView
+    CountriesListView,
+    PopularCountriesListView
 )
 
 urlpatterns = [
@@ -13,4 +14,5 @@ urlpatterns = [
     path('user/plans/', eSIMPlanListCreateView.as_view(), name='user-esim-plan'),
     path('user/plans/<int:pk>/', eSIMPlanDetailView.as_view(), name='user-esim-plan-detail'),
     path('countries/', CountriesListView.as_view(), name='countries-list'),
+    path('countries/popular/', PopularCountriesListView.as_view(), name='popular-countries-list'),
 ]

@@ -243,3 +243,32 @@ class CountriesListView(APIView):
                 "message": "Failed to fetch countries list.",
                 "error": str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class PopularCountriesListView(APIView):
+    """
+    View to fetch list of popular countries from JSON file.
+    """
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        responses={200: OpenApiTypes.OBJECT},
+        description="Get list of popular countries"
+    )
+    def get(self, request):
+        try:
+            json_file_path = os.path.join(settings.BASE_DIR, 'static', 'vendor', 'locations', 'popular_countries.json')
+            with open(json_file_path, 'r') as file:
+                countries = json.load(file)
+            
+            return Response({
+                "status": True,
+                "message": "Popular countries list fetched successfully.",
+                "data": countries
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({
+                "status": False,
+                "message": "Failed to fetch popular countries list.",
+                "error": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
