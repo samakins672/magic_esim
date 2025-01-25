@@ -31,15 +31,20 @@ class eSIMPlanSerializer(serializers.ModelSerializer):
     package_code = serializers.CharField(write_only=True)
     payment_ref_id = serializers.UUIDField(write_only=True)
     seller = serializers.CharField(write_only=True)
+    location_code_lower = serializers.SerializerMethodField()
 
     class Meta:
         model = eSIMPlan
         fields = '__all__'
         read_only_fields = [
             'name', 'slug', 'order_no', 'currency_code', 'speed', 'description', 'price', 'volume',            
-            'esim_status', 'duration', 'duration_unit', 'support_top_up_type', 'payment',
+            'esim_status', 'duration', 'duration_unit', 'support_top_up_type', 'payment', 'location_code_lower', 
             'activated_on', 'expires_on', 'smdp_status'
         ]
+
+    def get_location_code_lower(self, obj):
+        # Return the lowercase version of location_code
+        return obj.location_code.lower() if obj.location_code else None
 
     def create(self, validated_data):
         user = validated_data.pop('user')

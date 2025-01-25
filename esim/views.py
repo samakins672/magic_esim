@@ -178,20 +178,24 @@ class eSIMPlanListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         # Return only the eSIM plans associated with the authenticated user
+        return eSIMPlan.objects.filter(user=self.request.user)
+
+    def list(self, request, *args, **kwargs):
         user = self.request.user
-        plans = eSIMPlan.objects.filter(user=user)
-        
+        plans = self.get_queryset()
+
         # Update volume_used field for each plan
+        updated_plans = []
         for plan in plans:
             try:
-                esim_host = config('ESIMACCESS_HOST')
-                api_token = config('ESIMACCESS_ACCESS_CODE')
+                esim_host = config("ESIMACCESS_HOST")
+                api_token = config("ESIMACCESS_ACCESS_CODE")
                 params = {
                     "orderNo": plan.order_no,
                     "iccid": "",
-                    "pager":{
-                        "pageNum":1,
-                        "pageSize":20
+                    "pager": {
+                        "pageNum": 1,
+                        "pageSize": 20
                     }
                 }
 
@@ -200,19 +204,35 @@ class eSIMPlanListCreateView(generics.ListCreateAPIView):
                     json=params,
                     headers={"RT-AccessCode": api_token},
                 )
-                if response.status_code == 200 and response.json().get('success', False):
-                    profile_data = response.json().get('obj', {})
-                    profile_data = profile_data.get('esimList', {})[0]
-                # Log the profile data
-                print(f"Profile data: {profile_data}")
-                plan.activated_on = profile_data.get('activateTime', plan.activated_on)
-                plan.volume_used = profile_data.get('orderUsage', plan.volume_used)
-                plan.save()
+
+                if response.status_code == 200:
+                    api_response = response.json()
+                    if api_response.get("success", False):
+                        profile_data = api_response.get("obj", {}).get("esimList", [])
+                        if profile_data:
+                            esim = profile_data[0]
+                            # Update plan details
+                            plan.activated_on = esim.get("activateTime", plan.activated_on)
+                            plan.volume_used = esim.get("orderUsage", plan.volume_used)
+                            plan.save()
+                        else:
+                            print(f"No eSIM data found for plan {plan.order_no}.")
+                    else:
+                        print(f"API error for plan {plan.order_no}: {api_response.get('errorMsg', 'Unknown error')}")
+                else:
+                    print(f"HTTP error {response.status_code} for plan {plan.order_no}: {response.text}")
             except requests.RequestException as e:
-                # Log the error
-                print(f"Error fetching eSIM profile: {e}")
-        
-        return plans
+                print(f"Error fetching eSIM profile for plan {plan.order_no}: {e}")
+
+            updated_plans.append(plan)
+
+        # Serialize the updated plans
+        serializer = self.get_serializer(updated_plans, many=True)
+        return Response({
+            "status": True,
+            "message": "User eSIM plans fetched successfully.",
+            "data": serializer.data,
+        }, status=status.HTTP_200_OK)
 
 
 class eSIMPlanDetailView(generics.RetrieveUpdateDestroyAPIView):

@@ -3,6 +3,7 @@ function populateEsimsTable(esims) {
     const $esimListCard = $("#esim_lists");
     $esimListCard.empty(); // Clear any existing rows
 
+    esims = esims.data;
     esims.forEach((esim, index) => {
         const volume_left = esim.volume - esim.volume_used;
 
