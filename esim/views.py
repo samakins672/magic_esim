@@ -52,9 +52,21 @@ class eSIMPlanListView(APIView):
                     if main_region:
                         data = data.get('packageList', [])  # Extract 'packageList' array from the API response
                         data = [item for item in data if item.get('slug', '').startswith(main_region)]
-                        
+
                         # Sort the data by price from least to highest
                         data = sorted(data, key=lambda x: x.get('price', float('inf')))
+
+                        # Convert volume from bytes to GB and MB format
+                        for item in data:
+                            volume_bytes = item.get('volume', 0)
+                            if (volume_bytes >= 1024 ** 3):
+                                item['volume'] = f"{(volume_bytes / (1024 ** 3)):.1f} GB"
+                            else:
+                                item['volume'] = f"{(volume_bytes / (1024 ** 2)):.0f} MB"
+                            
+                            # Format the price
+                            price = item.get('price', 0)
+                            item['price'] = f"{((price / 10000) * 2):.2f}"
                     
                     # Return the filtered data
                     return Response({
