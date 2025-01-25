@@ -11,6 +11,7 @@ class eSIMPlanFilterSerializer(serializers.Serializer):
     slug = serializers.CharField(required=False, allow_blank=True)
     packageCode = serializers.CharField(required=False, allow_blank=True)
     iccid = serializers.CharField(required=False, allow_blank=True)
+    mainRegion = serializers.CharField(required=False, allow_blank=True)
 
 
 class eSIMProfileSerializer(serializers.Serializer):

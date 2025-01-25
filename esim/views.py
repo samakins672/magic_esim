@@ -27,6 +27,7 @@ class eSIMPlanListView(APIView):
             OpenApiParameter("slug", OpenApiTypes.STR, description="Slug identifier for the plan", required=False),
             OpenApiParameter("packageCode", OpenApiTypes.STR, description="Package code of the plan", required=False),
             OpenApiParameter("iccid", OpenApiTypes.STR, description="ICCID for the eSIM", required=False),
+            OpenApiParameter("mainRegion", OpenApiTypes.STR, description="main Region codes", required=False),
         ],
     )
     def get(self, request, *args, **kwargs):
@@ -45,11 +46,21 @@ class eSIMPlanListView(APIView):
                     headers={"RT-AccessCode": api_token},
                 )
                 if response.status_code == 200:
-                    # Return the data from the external API
+                    data = response.json().get('obj', {})
+                    # Check if mainRegion was passed and filter the data accordingly
+                    main_region = filters.get('mainRegion')
+                    if main_region:
+                        data = data.get('packageList', [])  # Extract 'packageList' array from the API response
+                        data = [item for item in data if item.get('slug', '').startswith(main_region)]
+                        
+                        # Sort the data by price from least to highest
+                        data = sorted(data, key=lambda x: x.get('price', float('inf')))
+                    
+                    # Return the filtered data
                     return Response({
                         "status": True,
                         "message": "eSIM plans fetched successfully.",
-                        "data": response.json().get('obj', [])  # Extract 'obj' array from the API response
+                        "data": data
                     }, status=status.HTTP_200_OK)
                 else:
                     # Handle non-200 responses from the external API
