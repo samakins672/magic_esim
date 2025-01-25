@@ -60,13 +60,13 @@ class eSIMPlanListView(APIView):
                         for item in data:
                             volume_bytes = item.get('volume', 0)
                             if (volume_bytes >= 1024 ** 3):
-                                item['volume'] = f"{(volume_bytes / (1024 ** 3)):.1f} GB"
+                                item['formattedvolume'] = f"{(volume_bytes / (1024 ** 3)):.1f} GB"
                             else:
-                                item['volume'] = f"{(volume_bytes / (1024 ** 2)):.0f} MB"
+                                item['formattedvolume'] = f"{(volume_bytes / (1024 ** 2)):.0f} MB"
                             
                             # Format the price
                             price = item.get('price', 0)
-                            item['price'] = f"{((price / 10000) * 2):.2f}"
+                            item['formattedPrice'] = f"{((price / 10000) * 2):.2f}"
                     
                     # Return the filtered data
                     return Response({
