@@ -49,10 +49,10 @@ $(document).ready(function () {
 
 						const card = `
                 <div class="col-md-4 mb-4">
-                  <div class="card shadow border-primary border-1">
+                  <div class="card shadow border-primary rounded-5 border-1">
                     <div class="card-header d-flex align-items-center justify-content-between text-dark fw-bolder">
                       <h5 class="m-0 text-primary fw-bold">${plan.locationNetworkList[0].locationCode} - ${formattedVolume} (${formattedDuration})</h5>
-                      <img src="https://flagcdn.com/w320/${locationCode.toLowerCase()}.png" class="rounded" style="width: 80px; height: auto;">
+                      <img src="https://flagcdn.com/w320/${locationCode.toLowerCase()}.png" class="rounded" style="width: 60px; height: auto;">
                     </div>
                     <div class="card-body text-center">
                       <ul class="list-unstyled text-start mb-4">
@@ -61,7 +61,7 @@ $(document).ready(function () {
                         <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top"><strong>Validity:</strong> <span>${formattedDuration}</span></li>
                         <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top border-bottom"><strong>Price:</strong> <span class="fs-5 text-primary">$${formattedPrice} ${plan.currencyCode}</span></li>
                       </ul>
-                      <button class="btn btn-outline-primary w-100 show_plan_details py-3" data-package_code="${plan.packageCode}"  data-plan_type="single" 
+                      <button class="btn btn-outline-primary rounded-pill w-100 show_plan_details py-3" data-package_code="${plan.packageCode}"  data-plan_type="single" 
 					  	data-price="${formattedPrice}" data-currency="${plan.currencyCode}" data-location_code="${locationCode}" data-seller="esimaccess"
 						 data-bs-toggle="modal" data-bs-target="#planDetailsModal">Buy Now</button>
                     </div>
@@ -142,10 +142,10 @@ $(document).ready(function () {
 
 						const card = `
                 <div class="col-md-4 mb-4">
-                  <div class="card shadow border-primary border-1">
+                  <div class="card shadow border-primary rounded-5 border-1">
                     <div class="card-header d-flex align-items-center justify-content-between text-dark fw-bolder">
                       <h5 class="m-0">${plan.name}</h5>
-                      <img src="/static/img/regions/${locationCode.toLowerCase()}.png" class="rounded" style="width: 50px; height: auto;">
+                      <img src="/static/img/regions/${locationCode.toLowerCase()}.png" class="rounded" style="width: 40px; height: auto;">
                     </div>
                     <div class="card-body text-center">
                       <ul class="list-unstyled text-start mb-4">
@@ -154,7 +154,7 @@ $(document).ready(function () {
                         <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top"><strong>Validity:</strong> <span>${formattedDuration}</span></li>
                         <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top border-bottom"><strong>Price:</strong> <span class="fs-5 text-primary">$${formattedPrice} ${plan.currencyCode}</span></li>
                       </ul>
-                      <button class="btn btn-outline-primary w-100 show_plan_details py-3" data-package_code="${plan.packageCode}"  data-plan_type="region" 
+                      <button class="btn btn-outline-primary rounded-pill w-100 show_plan_details py-3" data-package_code="${plan.packageCode}"  data-plan_type="region" 
 					  	data-price="${formattedPrice}" data-currency="${plan.currencyCode}" data-location_code="${locationCode}" data-seller="esimaccess"
 						data-bs-toggle="modal" data-bs-target="#planDetailsModal">Buy Now</button>
                     </div>
@@ -235,10 +235,10 @@ $(document).ready(function () {
 
 						const card = `
                 <div class="col-md-4 mb-4">
-                  <div class="card shadow border-primary border-1">
+                  <div class="card shadow border-primary border-1 rounded-5">
                     <div class="card-header d-flex align-items-center justify-content-between text-dark fw-bolder">
                       <h5 class="m-0">${plan.name}</h5>
-                      <img src="/static/img/regions/as.png" class="rounded" style="width: 50px; height: auto;">
+                      <img src="/static/img/regions/as.png" class="rounded" style="width: 40px; height: auto;">
                     </div>
                     <div class="card-body text-center">
                       <ul class="list-unstyled text-start mb-4">
@@ -247,7 +247,7 @@ $(document).ready(function () {
                         <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top"><strong>Validity:</strong> <span>${formattedDuration}</span></li>
                         <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top border-bottom"><strong>Price:</strong> <span class="fs-5 text-primary">$${formattedPrice} ${plan.currencyCode}</span></li>
                       </ul>
-                      <button class="btn btn-outline-primary w-100 show_plan_details py-3" data-package_code="${plan.packageCode}"  data-plan_type="global" 
+                      <button class="btn btn-outline-primary rounded-pill w-100 show_plan_details py-3" data-package_code="${plan.packageCode}"  data-plan_type="global" 
 					  	data-price="${formattedPrice}" data-currency="${plan.currencyCode}" data-location_code="${locationCode}" data-seller="esimaccess"
 						data-bs-toggle="modal" data-bs-target="#planDetailsModal">Buy Now</button>
                     </div>

@@ -21,6 +21,33 @@ from rest_framework.views import APIView
 from .utils import api_response
 from datetime import datetime
 from django.utils.timezone import now
+from rest_framework.response import Response
+from .serializers import GoogleAuthSerializer
+
+class GoogleAuthView(generics.GenericAPIView):
+    serializer_class = GoogleAuthSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            data = serializer.save()
+            return Response(
+                {
+                    "status": True,
+                    "message": "Google sign-in successful.",
+                    "data": data
+                },
+                status=status.HTTP_200_OK
+            )
+        return Response(
+            {
+                "status": False,
+                "message": "Google sign-in failed.",
+                "errors": serializer.errors
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class UserRegistrationView(generics.CreateAPIView):

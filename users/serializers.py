@@ -1,7 +1,56 @@
+from google.auth.transport import requests
+from google.oauth2 import id_token
+from django.conf import settings
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import serializers
 from .models import User
 from django.utils.timezone import now
 import uuid
+
+
+class GoogleAuthSerializer(serializers.Serializer):
+    id_token = serializers.CharField()
+
+    def validate_id_token(self, value):
+        try:
+            # Verify the Google token
+            google_user = id_token.verify_oauth2_token(value, requests.Request())
+
+            if google_user['aud'] not in settings.SOCIALACCOUNT_PROVIDERS['google']['SCOPE']:
+                raise serializers.ValidationError("Invalid Google Client ID.")
+
+            return google_user
+        except Exception:
+            raise serializers.ValidationError("Invalid Google token.")
+
+    def create(self, validated_data):
+        google_user = validated_data["id_token"]
+        email = google_user.get("email")
+        first_name = google_user.get("given_name", "")
+        last_name = google_user.get("family_name", "")
+        profile_image = google_user.get("picture", "")
+
+        user, created = User.objects.get_or_create(email=email, defaults={
+            "first_name": first_name,
+            "last_name": last_name,
+            "profile_image": profile_image,
+            "is_verified": True,
+        })
+
+        refresh = RefreshToken.for_user(user)
+
+        return {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+            "user": {
+                "id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "email": user.email,
+                "profile_image": user.profile_image.url if user.profile_image else None,
+                "is_verified": user.is_verified,
+            }
+        }
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):

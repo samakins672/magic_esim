@@ -14,6 +14,9 @@
 
   {% include 'partials/head.html' %}
 
+  <!-- Google Sign-In API library -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
   <!-- Page CSS -->
   <link rel="stylesheet" href="{% static 'vendor/css/pages/page-auth.css' %}" />
 
@@ -32,9 +35,8 @@
             <div class="app-brand justify-content-center mt-5">
               <a href="/" class="app-brand-link gap-2">
                 <span class="app-brand-logo demo">
-                  <img src="{% static 'img/logo.png' %}" alt="logo" class="img-fluid" width="160" 
-                  data-app-light-img="logo.png"
-                  data-app-dark-img="logo-dark.png" />
+                  <img src="{% static 'img/logo.png' %}" alt="logo" class="img-fluid" width="160"
+                    data-app-light-img="logo.png" data-app-dark-img="logo-dark.png" />
                 </span>
               </a>
             </div>
@@ -43,7 +45,21 @@
               <h4 class="mb-2 fw-bold">Log In to eSIM Magic</h4>
               <p class="mb-4">Welcome back select method to login:</p>
               <div class="d-flex justify-content-center gap-4">
-                <a href="#" class="btn btn-outline-light btn-sm px-5 py-2 rounded-pill">
+
+                <!-- Login with Google Popup and Button -->
+                <div id="g_id_onload"
+                  data-client_id="884642432826-res4polj0nqrf17vj9odug6m4ockict6.apps.googleusercontent.com"
+                  data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse"
+                  data-auto_select="true" data-itp_support="true">
+                </div>
+
+                <div class="g_id_signin btn btn-sm d-flex justify-content-center" data-type="standard"
+                  data-shape="rectangular" data-theme="outline" data-text="signin_with" data-size="large"
+                  data-logo_alignment="left">
+                </div>
+                <!-- End of Google login -->
+
+                <!-- <a href="#" class="btn btn-outline-light btn-sm px-5 py-2 rounded-pill">
                   <img src="{% static 'img/icons/brands/google.png' %}" alt="" class="img-fluid mx-3" width="20px" />
                 </a>
                 <a href="#" class="btn btn-outline-light btn-sm px-5 py-2 rounded-pill">
@@ -51,7 +67,7 @@
                 </a>
                 <a href="#" class="btn btn-outline-light btn-sm px-5 py-2 rounded-pill">
                   <img src="{% static 'img/icons/brands/apple.png' %}" alt="" class="img-fluid mx-3" width="20px" />
-                </a>
+                </a> -->
               </div>
             </div>
 
@@ -81,7 +97,8 @@
                 </a>
               </div>
               <div class="mb-3">
-                <button id="submitBtn" class="btn btn-lg btn-primary d-grid w-100 rounded-pill" type="submit">Log in</button>
+                <button id="submitBtn" class="btn btn-lg btn-primary d-grid w-100 rounded-pill" type="submit">Log
+                  in</button>
               </div>
             </form>
 
@@ -105,6 +122,25 @@
   <!-- Page JS -->
   <script src="{% static 'backend/app.js' %}"></script>
   <script src="{% static 'backend/auth.js' %}"></script>
+  <script>
+    function handleCredentialResponse(response) {
+      console.log("Google ID Token:", response.credential);
+
+      // Send this ID token to your backend API
+      $.ajax({
+        url: "/api/auth/google/",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ id_token: response.credential }),
+        success: function (data) {
+          console.log("Backend Response:", data);
+        },
+        error: function (error) {
+          console.error("Error:", error);
+        }
+      });
+    }
+  </script>
 
 </body>
 

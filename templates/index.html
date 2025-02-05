@@ -190,26 +190,18 @@
                 </a>
             </div> -->
           </div>
-          <div id="heroDashboardAnimation" class="hero-animation-img">
-            {% if user.is_authenticated %}
-            <a href="/dashboard">
-            {% else %}
-            <a href="/login">
-            {% endif %}
-              <div id="heroAnimationImg" class="position-relative hero-dashboard-img">
-                <img src="{% static 'img/front-pages/landing-page/hero-dashboard-light.png' %}" alt="hero dashboard"
-                  class="animation-img" data-app-light-img="front-pages/landing-page/hero-dashboard-light.png"
-                  data-app-dark-img="front-pages/landing-page/hero-dashboard-dark.png" style="padding: 70px;" />
-                <!-- <img src="{% static 'img/front-pages/landing-page/hero-elements-light.png' %}" alt="hero elements"
-                  class="position-absolute hero-elements-img animation-img top-0 start-0"
-                  data-app-light-img="front-pages/landing-page/hero-elements-light.png"
-                  data-app-dark-img="front-pages/landing-page/hero-elements-dark.png" /> -->
-              </div>
-            </a>
-          </div>
+          
+          <!-- <div class="d-flex justify-content-center align-items-center">
+            <div class="input-group" style="max-width: 400px">
+              <input type="text" class="form-control" placeholder="Search..." aria-label="Search" />
+              <span class="input-group-text">
+                <i class="bx bx-md bx-search fs-4"></i>
+              </span>
+            </div>
+          </div> -->
         </div>
       </div>
-      <div class="landing-hero-blank"></div>
+      
     </section>
     <!-- Hero: End -->
 
@@ -246,7 +238,7 @@
             </li>
           </ul>
 
-          <div class="tab-content">
+          <div class="tab-content mx-auto rounded-5 bg-light w-100 w-md-75">
             <div class="tab-pane fade show active" id="navs-pills-justified-local" role="tabpanel">
               <!-- Country List -->
               <div class="row g-5 text-center pt-3 pb-3" id="countries-list">
@@ -254,10 +246,10 @@
                 <div class="col-12 col-md-6 col-lg-4 country-item {% if not country.is_popular %}d-none{% endif %}"
                   data-popular="{{ country.is_popular }}">
                   <a href="javascript:;" data-location_code="{{ country.alpha_2 }}"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark show-country-esims">
+                    class="d-flex justify-content-between py-3 px-4 shadow align-items-center fw-bold text-dark show-country-esims bg-white rounded-pill">
                     <span>
                       <img src="https://flagcdn.com/w320/{{ country.alpha_2|lower }}.png" alt="{{ country.name }}"
-                        class="me-2 rounded" width="60px" height="40px" />
+                        class="me-2 rounded-circle" width="40px" height="40px" />
                       {{ country.name }}
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
@@ -280,9 +272,9 @@
               <div class="row g-5 text-center pt-3 pb-3" id="regions-list"> <!-- Added `g-3` for uniform spacing -->
                 <div class="col-12 col-md-6 col-lg-4">
                   <a href="javascript:;" data-location_code="AF"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark show-region-esims">
+                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
                     <span>
-                      <img src="{% static 'img/regions/af.png' %}" alt="Africa" class="me-2 rounded" width="50px" />
+                      <img src="{% static 'img/regions/af.png' %}" alt="Africa" class="me-2 rounded" width="40px" />
                       Africa
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
@@ -290,9 +282,9 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
                   <a href="javascript:;" data-location_code="AS"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark show-region-esims">
+                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
                     <span>
-                      <img src="{% static 'img/regions/as.png' %}" alt="Asia" class="me-2 rounded" width="50px" />
+                      <img src="{% static 'img/regions/as.png' %}" alt="Asia" class="me-2 rounded" width="40px" />
                       Asia
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
@@ -300,9 +292,9 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
                   <a href="javascript:;" data-location_code="EU"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark show-region-esims">
+                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
                     <span>
-                      <img src="{% static 'img/regions/eu.png' %}" alt="Europe" class="me-2 rounded" width="50px" />
+                      <img src="{% static 'img/regions/eu.png' %}" alt="Europe" class="me-2 rounded" width="40px" />
                       Europe
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
@@ -310,10 +302,10 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
                   <a href="javascript:;" data-location_code="NA"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark show-region-esims">
+                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
                     <span>
                       <img src="{% static 'img/regions/na.png' %}" alt="North America" class="me-2 rounded"
-                        width="50px" />
+                        width="40px" />
                       North America
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
@@ -321,10 +313,10 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
                   <a href="javascript:;" data-location_code="SA"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark show-region-esims">
+                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
                     <span>
                       <img src="{% static 'img/regions/sa.png' %}" alt="South America" class="me-2 rounded"
-                        width="50px" />
+                        width="40px" />
                       South America
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
@@ -332,10 +324,10 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
                   <a href="javascript:;" data-location_code="CA"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark show-region-esims">
+                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
                     <span>
                       <img src="{% static 'img/regions/cb.png' %}" alt="Caribbean" class="me-2 rounded"
-                        width="50px" />
+                        width="40px" />
                       Caribbean
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
@@ -353,9 +345,9 @@
               <div class="row g-5 text-center pt-3 pb-3" id="global-list"> <!-- Added `g-3` for uniform spacing -->
                 <div class="col-12 col-md-6 col-lg-4">
                   <a href="javascript:;" data-location_code="GL-12"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark show-global-esims">
+                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-global-esims">
                     <span>
-                      <img src="{% static 'img/regions/as.png' %}" alt="Asia" class="me-2 rounded" width="50px" />
+                      <img src="{% static 'img/regions/as.png' %}" alt="Asia" class="me-2 rounded" width="40px" />
                       Global (120+ areas)
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
@@ -363,9 +355,9 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
                   <a href="javascript:;" data-location_code="GL-13"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark show-global-esims">
+                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-global-esims">
                     <span>
-                      <img src="{% static 'img/regions/as.png' %}" alt="Asia" class="me-2 rounded" width="50px" />
+                      <img src="{% static 'img/regions/as.png' %}" alt="Asia" class="me-2 rounded" width="40px" />
                         Global (130+ areas)
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
@@ -373,9 +365,9 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
                   <a href="javascript:;" data-location_code="GL-14"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark show-global-esims">
+                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-global-esims">
                     <span>
-                      <img src="{% static 'img/regions/as.png' %}" alt="Asia" class="me-2 rounded" width="50px" />
+                      <img src="{% static 'img/regions/as.png' %}" alt="Asia" class="me-2 rounded" width="40px" />
                         Global (140+ areas)
                     </span>
                     <i class="bx bx-md bx-chevron-right"></i>
