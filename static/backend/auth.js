@@ -6,13 +6,11 @@ $(document).on('submit', '#userAuth', function (e) {
     submitButton.html('<span class="spinner-border mx-auto" role="status" aria-hidden="true"></span>').attr('disabled', true);
 
     email = $('#userAuth [name="email"]').val();
-    phone_number = $('#userAuth [name="phone_number"]').val();
 
     var formData = JSON.stringify({
         first_name: $('#userAuth [name="first_name"]').val(),
         last_name: $('#userAuth [name="last_name"]').val(),
         email: email,
-        phone_number: phone_number,
         password: $('#userAuth [name="password"]').val(),
         referral_code: $('#userAuth [name="referral_code"]').val()
     });
@@ -31,14 +29,13 @@ $(document).on('submit', '#userAuth', function (e) {
             
             $('.user_email').text(email);
             $('#otpVerifyForm [name="email"]').val(email);
-            $('#otpVerifyForm [name="phone_number"]').val(phone_number);
 
             // Open modal on success
             $('#verificationModal').modal('show');
         },
         error: function (error) {
             console.error(error);
-            showToast("User with this email or phone number already exists", 'bg-danger');
+            showToast("User with this email already exists", 'bg-danger');
         },
         complete: function() {
             // Revert button text and re-enable the button
@@ -107,7 +104,6 @@ $(document).on('submit', '#otpVerifyForm', function (e) {
     
     var formData = JSON.stringify({
         email: $('#otpVerifyForm [name="email"]').val(),
-        phone_number: $('#otpVerifyForm [name="phone_number"]').val(),
         otp: code,
     });
 
@@ -171,7 +167,7 @@ $(document).on('submit', '#formAccountSettings', function (e) {
         },
         error: function (error) {
             console.error(error);
-            showToast("User with this email or phone number already exists", 'bg-danger');
+            showToast("User with this email already exists", 'bg-danger');
         },
         complete: function() {
             // Revert button text and re-enable the button

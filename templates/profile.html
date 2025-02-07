@@ -67,10 +67,6 @@
                           <span class="h6">Status:</span>
                           <span class="badge bg-label-success">Active</span>
                         </li>
-                        <li class="mb-2">
-                          <span class="h6">Phone:</span>
-                          <span>{{ user.phone_number }}</span>
-                        </li>
                       </ul>
                       <div class="d-flex justify-content-center">
                         <a href="javascript:;" class="btn btn-primary w-100 me-4" data-bs-target="#editUser"
@@ -185,11 +181,6 @@
                         <label class="form-label" for="last_name">Last Name</label>
                         <input type="text" id="last_name" name="last_name" class="form-control"
                           placeholder="Doe" value="{{ user.last_name }}" required>
-                      </div>
-                      <div class="col-12 col-md-6">
-                        <label class="form-label" for="phone_number">Phone Number</label>
-                        <input type="text" id="phone_number" name="phone_number"
-                          class="form-control" placeholder="+12025550111" value="{{ user.phone_number }}" required>
                       </div>
                       <div class="col-12 col-md-6">
                         <label class="form-label" for="email">Email <span class="text-secondary"> (not changeable)</span></label>

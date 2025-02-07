@@ -60,7 +60,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             "email",
             "first_name",
             "last_name",
-            "phone_number",
             "password",
             "referral_code",
         ]
@@ -70,7 +69,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             email=validated_data["email"],
             first_name=validated_data["first_name"],
             last_name=validated_data["last_name"],
-            phone_number=validated_data["phone_number"],
             referral_code=validated_data["referral_code"],
         )
         user.username = f"{user.first_name}_{str(uuid.uuid4())[:6]}"
@@ -81,21 +79,16 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class OTPRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(required=False)
-    phone_number = serializers.CharField(required=False)
 
     def validate(self, data):
         email = data.get("email")
-        phone_number = data.get("phone_number")
 
-        if not email and not phone_number:
-            raise serializers.ValidationError({"error": "Either email or phone number is required."})
+        if not email:
+            raise serializers.ValidationError({"error": "Email is required."})
 
         # Check if the user exists
-        user = (
-            User.objects.filter(email=email)
-            if email
-            else User.objects.filter(phone_number=phone_number)
-        )
+        user = User.objects.filter(email=email)
+        
         if not user.exists():
             raise serializers.ValidationError({"error": "User does not exist."})
 
@@ -104,19 +97,14 @@ class OTPRequestSerializer(serializers.Serializer):
 
 class OTPVerifySerializer(serializers.Serializer):
     email = serializers.EmailField(required=False)
-    phone_number = serializers.CharField(required=False)
     otp = serializers.CharField(max_length=6)
 
     def validate(self, data):
         email = data.get("email")
-        phone_number = data.get("phone_number")
         otp = data.get("otp")
 
-        user = (
-            User.objects.filter(email=email)
-            if email
-            else User.objects.filter(phone_number=phone_number)
-        )
+        user = User.objects.filter(email=email)
+        
         if not user.exists():
             raise serializers.ValidationError({"error": "User does not exist."})
 
@@ -136,7 +124,6 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "id",
             "first_name",
             "last_name",
-            "phone_number",
             "email",
             "profile_image",
         ]

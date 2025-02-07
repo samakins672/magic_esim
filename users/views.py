@@ -87,12 +87,8 @@ class OTPRequestView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data.get("email")
-            phone_number = serializer.validated_data.get("phone_number")
-            user = (
-                User.objects.filter(email=email).first()
-                if email
-                else User.objects.filter(phone_number=phone_number).first()
-            )
+            user = User.objects.filter(email=email).first()
+            
             user.set_otp()  # Generate and save OTP
             # Send OTP via email/SMS (implement sending logic here)
             print(f"OTP sent to {user.email}: {user.otp}")  # Debug only
@@ -142,7 +138,6 @@ class OTPVerifyView(generics.GenericAPIView):
                         "id": user.id,
                         "first_name": user.first_name,
                         "last_name": user.last_name,
-                        "phone_number": user.phone_number,
                         "profile_image": user.profile_image.url if user.profile_image else None,
                         "email": user.email
                     }
@@ -195,7 +190,6 @@ class LoginView(generics.GenericAPIView):
                             "id": user.id,
                             "first_name": user.first_name,
                             "last_name": user.last_name,
-                            "phone_number": user.phone_number,
                             "email": user.email,
                             "profile_image": user.profile_image.url if user.profile_image else None,
                             "is_verified": user.is_verified,
@@ -279,7 +273,7 @@ class UserMeView(generics.RetrieveUpdateDestroyAPIView):
 
         # Exclude fields if they are empty or if email is passed
         excluded_fields = ['email']
-        for field in ['first_name', 'last_name', 'phone_number', 'profile_image']:
+        for field in ['first_name', 'last_name', 'profile_image']:
             if field in data and not data[field]:
                 excluded_fields.append(field)
 
@@ -297,7 +291,6 @@ class UserMeView(generics.RetrieveUpdateDestroyAPIView):
                     "id": instance.id,
                     "first_name": instance.first_name,
                     "last_name": instance.last_name,
-                    "phone_number": instance.phone_number,
                     "email": instance.email,
                     "profile_image": instance.profile_image.url if instance.profile_image else None,
                     "is_verified": instance.is_verified,
