@@ -1,0 +1,351 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en" class="layout-navbar-fixed layout-compact light-style layout-menu-fixed" dir="ltr"
+    data-theme="theme-default" data-assets-path="{% static '' %}" data-template="vertical-menu-template"
+    data-style="light">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Get eSIMs for International Travels - Magic eSIM</title>
+
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+    <meta name="description"
+        content="Get the best eSIM and VoIP solutions for international travels. Stay connected anywhere in the world with Magic eSIM." />
+    <meta name="keywords" content="eSIM, VoIP, international travel, global connectivity, Magic eSIM">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon/favicon.ico' %}" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="{% static 'vendor/fonts/boxicons.css' %}" />
+    <link rel="stylesheet" href="{% static 'vendor/fonts/fontawesome.css' %}" />
+    <link rel="stylesheet" href="{% static 'vendor/fonts/flag-icons.css' %}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static 'vendor/css/core.css' %}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{% static 'vendor/css/theme-default.css' %}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{% static 'css/demo.css' %}" />
+    <link rel="stylesheet" href="{% static 'vendor/css/pages/front-page.css' %}" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{% static 'vendor/libs/nouislider/nouislider.css' %}" />
+    <link rel="stylesheet" href="{% static 'vendor/libs/swiper/swiper.css' %}" />
+    <link rel="stylesheet" href="{% static 'vendor/libs/spinkit/spinkit.css' %}" />
+
+    <!-- Page CSS -->
+    <link rel="stylesheet" href="{% static 'vendor/css/pages/front-page-landing.css' %}" />
+
+    <!-- Helpers -->
+    <script src="{% static 'vendor/js/helpers.js' %}"></script>
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
+    <script src="{% static 'vendor/js/template-customizer.js' %}"></script>
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{% static 'js/front-config.js' %}"></script>
+
+    <script src="{% static 'vendor/js/dropdown-hover.js' %}"></script>
+    <script src="{% static 'vendor/js/mega-dropdown.js' %}"></script>
+
+</head>
+
+<body>
+
+    <!-- Navbar: Start -->
+    <nav class="layout-navbar shadow-none py-0">
+        <div class="container">
+            <div class="navbar navbar-expand-lg landing-navbar px-3 px-md-8">
+                <!-- Menu logo wrapper: Start -->
+                <div class="navbar-brand app-brand demo d-flex py-0 me-4 me-xl-8">
+                    <!-- Mobile menu toggle: Start-->
+                    <button class="navbar-toggler border-0 px-0 me-4" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="tf-icons bx bx-menu align-middle text-heading fw-bold"></i>
+                    </button>
+                    <!-- Mobile menu toggle: End-->
+                    <a href="/" class="app-brand-link">
+                        <span class="app-brand-logo demo">
+                            <img src="{% static 'img/logo.png' %}" alt="logo" class="img-fluid" width="160"
+                                data-app-light-img="logo.png" data-app-dark-img="logo-dark.png" />
+                        </span>
+                    </a>
+                </div>
+                <!-- Menu logo wrapper: End -->
+                <!-- Menu wrapper: Start -->
+                <div class="collapse navbar-collapse landing-nav-menu ps-5" id="navbarSupportedContent">
+                    <button class="navbar-toggler border-0 text-heading position-absolute end-0 top-0 scaleX-n1-rtl p-2"
+                        type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="tf-icons bx bx-x"></i>
+                    </button>
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link fw-bold" aria-current="page" href="#landingHero">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-bold" href="#landingESIM">eSIM</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-bold" href="#landingVirtualNumbers">Virtual Numbers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-bold" href="#landingFAQ">FAQs</a>
+                        </li>
+                        <!-- <li class="nav-item">
+              <a class="nav-link fw-bold" href="#landingContact">Contact Us</a>
+            </li> -->
+                    </ul>
+                </div>
+                <div class="landing-menu-overlay d-lg-none"></div>
+                <!-- Menu wrapper: End -->
+                <!-- Toolbar: Start -->
+                <ul class="navbar-nav flex-row align-items-center ms-auto">
+
+                    <!-- Style Switcher -->
+                    <li class="nav-item dropdown-style-switcher dropdown me-2 me-xl-1">
+                        <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
+                            data-bs-toggle="dropdown">
+                            <i class='bx'></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-styles">
+                            <li>
+                                <a class="dropdown-item" href="javascript:void(0);" data-theme="light">
+                                    <span class="align-middle"><i class='bx bx-sun me-3'></i>Light</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="javascript:void(0);" data-theme="dark">
+                                    <span class="align-middle"><i class="bx bx-moon me-3"></i>Dark</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="javascript:void(0);" data-theme="system">
+                                    <span class="align-middle"><i class="bx bx-desktop me-3"></i>System</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- / Style Switcher-->
+
+                    <!-- navbar button: Start -->
+                    {% if user.is_authenticated %}
+                    <li>
+                        <a href="/dashboard" class="btn btn-primary me-3 rounded-pill">
+                            <span class="tf-icons bx bx-home-circle scaleX-n1-rtl me-1"></span>Dashboard</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a href="/signup" class="btn btn-primary me-3 rounded-pill d-none d-md-inline-block">Sign Up</a>
+                        <a href="/login" class="btn btn-light rounded-pill">
+                            <span class="tf-icons bx bx-log-in-circle scaleX-n1-rtl me-1"></span>
+                            Login
+                        </a>
+                    </li>
+                    {% endif %}
+                    <!-- navbar button: End -->
+                </ul>
+                <!-- Toolbar: End -->
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar: End -->
+
+    <!-- Sections:Start -->
+    <main class="container" style="max-width: 1000px; margin-top: 120px; margin-bottom: 120px;">
+        <h1>Privacy Policy</h1>
+        <p>Welcome to Magic eSIM's Privacy Policy. Your privacy is critically important to us.</p>
+
+        <h2>1. Information We Collect</h2>
+        <p>We collect various types of information in connection with the services we provide, including:</p>
+        <ul>
+            <li>Personal identification information (Name, email address, phone number, etc.)</li>
+            <li>Usage data (e.g., how you use our services)</li>
+            <li>Location data</li>
+        </ul>
+
+        <h2>2. How We Use Your Information</h2>
+        <p>We use the information we collect in various ways, including to:</p>
+        <ul>
+            <li>Provide, operate, and maintain our services</li>
+            <li>Improve, personalize, and expand our services</li>
+            <li>Understand and analyze how you use our services</li>
+            <li>Develop new products, services, features, and functionality</li>
+            <li>Communicate with you, either directly or through one of our partners, including for customer
+                service, to provide you with updates and other information relating to the service, and for
+                marketing and promotional purposes</li>
+            <li>Process your transactions</li>
+            <li>Send you emails</li>
+            <li>Find and prevent fraud</li>
+        </ul>
+
+        <h2>3. Sharing Your Information</h2>
+        <p>We may share your information with third parties in the following situations:</p>
+        <ul>
+            <li>With service providers to monitor and analyze the use of our service</li>
+            <li>For business transfers: We may share or transfer your information in connection with, or during
+                negotiations of, any merger, sale of company assets, financing, or acquisition of all or a portion
+                of our business to another company</li>
+            <li>With affiliates: We may share your information with our affiliates, in which case we will require
+                those affiliates to honor this Privacy Policy</li>
+            <li>With business partners to offer you certain products, services, or promotions</li>
+            <li>With your consent: We may disclose your personal information for any other purpose with your consent
+            </li>
+        </ul>
+
+        <h2>4. Security of Your Information</h2>
+        <p>We use administrative, technical, and physical security measures to help protect your personal
+            information. While we have taken reasonable steps to secure the personal information you provide to us,
+            please be aware that despite our efforts, no security measures are perfect or impenetrable, and no
+            method of data transmission can be guaranteed against any interception or other type of misuse.</p>
+
+        <h2>5. Your Data Protection Rights</h2>
+        <p>Depending on your location, you may have the following rights regarding your personal data:</p>
+        <ul>
+            <li>The right to access You have the right to request copies of your personal data</li>
+            <li>The right to rectification You have the right to request that we correct any information you
+                believe is inaccurate or complete information you believe is incomplete</li>
+            <li>The right to erasure You have the right to request that we erase your personal data, under certain
+                conditions</li>
+            <li>The right to restrict processing You have the right to request that we restrict the processing of
+                your personal data, under certain conditions</li>
+            <li>The right to object to processing You have the right to object to our processing of your personal
+                data, under certain conditions</li>
+            <li>The right to data portability You have the right to request that we transfer the data that we have
+                collected to another organization, or directly to you, under certain conditions</li>
+        </ul>
+
+        <h2>6. Changes to This Privacy Policy</h2>
+        <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new
+            Privacy Policy on this page. You are advised to review this Privacy Policy periodically for any changes.
+            Changes to this Privacy Policy are effective when they are posted on this page.</p>
+    </main>
+    <!-- / Sections:End -->
+
+    <!-- Footer: Start -->
+    <footer class="landing-footer bg-body footer-text">
+        <div class="footer-top position-relative overflow-hidden z-1">
+            <img src="{% static 'img/front-pages/backgrounds/footer-bg.png' %}" alt="footer bg"
+                class="footer-bg banner-bg-img z-n1" />
+            <div class="container">
+                <div class="row gx-0 gy-6 g-lg-10">
+                    <div class="col-lg-5">
+                        <a href="/" class="app-brand-link mb-6">
+                            <span class="app-brand-logo demo">
+                                <img src="{% static 'img/logo-dark.png' %}" alt="Magic eSIM logo" class="img-fluid"
+                                    width="160" />
+                            </span>
+                        </a>
+                        <p class="footer-text footer-logo-description mb-6">
+                            Magic eSIM offers reliable eSIM and virtual number solutions, keeping you connected across
+                            the globe.
+                        </p>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <h6 class="footer-title mb-6">Services</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-4">
+                                <a href="/#landingESIM" class="footer-link">eSIM Plans</a>
+                            </li>
+                            <li class="mb-4">
+                                <a href="/#landingVirtualNumbers" class="footer-link">Virtual Numbers</a>
+                            </li>
+                            <li class="mb-4">
+                                <a href="/#landingFAQ" class="footer-link">FAQs</a>
+                            </li>
+                            <!-- <li>
+                <a href="/#landingContact" class="footer-link">Contact Us</a>
+              </li> -->
+                        </ul>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <h6 class="footer-title mb-6">Quick links</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-4">
+                              <a href="/privacy-policy" class="footer-link">Privacy Policy</a>
+                            </li>
+                            <li class="mb-4">
+                              <a href="/terms-and-conditions" class="footer-link">Terms & Conditions</a>
+                            </li>
+                            <li>
+                              <a href="mailto:support@esimmagic.com" class="footer-link">Support</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 col-md-4">
+                        <h6 class="footer-title mb-6">Get the Magic eSIM App</h6>
+                        <a href="javascript:;" class="d-block mb-4"><img
+                                src="{% static 'img/front-pages/landing-page/apple-icon.png' %}"
+                                alt="Download on the App Store" height="50px" /></a>
+                        <a href="javascript:;" class="d-block"><img
+                                src="{% static 'img/front-pages/landing-page/google-play-icon.png' %}"
+                                alt="Get it on Google Play" height="50px" /></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom py-3 py-md-5">
+            <div
+                class="container d-flex flex-wrap justify-content-between flex-md-row flex-column text-center text-md-start">
+                <div class="mb-2 mb-md-0">
+                    <span class="footer-bottom-text">©
+                        <script>
+                            document.write(new Date().getFullYear());
+                        </script>
+                        Magic eSIM. All Rights Reserved.
+                    </span>
+                </div>
+                <div>
+                    <a href="https://github.com/magicesim" class="me-4" target="_blank">
+                        <img src="{% static 'img/front-pages/icons/github.svg' %}" alt="GitHub" />
+                    </a>
+                    <a href="https://www.facebook.com/magicesim" class="me-4" target="_blank">
+                        <img src="{% static 'img/front-pages/icons/facebook.svg' %}" alt="Facebook" />
+                    </a>
+                    <a href="https://twitter.com/magicesim" class="me-4" target="_blank">
+                        <img src="{% static 'img/front-pages/icons/twitter.svg' %}" alt="Twitter" />
+                    </a>
+                    <a href="https://www.instagram.com/magicesim" target="_blank">
+                        <img src="{% static 'img/front-pages/icons/instagram.svg' %}" alt="Instagram" />
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer: End -->
+
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    <script src="{% static 'vendor/libs/jquery/jquery.js' %}"></script>
+    <script src="{% static 'vendor/libs/popper/popper.js' %}"></script>
+    <script src="{% static 'vendor/js/bootstrap.js' %}"></script>
+
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+    <script src="{% static 'vendor/libs/nouislider/nouislider.js' %}"></script>
+    <script src="{% static 'vendor/libs/swiper/swiper.js' %}"></script>
+    <script src="{% static 'vendor/libs/block-ui/block-ui.js' %}"></script>
+
+    <!-- Main JS -->
+    <script src="{% static 'js/front-main.js' %}"></script>
+
+    <!-- Page JS -->
+    <script src="{% static 'js/front-page-landing.js' %}"></script>
+    <script src="{% static 'backend/app.js' %}"></script>
+    <script src="{% static 'backend/functions.js' %}"></script>
+    <script src="{% static 'backend/numbers.js' %}"></script>
+
+</body>
+
+</html>

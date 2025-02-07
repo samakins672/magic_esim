@@ -33,6 +33,12 @@ def signup(request):
 def reset_password(request):
     return render(request, 'reset-password.html')
 
+def privacy_policy(request):
+    return render(request, 'privacy_policy.html')
+
+def terms_and_conditions(request):
+    return render(request, 'terms_and_conditions.html')
+
 @login_required
 def frontend_logout(request):
     # Log out the user
