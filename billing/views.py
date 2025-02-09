@@ -40,7 +40,7 @@ class PaymentListCreateView(generics.ListCreateAPIView):
             response = cp.createTransaction({
                 'amount': payment.price,
                 'currency1': payment.currency,  # User's currency
-                'currency2': 'BTC',            # Crypto currency for payment
+                'currency2': payment.currency,  # Crypto currency for payment
                 'buyer_email': self.request.user.email,
                 'item_name': f"Payment for {payment.ref_id}",
                 'custom': str(payment.ref_id),  # Reference for later tracking
