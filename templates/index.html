@@ -245,6 +245,10 @@
             <div class="tab-pane fade show active" id="navs-pills-justified-local" role="tabpanel">
               <!-- Country List -->
               <div class="row g-5 text-center pt-3 pb-3" id="countries-list">
+                <div class="input-group input-group-lg input-group-merge rounded-pill">
+                  <span class="input-group-text" id="basic-addon-search31"><i class="icon-base bx bx-search"></i></span>
+                  <input id="search_country" type="text" class="form-control" placeholder="Search..." aria-label="Search..." aria-describedby="basic-addon-search31">
+                </div>
                 {% for country in countries %}
                 <div class="col-12 col-md-6 col-lg-4 country-item {% if not country.is_popular %}d-none{% endif %}"
                   data-popular="{{ country.is_popular }}">

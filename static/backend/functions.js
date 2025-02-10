@@ -536,6 +536,7 @@ $(document).ready(function () {
 		});
 	});
 
+	// Handle form submission for eSIM plan purchase
 	$(document).on('submit', '#planDetailsForm', function (e) {
 		e.preventDefault();
 
@@ -578,6 +579,22 @@ $(document).ready(function () {
 			complete: function () {
 				// Revert button text and re-enable the button
 				submitButton.html('Submit changes').attr('disabled', false);
+			}
+		});
+	});
+
+	// Listen for input changes in the search box
+	$("#search_country").on("keyup", function () {
+		let searchValue = $(this).val().toLowerCase(); // Get input and convert to lowercase
+
+		$(".country-item").each(function () {
+			let countryName = $(this).find("span").text().trim().toLowerCase(); // Get the country name
+
+			// Show or hide based on match
+			if (countryName.includes(searchValue)) {
+				$(this).removeClass("d-none");
+			} else {
+				$(this).addClass("d-none");
 			}
 		});
 	});

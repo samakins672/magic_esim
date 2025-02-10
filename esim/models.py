@@ -7,6 +7,7 @@ class eSIMPlan(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     package_code = models.CharField(max_length=25)
+    iccid = models.CharField(max_length=50, default=None, blank=True, null=True)
     slug = models.CharField(max_length=25)
     currency_code = models.CharField(max_length=25)
     speed = models.CharField(max_length=25)
