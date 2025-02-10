@@ -40,7 +40,7 @@ class PaymentListCreateView(generics.ListCreateAPIView):
             response = cp.createTransaction({
                 'amount': payment.price,
                 'currency1': payment.currency,  # User's currency
-                'currency2': 'BTC',            # Crypto currency for payment
+                'currency2': 'LTCT',            # Crypto currency for payment
                 'buyer_email': self.request.user.email,
                 'item_name': f"Payment for {payment.ref_id}",
                 'custom': str(payment.ref_id),  # Reference for later tracking
@@ -48,9 +48,14 @@ class PaymentListCreateView(generics.ListCreateAPIView):
             })
             print(response)
             
-            plan_details = fetch_esim_plan_details(payment.package_code)
-            esim_plan = plan_details['obj']['packageList'][0]['name']
+            plan_details = fetch_esim_plan_details(payment.package_code, seller=payment.seller)
+            if payment.seller == 'esimgo':
+                # Fetch eSIM plan details
+                esim_plan = plan_details['description']
+            else:
+                esim_plan = plan_details['obj']['packageList'][0]['name']
 
+            print(esim_plan)
             if response.get('error') == 'ok':
                 # Save transaction details if creation is successful
                 payment.status = 'PENDING'

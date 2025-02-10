@@ -16,86 +16,197 @@ from django.conf import settings
 
 class eSIMPlanListView(APIView):
     """
-    View to fetch eSIM plans from the external API and filter based on supported fields.
+    View to fetch eSIM plans from:
+      - esimaccess (POST request, existing logic)
+      - esimgo (GET request, new logic)
+    based on a 'platform' query parameter.
     """
     permission_classes = [AllowAny]
 
     @extend_schema(
         parameters=[
+            # Existing filters from your eSIMPlanFilterSerializer
             OpenApiParameter("locationCode", OpenApiTypes.STR, description="Location code (e.g., US, IN)", required=False),
             OpenApiParameter("type", OpenApiTypes.STR, description="Type of plan (e.g., data, voice)", required=False),
             OpenApiParameter("slug", OpenApiTypes.STR, description="Slug identifier for the plan", required=False),
             OpenApiParameter("packageCode", OpenApiTypes.STR, description="Package code of the plan", required=False),
             OpenApiParameter("iccid", OpenApiTypes.STR, description="ICCID for the eSIM", required=False),
             OpenApiParameter("mainRegion", OpenApiTypes.STR, description="main Region codes", required=False),
+
+            # Which API to call
+            OpenApiParameter("platform", OpenApiTypes.STR, description="Which platform to call: esimaccess or esimgo", required=False),
+
+            # eSIM-Go specific params (some might be used only locally for filtering):
+            # OpenApiParameter("group", OpenApiTypes.STR, description="Group(s) for eSIM-Go (e.g. 'Standard+Unlimited+Essential')", required=False),
+            OpenApiParameter("countries", OpenApiTypes.STR, description="Countries for eSIM-Go (e.g. 'NG')", required=False),
+            OpenApiParameter("region", OpenApiTypes.STR, description="Region for local filtering (e.g. 'Africa')", required=False),
+            OpenApiParameter("description", OpenApiTypes.STR, description="Description substring filter for local filtering", required=False),
         ],
     )
     def get(self, request, *args, **kwargs):
+        """
+        Depending on 'platform', call either eSIMAccess or eSIM-Go API.
+        """
         serializer = eSIMPlanFilterSerializer(data=request.query_params)
-        if serializer.is_valid():
-            # Extract validated fields
-            filters = serializer.validated_data
-            
-            try:
-                esim_host = config('ESIMACCESS_HOST')
-                api_token = config('ESIMACCESS_ACCESS_CODE')
+        if not serializer.is_valid():
+            return Response(
+                {
+                    "status": False,
+                    "message": "Invalid input parameters.",
+                    "errors": serializer.errors,
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Extract validated fields (from your serializer)
+        filters = serializer.validated_data
+
+        # Determine platform
+        platform = request.query_params.get("platform", "esimaccess").lower()
+
+        try:
+            # ---------------------------------------------------------------
+            # 1) eSIM-Go Logic (GET)
+            # ---------------------------------------------------------------
+            if platform == "esimgo":
+                # Pull from env (or hardcode if it's always the same)
+                esimgo_host = config("ESIMGO_HOST")
+                esimgo_api_key = config("ESIMGO_API_KEY")
+
+                # eSIM-Go frequently filters by 'countries' and 'group' in the query params
+                group_param = "Standard Unlimited Essential"
+                countries_param = request.query_params.get("countries", "")
+                region_param = request.query_params.get("region", "")        # e.g. "Africa"
+                desc_param = request.query_params.get("description", "")     # e.g. substring to match in bundle description
+
+                # Build the GET URL
+                url = (
+                    f"{esimgo_host}/catalogue?"
+                    f"group={group_param}&countries={countries_param}&region={region_param}&description={desc_param}"
+                    f"&api_key={esimgo_api_key}"
+                )
+
+                # Prepare headers
+                headers = {
+                    "accept": "application/json",
+                    "x-api-key": esimgo_api_key
+                }
+
+                # Make request
+                response = requests.get(url, headers=headers)
+                if response.status_code != 200:
+                    return Response(
+                        {
+                            "status": False,
+                            "message": "Failed to fetch eSIM plans from eSIM-Go.",
+                            "error": response.text,
+                        },
+                        status=response.status_code
+                    )
+
+                # Parse the response
+                data = response.json().get("bundles", [])
+
+                # Further local filtering based on region and description
+                if region_param:
+                    # Keep only bundles that have at least one country with region containing region_param
+                    data = [
+                        bundle for bundle in data
+                        if any(
+                            region_param in country.get("iso", "")
+                            for country in bundle.get("countries", [])
+                        )
+                    ]
+
+                # Example transformation: adding formattedVolume / formattedPrice
+                for item in data:
+                    # Volume
+                    if item.get("unlimited") or item.get("dataAmount", -1) < 0:
+                        item["formattedVolume"] = "Unlimited"
+                    else:
+                        # eSIM-Go dataAmount is in MB
+                        data_mb = item["dataAmount"]
+                        if data_mb >= 1024:
+                            item["formattedVolume"] = f"{(data_mb / 1024):.1f} GB"
+                        else:
+                            item["formattedVolume"] = f"{data_mb} MB"
+
+                    # Price
+                    price = item.get("price", 0)
+                    item["formattedPrice"] = f"{(price * 2):.2f}"
+
+                return Response(
+                    {
+                        "status": True,
+                        "message": "eSIM plans fetched successfully from eSIM-Go.",
+                        "data": data
+                    },
+                    status=status.HTTP_200_OK
+                )
+
+            # ---------------------------------------------------------------
+            # 2) eSIMAccess Logic (POST, existing)
+            # ---------------------------------------------------------------
+            else:
+                esim_host = config("ESIMACCESS_HOST")
+                api_token = config("ESIMACCESS_ACCESS_CODE")
 
                 response = requests.post(
                     f"{esim_host}/api/v1/open/package/list",
                     json=filters,
                     headers={"RT-AccessCode": api_token},
                 )
+
                 if response.status_code == 200:
                     data = response.json().get('obj', {})
                     # Check if mainRegion was passed and filter the data accordingly
                     main_region = filters.get('mainRegion')
                     if main_region:
-                        data = data.get('packageList', [])  # Extract 'packageList' array from the API response
+                        data = data.get('packageList', [])
                         data = [item for item in data if item.get('slug', '').startswith(main_region)]
 
-                        # Sort the data by price from least to highest
+                        # Sort by price ascending
                         data = sorted(data, key=lambda x: x.get('price', float('inf')))
 
-                        # Convert volume from bytes to GB and MB format
+                        # Convert volume from bytes to GB/MB
                         for item in data:
                             volume_bytes = item.get('volume', 0)
-                            if (volume_bytes >= 1024 ** 3):
+                            if volume_bytes >= 1024 ** 3:
                                 item['formattedVolume'] = f"{(volume_bytes / (1024 ** 3)):.1f} GB"
                             else:
                                 item['formattedVolume'] = f"{(volume_bytes / (1024 ** 2)):.0f} MB"
-                            
+
                             # Format the price
                             price = item.get('price', 0)
                             item['formattedPrice'] = f"{((price / 10000) * 2):.2f}"
-                    
-                    # Return the filtered data
-                    return Response({
-                        "status": True,
-                        "message": "eSIM plans fetched successfully.",
-                        "data": data
-                    }, status=status.HTTP_200_OK)
-                else:
-                    # Handle non-200 responses from the external API
-                    return Response({
-                        "status": False,
-                        "message": "Failed to fetch eSIM plans.",
-                        "error": response.json(),
-                    }, status=response.status_code)
-            except requests.RequestException as e:
-                # Handle exceptions during the request
-                return Response({
-                    "status": False,
-                    "message": "Error connecting to the eSIM API.",
-                    "error": str(e),
-                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            # Validation failed
-            return Response({
-                "status": False,
-                "message": "Invalid input parameters.",
-                "errors": serializer.errors,
-            }, status=status.HTTP_400_BAD_REQUEST)
 
+                    return Response(
+                        {
+                            "status": True,
+                            "message": "eSIM plans fetched successfully from eSIMAccess.",
+                            "data": data
+                        },
+                        status=status.HTTP_200_OK
+                    )
+                else:
+                    return Response(
+                        {
+                            "status": False,
+                            "message": "Failed to fetch eSIM plans from eSIMAccess.",
+                            "error": response.json(),
+                        },
+                        status=response.status_code
+                    )
+
+        except requests.RequestException as e:
+            return Response(
+                {
+                    "status": False,
+                    "message": f"Error connecting to {platform} eSIM API.",
+                    "error": str(e),
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class eSIMProfileView(APIView):
     """

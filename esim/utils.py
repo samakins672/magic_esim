@@ -14,21 +14,48 @@ def calculate_expiry_date(duration):
     return now() + timedelta(days=duration)
 
 
-def fetch_esim_plan_details(package_code):
+def fetch_esim_plan_details(package_code, seller="esimaccess"):
     """
-    Fetch plan details from the eSIM API using the package code.
+    Fetch plan details from the eSIM API using the package_code.
+    The 'seller' parameter determines which provider to query:
+      - 'esimaccess': existing POST call
+      - 'esimgo': GET call to eSIM-Go
     """
-    url = esim_host + "/api/v1/open/package/list"
-    headers = {"RT-AccessCode": api_token}
-    params = {"packageCode": package_code}
-
     try:
-        response = requests.post(url, json=params, headers=headers)
-        response.raise_for_status()  # Raise an error for non-200 responses
-        data = response.json()
-        return data
+        if seller.lower() == "esimgo":
+            # eSIM-Go flow
+            esimgo_host = config("ESIMGO_HOST")
+            esimgo_api_key = config("ESIMGO_API_KEY")  # You can set a default in your .env or code
+
+            # Build the GET URL for eSIM-Go
+            # Example: https://api.esim-go.com/v2.4/catalogue/bundle/<package_code>?api_key=...
+            url = f"{esimgo_host}/catalogue/bundle/{package_code}?api_key={esimgo_api_key}"
+
+            headers = {
+                "accept": "application/json",
+                "x-api-key": esimgo_api_key
+            }
+
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()  # Raise an error if status_code != 200
+            return response.json()
+
+        else:
+            # eSIMAccess flow (default)
+            esim_host = config("ESIMACCESS_HOST")
+            api_token = config("ESIMACCESS_ACCESS_CODE")
+
+            url = f"{esim_host}/api/v1/open/package/list"
+            headers = {"RT-AccessCode": api_token}
+            payload = {"packageCode": package_code}
+
+            response = requests.post(url, json=payload, headers=headers)
+            response.raise_for_status()
+            return response.json()
+
     except requests.RequestException as e:
-        print(f"Error fetching eSIM plan details: {e}")
+        # Log or handle the exception as appropriate for your app
+        print(f"Error fetching eSIM plan details from {seller}: {e}")
         return None
 
 
