@@ -18915,7 +18915,7 @@ html:not([dir=rtl]) .toast.bs-toast .toast-header .btn-close {
 
 .bg-white {
     --bs-bg-opacity: 1;
-    background-color: #fff !important
+    background-color: #2b2c40 !important
 }
 
 .bg-body {

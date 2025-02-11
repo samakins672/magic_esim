@@ -32,7 +32,7 @@
           <div class="container-xxl flex-grow-1 container-p-y">
             <!-- Steps to get eSIM -->
             <section class="row gap-5 justify-content-center p-3 mb-5">
-              <div class="col-12 col-md-5 bg-gradient-info shadow rounded-5 p-5">
+              <div class="col-12 col-md-6 bg-gradient-info shadow rounded-5 p-5">
                 <a href="javascript:;" data-location_code="GL-13"
                   class="d-flex flex-row justify-content-between py-2 align-items-center fw-bold text-white show-global-esims">
                   <img src="{% static 'img/illustrations/world_mobile_esim.png' %}" alt="world_mobile_esim"
@@ -42,7 +42,7 @@
                 </a>
               </div>
 
-              <div class="col-12 col-md-5 bg-gradient-primary shadow rounded-5 p-5">
+              <!-- <div class="col-12 col-md-5 bg-gradient-primary shadow rounded-5 p-5">
                 <a href="javascript:;" data-location_code="GL-13"
                   class="d-flex flex-row justify-content-between py-2 align-items-center fw-bold text-white show-global-esims">
                   <img src="{% static 'img/illustrations/interactive_esim.png' %}" alt="interactive_esim"
@@ -50,7 +50,7 @@
                   <span class="fs-4">Invite friends now & earn USD $3</span>
                   <i class="bx bx-md bx-chevron-right"></i>
                 </a>
-              </div>
+              </div> -->
             </section>
             <!-- / Steps to get eSIM -->
 
@@ -107,8 +107,30 @@
                     </div>
 
                     <!-- eSIM Plan Cards -->
-                    <div class="row g-5 text-center pt-3 pb-3 d-none" id="esim-plan-cards">
-                      <!-- Dynamically rendered eSIM plan cards will go here -->
+                    <div class="d-none esims_show">
+                      <div class="text-left">
+                        <button id="back-to-countries-btn" class="btn btn-md rounded-pill btn-dark">
+                          <i class="bx bx-sm bx-left-arrow-alt"></i> Back to Countries
+                        </button>
+                      </div>
+                      
+                      <div class="col-12 mt-3">
+                        <div class="border shadow border-dark rounded-5 rounded-bottom border-2 p-5 d-flex align-items-end justify-content-between esim_local_hero" style="background: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 80%)), url(https://flagcdn.com/w320/de.png); height: 30vh;">
+                          <h4 class="m-0 text-white fw-bold mb-5 esim_country">eSIM {{country}}</h4>
+                          <img src="https://flagcdn.com/w320/de.png" class="rounded mb-5 local_esim_flag" style="width: 60px; height: auto;">
+                        </div>
+                      </div>
+                      <div class="col-12 mt-5 mb-0 h4 text-dark fw-bolder text-start">Standard Bundles</div>
+                      
+                      <div class="row g-3 text-center pt-3 pb-3" id="esim-plan-cards">
+                        <!-- Dynamically rendered eSIM plan cards will go here -->
+                      </div>
+  
+                      <div class="col-12 mt-5 mb-0 h4 text-dark fw-bolder text-start">Unlimited Bundles</div>
+  
+                      <div class="row g-3 text-center pt-3 pb-3" id="unlimited-esim-plan-cards">
+                        <!-- Dynamically rendered Unlimited eSIM plan cards will go here -->
+                      </div>
                     </div>
                   </div>
 
@@ -236,7 +258,7 @@
             <hr class="py-5">
             <!-- Steps to get eSIM -->
             <section class="row gap-5 justify-content-center p-3 mb-5">
-              <div class="col-12 col-md-5 bg-gradient-warning shadow rounded-5 p-5">
+              <div class="col-12 col-md-6 bg-gradient-warning shadow rounded-5 p-5">
                 <a href="javascript:;" data-location_code="GL-13"
                   class="d-flex flex-row justify-content-between py-2 align-items-center fw-bold text-dark show-global-esims">
                   <img src="{% static 'img/illustrations/world_mobile_esim.png' %}" alt="world_mobile_esim"
@@ -245,7 +267,7 @@
                   <i class="bx bx-md bx-chevron-right"></i>
                 </a>
               </div>
-
+<!-- 
               <div class="col-12 col-md-5 bg-gradient-primary shadow rounded-5 p-5">
                 <a href="javascript:;" data-location_code="GL-13"
                   class="d-flex flex-row justify-content-between py-2 align-items-center fw-bold text-white show-global-esims">
@@ -254,7 +276,7 @@
                   <span class="fs-4">Invite friends now & earn USD $3</span>
                   <i class="bx bx-md bx-chevron-right"></i>
                 </a>
-              </div>
+              </div> -->
             </section>
             <!-- / Steps to get eSIM -->
 
