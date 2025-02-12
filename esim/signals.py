@@ -24,7 +24,7 @@ def handle_payment_completed(sender, instance, **kwargs):
             raise ValueError("Payment expired.")
 
         # Fetch eSIM plan details
-        plan_details = fetch_esim_plan_details(package_code)
+        plan_details = fetch_esim_plan_details(package_code, seller)
         print(plan_details)
         if not plan_details or plan_details['success'] == False:
             raise ValueError("Failed to fetch plan details from the eSIM API.")

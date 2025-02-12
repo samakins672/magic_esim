@@ -206,6 +206,114 @@ class eSIMPlanListView(APIView):
         )
 
 
+class ESIMGoPlanDetailView(APIView):
+    """
+    Fetch a single eSIM-Go plan detail by 'name'.
+    Example usage:
+      GET /api/esimgo/plan-detail?name=esim_ULE_1D_CN_V2
+    """
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="name",
+                type=OpenApiTypes.STR,
+                description="The 'name' (e.g., 'esim_ULE_1D_CN_V2') of the eSIM-Go plan to fetch.",
+                required=True
+            ),
+        ],
+        responses={
+            200: OpenApiTypes.OBJECT,
+            400: OpenApiTypes.OBJECT,
+            404: OpenApiTypes.OBJECT
+        },
+    )
+    def get(self, request, *args, **kwargs):
+        """Retrieve a single eSIM-Go plan by 'name'."""
+        # 1) Grab the 'name' from query parameters
+        plan_name = request.query_params.get("name")
+        if not plan_name:
+            return Response(
+                {
+                    "status": False,
+                    "message": "Missing required 'name' parameter for eSIM-Go plan."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # 2) Prepare eSIM-Go environment variables and the API URL
+        esimgo_host = config("ESIMGO_HOST")
+        esimgo_api_key = config("ESIMGO_API_KEY")
+
+        url = f"{esimgo_host}/catalogue/bundle/{plan_name}?api_key={esimgo_api_key}"
+        headers = {
+            "accept": "application/json",
+            "x-api-key": esimgo_api_key
+        }
+
+        # 3) Make the GET request to fetch the plan details
+        try:
+            response = requests.get(url, headers=headers, timeout=15)
+        except requests.RequestException as e:
+            return Response(
+                {
+                    "status": False,
+                    "message": "Error connecting to eSIM-Go API.",
+                    "error": str(e),
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        # 4) Handle the response
+        if response.status_code == 200:
+            plan_data = response.json()
+
+            # Optional transformations:
+            # For example, formatting volume/price so it matches your style
+
+            # (a) Format volume
+            if plan_data.get("unlimited") or plan_data.get("dataAmount", -1) < 0:
+                plan_data["formattedVolume"] = "Unlimited"
+            else:
+                data_mb = plan_data.get("dataAmount", 0)
+                if data_mb >= 1024:
+                    plan_data["formattedVolume"] = f"{(data_mb / 1024):.1f} GB"
+                else:
+                    plan_data["formattedVolume"] = f"{data_mb} MB"
+
+            # (b) Format price (example: multiply by 2 to match your logic)
+            price = plan_data.get("price", 0)
+            plan_data["formattedPrice"] = f"{(price * 2):.2f}"
+
+            return Response(
+                {
+                    "status": True,
+                    "message": "eSIM-Go plan details fetched successfully.",
+                    "data": plan_data,
+                },
+                status=status.HTTP_200_OK
+            )
+        elif response.status_code == 404:
+            return Response(
+                {
+                    "status": False,
+                    "message": f"No eSIM-Go plan found with name '{plan_name}'.",
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+        else:
+            # Some other non-200 status
+            return Response(
+                {
+                    "status": False,
+                    "message": "Failed to fetch eSIM-Go plan details.",
+                    "error": response.text,
+                },
+                status=response.status_code
+            )
+        
+
 class eSIMProfileView(APIView):
     """
     View to fetch eSIM profile details based on the orderNo or ICCID.
