@@ -131,6 +131,8 @@ class eSIMPlanListView(APIView):
             # (You can adapt to your own logic as needed)
             group_param = "Standard Unlimited Essential"
             countries_param = request.query_params.get("locationCode", "")
+            if '!' in countries_param:
+                countries_param = ""
             region_param = request.query_params.get("region", "")
             desc_param = request.query_params.get("description", "")
 
@@ -159,7 +161,7 @@ class eSIMPlanListView(APIView):
                     bundles = [
                         bundle for bundle in bundles
                         if any(
-                            region_param.upper() in country.get("iso", "").upper()
+                            region_param in country.get("iso", "")
                             for country in bundle.get("countries", [])
                         )
                     ]

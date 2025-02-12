@@ -138,7 +138,7 @@
                     <div class="row g-5 text-center pt-3 pb-3" id="regions-list">
                       <!-- Added `g-3` for uniform spacing -->
                       <div class="col-12 col-md-6 col-lg-4">
-                        <a href="javascript:;" data-location_code="AF"
+                        <a href="javascript:;" data-location_code="AF" data-region="Africa"
                           class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
                           <span>
                             <img src="{% static 'img/regions/af.png' %}" alt="Africa" class="me-2 rounded-circle"
@@ -149,7 +149,7 @@
                         </a>
                       </div>
                       <div class="col-12 col-md-6 col-lg-4">
-                        <a href="javascript:;" data-location_code="AS"
+                        <a href="javascript:;" data-location_code="AS" data-region="Asia"
                           class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
                           <span>
                             <img src="{% static 'img/regions/as.png' %}" alt="Asia" class="me-2 rounded-circle" width="40px" />
@@ -159,7 +159,7 @@
                         </a>
                       </div>
                       <div class="col-12 col-md-6 col-lg-4">
-                        <a href="javascript:;" data-location_code="EU"
+                        <a href="javascript:;" data-location_code="EU" data-region="Europe"
                           class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
                           <span>
                             <img src="{% static 'img/regions/eu.png' %}" alt="Europe" class="me-2 rounded-circle"
@@ -170,7 +170,7 @@
                         </a>
                       </div>
                       <div class="col-12 col-md-6 col-lg-4">
-                        <a href="javascript:;" data-location_code="NA"
+                        <a href="javascript:;" data-location_code="NA" data-region="North America"
                           class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
                           <span>
                             <img src="{% static 'img/regions/na.png' %}" alt="North America" class="me-2 rounded-circle"
@@ -181,7 +181,7 @@
                         </a>
                       </div>
                       <div class="col-12 col-md-6 col-lg-4">
-                        <a href="javascript:;" data-location_code="SA"
+                        <a href="javascript:;" data-location_code="SA" data-region="South America"
                           class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
                           <span>
                             <img src="{% static 'img/regions/sa.png' %}" alt="South America" class="me-2 rounded-circle"
@@ -192,7 +192,7 @@
                         </a>
                       </div>
                       <div class="col-12 col-md-6 col-lg-4">
-                        <a href="javascript:;" data-location_code="CA"
+                        <a href="javascript:;" data-location_code="CA" data-region="Caribbean"
                           class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
                           <span>
                             <img src="{% static 'img/regions/cb.png' %}" alt="Caribbean" class="me-2 rounded-circle"
@@ -204,9 +204,31 @@
                       </div>
                     </div>
 
-                    <!-- eSIM Region Plan Cards -->
-                    <div class="row g-5 text-center pt-3 pb-3 d-none" id="esim-region-cards">
-                      <!-- Dynamically rendered eSIM plan cards will go here -->
+                    <!-- eSIM Plan Cards -->
+                    <div class="d-none esims_region_show">
+                      <div class="text-left">
+                        <button id="back-to-regions-btn" class="btn btn-md rounded-pill btn-dark">
+                          <i class="bx bx-sm bx-left-arrow-alt"></i> Back to Regions
+                        </button>
+                      </div>
+                      
+                      <div class="col-12 mt-3">
+                        <div class="border shadow border-dark rounded-5 rounded-bottom border-2 p-5 d-flex align-items-end justify-content-between esim_region_hero" 
+                          style="background: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 80%)), url(https://flagcdn.com/w320/de.png); height: 30vh;">
+                          <h4 class="m-0 text-white fw-bold mb-5 esim_region">eSIM {{country}}</h4>
+                        </div>
+                      </div>
+                      <div class="col-12 mt-5 mb-0 h4 text-dark fw-bolder text-start">Standard Bundles</div>
+                      
+                      <div class="row g-3 text-center pt-3 pb-3" id="esim-region-cards">
+                        <!-- Dynamically rendered eSIM plan cards will go here -->
+                      </div>
+  
+                      <div class="col-12 mt-5 mb-0 h4 text-dark fw-bolder text-start">Unlimited Bundles</div>
+  
+                      <div class="row g-3 text-center pt-3 pb-3" id="unlimited-esim-region-cards">
+                        <!-- Dynamically rendered Unlimited eSIM plan cards will go here -->
+                      </div>
                     </div>
                   </div>
 
@@ -246,8 +268,30 @@
                     </div>
 
                     <!-- eSIM Global Plan Cards -->
-                    <div class="row g-5 text-center pt-3 pb-3 d-none" id="esim-global-cards">
-                      <!-- Dynamically rendered eSIM plan cards will go here -->
+                    <div class="d-none esims_global_show">
+                      <div class="text-left">
+                        <button id="back-to-global-btn" class="btn btn-md rounded-pill btn-dark">
+                          <i class="bx bx-sm bx-left-arrow-alt"></i> Back to Globals
+                        </button>
+                      </div>
+                      
+                      <div class="col-12 mt-3">
+                        <div class="border shadow border-dark rounded-5 rounded-bottom border-2 p-5 d-flex align-items-end justify-content-between esim_global_hero" 
+                          style="background: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 80%)), url(https://flagcdn.com/w320/de.png); height: 30vh;">
+                          <h4 class="m-0 text-white fw-bold mb-5 esim_global">eSIM {{country}}</h4>
+                        </div>
+                      </div>
+                      <div class="col-12 mt-5 mb-0 h4 text-dark fw-bolder text-start">Standard Bundles</div>
+                      
+                      <div class="row g-5 text-center pt-3 pb-3" id="esim-global-cards">
+                        <!-- Dynamically rendered eSIM plan cards will go here -->
+                      </div>
+  
+                      <div class="col-12 mt-5 mb-0 h4 text-dark fw-bolder text-start">Unlimited Bundles</div>
+  
+                      <div class="row g-3 text-center pt-3 pb-3" id="unlimited-esim-global-cards">
+                        <!-- Dynamically rendered Unlimited eSIM plan cards will go here -->
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -115,6 +115,7 @@ $(document).ready(function () {
 	// Handle click on a region to fetch eSIM plans
 	$(document).on('click', '.show-region-esims', function (e) {
 		const locationCode = $(this).data("location_code");
+		const region = $(this).data("region");
 
 		// Show loading spinner (block UI)
 		$("#navs-pills-justified-regions").block({
@@ -132,65 +133,81 @@ $(document).ready(function () {
 		$.ajax({
 			url: '/api/esim/plans/',
 			type: 'GET',
-			data: { locationCode: '!RG' },
+			data: { locationCode: '!RG', region: region, description: region },
 			success: function (response) {
 				if (response.status) {
 					// Populate eSIM cards
 					const planCards = $('#esim-region-cards');
+					const unlimitedCards = $('#unlimited-esim-region-cards');
 					planCards.empty(); // Clear previous content
+					unlimitedCards.empty(); // Clear previous content
 					// Filter and sort plans
 					const sortedPlans = response.data.standard
-						.filter(plan => plan.slug.startsWith(`${locationCode}-`)) // Filter by slug prefix
+						.filter(plan => plan.slug.startsWith(`${locationCode}-`) && !plan.slug.includes('_End') && !plan.slug.includes('_Daily')) // Filter by slug prefix and exclude slugs with "_End"
+						.sort((a, b) => a.price - b.price); // Sort by price (ascending)
+					// Filter and sort plans
+					const sortedUnlimited = response.data.unlimited
 						.sort((a, b) => a.price - b.price); // Sort by price (ascending)
 
+					console.log(sortedPlans);
+					console.log(sortedUnlimited);
 					sortedPlans.forEach(plan => {
-						// Format price (last 4 digits as decimal)
-						const formattedPrice = ((plan.price / 10000) * 2).toFixed(2);
-
-						// Format data volume (MB if less than 1GB)
-						const formattedVolume = plan.volume < 1024 ** 3
-							? `${(plan.volume / (1024 ** 2)).toFixed(0)} MB` // Convert to MB
-							: `${(plan.volume / (1024 ** 3)).toFixed(1)} GB`; // Convert to GB
-
 						// Format duration
 						const formattedDuration = plan.duration > 1 ? `${plan.duration} Days` : `${plan.duration} Day`;
 
-						const locationCount = plan.locationNetworkList.length;
-						const locationText = locationCount > 1 ? `${locationCount} Countries` : `${locationCount} Country`;
-
 						const card = `
-                <div class="col-md-4 mb-4">
-                  <div class="card shadow border-primary rounded-5 border-1">
-                    <div class="card-header d-flex align-items-center justify-content-between text-dark fw-bolder">
-                      <h5 class="m-0">${plan.name}</h5>
-                      <img src="/static/img/regions/${locationCode.toLowerCase()}.png" class="rounded" style="width: 40px; height: auto;">
-                    </div>
-                    <div class="card-body text-center">
-                      <ul class="list-unstyled text-start mb-4">
-                        <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top"><strong>Coverage:</strong> <span class="badge bg-label-primary p-2 fs-6">${locationText}</ class="btn btn-outline-primary"></li>
-                        <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top"><strong>Data:</strong> <span>${formattedVolume}</span></li>
-                        <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top"><strong>Validity:</strong> <span>${formattedDuration}</span></li>
-                        <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top border-bottom"><strong>Price:</strong> <span class="fs-5 text-primary">$${formattedPrice} ${plan.currencyCode}</span></li>
-                      </ul>
-                      <button class="btn btn-outline-primary rounded-pill w-100 show_plan_details py-3" data-package_code="${plan.packageCode}"  data-plan_type="region" 
-					  	data-price="${formattedPrice}" data-currency="${plan.currencyCode}" data-location_code="${locationCode}" data-seller="esimaccess"
-						data-bs-toggle="modal" data-bs-target="#planDetailsModal">Buy Now</button>
-                    </div>
-                  </div>
-                </div>
-              `;
+						<div class="col-md-6">
+							<div class="card shadow border-dark rounded-5 border-1 cursor-pointer show_plan_details" data-package_code="${plan.packageCode}"  data-plan_type="single" 
+								data-price="${plan.formattedPrice}" data-currency="${plan.currencyCode}" data-location_code="${locationCode}" data-seller="esimaccess"
+								data-bs-toggle="modal" data-bs-target="#planDetailsModal">
+								<div class="card-header d-flex align-items-center justify-content-between p-4">
+									<span class="d-flex flex-column align-items-start justify-content-between">
+										<h5 class="m-0 fs-4 fw-bold text-dark">${plan.formattedVolume}</h5>
+										<p class="m-0">${formattedDuration}</p>
+									</span>
+									<span class="fs-4 text-dark d-flex gap-2 align-items-center justify-content-between">
+										$${plan.formattedPrice}
+										<i class="bx bx-sm bxs-right-arrow-circle"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+						`;
 						planCards.append(card);
 					});
-					back_button = `
-              <div class="text-center">
-                <button id="back-to-regions-btn" class="btn btn-md rounded-pill btn-primary mt-4">Back to Regions</button>
-              </div>
-            `;
-					planCards.append(back_button);
+
+					sortedUnlimited.forEach(plan => {
+						// Format duration
+						const formattedDuration = plan.duration > 1 ? `${plan.duration} Days` : `${plan.duration} Day`;
+
+						const card = `
+						<div class="col-md-6">
+							<div class="card shadow border-dark rounded-5 border-1 cursor-pointer show_unlimited_details" data-package_code="${plan.name}"  data-plan_type="single" 
+								data-price="${plan.formattedPrice}" data-currency="USD" data-location_code="${locationCode}" data-seller="esimgo"
+								data-bs-toggle="modal" data-bs-target="#planDetailsModal">
+								<div class="card-header d-flex align-items-center justify-content-between p-4">
+									<span class="d-flex flex-column align-items-start justify-content-between">
+										<h5 class="m-0 fs-4 fw-bold text-dark">${formattedDuration}</h5>
+										<p class="m-0">∞ GB</p>
+									</span>
+									<span class="fs-4 text-dark d-flex gap-2 align-items-center justify-content-between">
+										$${plan.formattedPrice}
+										<i class="bx bx-sm bxs-right-arrow-circle"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+						`;
+						unlimitedCards.append(card);
+					});
 
 					// Show eSIM plans, hide countries
+					$('.esim_region').text(region);
+					if (response.data.unlimited.length > 0) {
+						$('.esim_region_hero').attr('style', `background: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 80%)), url('${response.data.unlimited[0].imageUrl}') center center; height: 30vh; background-size: cover;`);
+					}
 					$('#regions-list').addClass('d-none');
-					$('#esim-region-cards').removeClass('d-none');
+					$('.esims_region_show').removeClass('d-none');
 				} else {
 					showToast('No eSIM plans available for this location.', 'bg-danger');
 				}
@@ -208,6 +225,7 @@ $(document).ready(function () {
 	// Handle click on a global to fetch eSIM plans
 	$(document).on('click', '.show-global-esims', function (e) {
 		const locationCode = $(this).data("location_code");
+		const region = "Global";
 
 		// Show loading spinner (block UI)
 		$("#navs-pills-justified-global").block({
@@ -225,65 +243,81 @@ $(document).ready(function () {
 		$.ajax({
 			url: '/api/esim/plans/',
 			type: 'GET',
-			data: { locationCode: '!GL' },
+			data: { locationCode: '!GL', region: region, description: region },
 			success: function (response) {
 				if (response.status) {
 					// Populate eSIM cards
 					const planCards = $('#esim-global-cards');
+					const unlimitedCards = $('#unlimited-esim-global-cards');
 					planCards.empty(); // Clear previous content
+					unlimitedCards.empty(); // Clear previous content
 					// Filter and sort plans
 					const sortedPlans = response.data.standard
-						.filter(plan => plan.slug.startsWith(`${locationCode}`)) // Filter by slug prefix
+						.filter(plan => plan.slug.startsWith(`${locationCode}`) && !plan.slug.includes('_End') && !plan.slug.includes('_Daily')) // Filter by slug prefix and exclude slugs with "_End"
+						.sort((a, b) => a.price - b.price); // Sort by price (ascending)
+					// Filter and sort plans
+					const sortedUnlimited = response.data.unlimited
 						.sort((a, b) => a.price - b.price); // Sort by price (ascending)
 
+					console.log(sortedPlans);
+					console.log(sortedUnlimited);
 					sortedPlans.forEach(plan => {
-						// Format price (last 4 digits as decimal)
-						const formattedPrice = ((plan.price / 10000) * 2).toFixed(2);
-
-						// Format data volume (MB if less than 1GB)
-						const formattedVolume = plan.volume < 1024 ** 3
-							? `${(plan.volume / (1024 ** 2)).toFixed(0)} MB` // Convert to MB
-							: `${(plan.volume / (1024 ** 3)).toFixed(1)} GB`; // Convert to GB
-
 						// Format duration
 						const formattedDuration = plan.duration > 1 ? `${plan.duration} Days` : `${plan.duration} Day`;
 
-						const locationCount = plan.locationNetworkList.length;
-						const locationText = locationCount > 1 ? `${locationCount} Countries` : `${locationCount} Country`;
-
 						const card = `
-                <div class="col-md-4 mb-4">
-                  <div class="card shadow border-primary border-1 rounded-5">
-                    <div class="card-header d-flex align-items-center justify-content-between text-dark fw-bolder">
-                      <h5 class="m-0">${plan.name}</h5>
-                      <img src="/static/img/regions/as.png" class="rounded" style="width: 40px; height: auto;">
-                    </div>
-                    <div class="card-body text-center">
-                      <ul class="list-unstyled text-start mb-4">
-                        <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top"><strong>Coverage:</strong> <span class="badge bg-label-primary p-2 fs-6">${locationText}</ class="btn btn-outline-primary"></li>
-                        <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top"><strong>Data:</strong> <span>${formattedVolume}</span></li>
-                        <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top"><strong>Validity:</strong> <span>${formattedDuration}</span></li>
-                        <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top border-bottom"><strong>Price:</strong> <span class="fs-5 text-primary">$${formattedPrice} ${plan.currencyCode}</span></li>
-                      </ul>
-                      <button class="btn btn-outline-primary rounded-pill w-100 show_plan_details py-3" data-package_code="${plan.packageCode}"  data-plan_type="global" 
-					  	data-price="${formattedPrice}" data-currency="${plan.currencyCode}" data-location_code="${locationCode}" data-seller="esimaccess"
-						data-bs-toggle="modal" data-bs-target="#planDetailsModal">Buy Now</button>
-                    </div>
-                  </div>
-                </div>
-              `;
+						<div class="col-md-6">
+							<div class="card shadow border-dark rounded-5 border-1 cursor-pointer show_plan_details" data-package_code="${plan.packageCode}"  data-plan_type="single" 
+								data-price="${plan.formattedPrice}" data-currency="${plan.currencyCode}" data-location_code="${locationCode}" data-seller="esimaccess"
+								data-bs-toggle="modal" data-bs-target="#planDetailsModal">
+								<div class="card-header d-flex align-items-center justify-content-between p-4">
+									<span class="d-flex flex-column align-items-start justify-content-between">
+										<h5 class="m-0 fs-4 fw-bold text-dark">${plan.formattedVolume}</h5>
+										<p class="m-0">${formattedDuration}</p>
+									</span>
+									<span class="fs-4 text-dark d-flex gap-2 align-items-center justify-content-between">
+										$${plan.formattedPrice}
+										<i class="bx bx-sm bxs-right-arrow-circle"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+						`;
 						planCards.append(card);
 					});
-					back_button = `
-              <div class="text-center">
-                <button id="back-to-global-btn" class="btn btn-md rounded-pill btn-primary mt-4">Back to Global</button>
-              </div>
-            `;
-					planCards.append(back_button);
+
+					sortedUnlimited.forEach(plan => {
+						// Format duration
+						const formattedDuration = plan.duration > 1 ? `${plan.duration} Days` : `${plan.duration} Day`;
+
+						const card = `
+						<div class="col-md-6">
+							<div class="card shadow border-dark rounded-5 border-1 cursor-pointer show_unlimited_details" data-package_code="${plan.name}"  data-plan_type="single" 
+								data-price="${plan.formattedPrice}" data-currency="USD" data-location_code="${locationCode}" data-seller="esimgo"
+								data-bs-toggle="modal" data-bs-target="#planDetailsModal">
+								<div class="card-header d-flex align-items-center justify-content-between p-4">
+									<span class="d-flex flex-column align-items-start justify-content-between">
+										<h5 class="m-0 fs-4 fw-bold text-dark">${formattedDuration}</h5>
+										<p class="m-0">∞ GB</p>
+									</span>
+									<span class="fs-4 text-dark d-flex gap-2 align-items-center justify-content-between">
+										$${plan.formattedPrice}
+										<i class="bx bx-sm bxs-right-arrow-circle"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+						`;
+						unlimitedCards.append(card);
+					});
 
 					// Show eSIM plans, hide countries
+					$('.esim_global').text(region);
+					if (response.data.unlimited.length > 0) {
+						$('.esim_global_hero').attr('style', `background: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 80%)), url('/static/img/illustrations/world-map.png') center center; height: 30vh; background-size: cover;`);
+					}
 					$('#global-list').addClass('d-none');
-					$('#esim-global-cards').removeClass('d-none');
+					$('.esims_global_show').removeClass('d-none');
 				} else {
 					showToast('No eSIM plans available for this location.', 'bg-danger');
 				}
@@ -310,7 +344,7 @@ $(document).ready(function () {
 
 	// Handle "Back to Regions" button
 	$(document).on('click', '#back-to-regions-btn', function (e) {
-		$('#esim-region-cards').addClass('d-none');
+		$('.esims_region_show').addClass('d-none');
 		$('#regions-list').removeClass('d-none');
 
 		// Smooth scroll to the landing_esim
@@ -320,7 +354,7 @@ $(document).ready(function () {
 
 	// Handle "Back to Global" button
 	$(document).on('click', '#back-to-global-btn', function (e) {
-		$('#esim-global-cards').addClass('d-none');
+		$('.esims_global_show').addClass('d-none');
 		$('#global-list').removeClass('d-none');
 
 		// Smooth scroll to the landing_esim
@@ -648,7 +682,13 @@ $(document).ready(function () {
 					// Build "Supported Countries" List
 					// -----------------------------
 					let supportedCountriesList = "";
-					plan.countries.forEach((item) => {
+					if (plan.roamingEnabled === null) {
+						countries = plan.countries
+					} else {
+						countries = plan.roamingEnabled
+						console.log(countries)
+					}
+					countries.forEach((item) => {
 						const isoCode = item.country.iso.toLowerCase();
 						const countryName = item.country.name;
 						supportedCountriesList += `
@@ -665,31 +705,40 @@ $(document).ready(function () {
 					const speedGroups = {};
 
 					// Iterate over countries and networks
-					plan.countries.forEach((ctry) => {
-					ctry.networks.forEach((net) => {
-						// net.speeds might be ["2G", "3G", "4G", "5G"]
-						// net.name might be "MTN", "Airtel", ...
-						if (Array.isArray(net.speeds)) {
-						net.speeds.forEach((speed) => {
-							if (!speedGroups[speed]) {
-							speedGroups[speed] = new Set();
-							}
-							speedGroups[speed].add(net.name);
-						});
+					countries.forEach((ctry) => {
+						// Guard against null/undefined or non-array
+						if (!Array.isArray(ctry.networks)) {
+							return; // Skip this country if `networks` is missing or invalid
 						}
-					});
+
+						ctry.networks.forEach((net) => {
+							// Sometimes `net` could be null or missing, so check:
+							if (!net || !Array.isArray(net.speeds)) {
+							return; // Skip this network if `net` or `net.speeds` is missing
+							}
+
+							net.speeds.forEach((speed) => {
+							// Initialize a set for this speed if it doesn't exist yet
+							if (!speedGroups[speed]) {
+								speedGroups[speed] = new Set();
+							}
+
+							// net.name could also be null or undefined, so use a fallback if needed:
+							const operatorName = net.name || "Unknown";
+							speedGroups[speed].add(operatorName);
+							});
+						});
+						});
+
+						// Now turn speedGroups into a readable string
+						// e.g. "4G: Airtel, MTN\n5G: MTN"
+						let networkDetails = "";
+						Object.entries(speedGroups).forEach(([speed, operatorsSet]) => {
+						// Convert set to array, join with commas
+						const operatorList = Array.from(operatorsSet).join(", ");
+						networkDetails += `${speed}: ${operatorList}<hr>`;
 					});
 
-					// Now turn speedGroups into a readable string
-					// e.g. "4G: Airtel, MTN\n5G: MTN"
-					let networkDetails = "";
-					Object.entries(speedGroups).forEach(([speed, operatorsSet]) => {
-					// Convert set to array, join with commas
-					const operatorList = Array.from(operatorsSet).join(", ");
-					networkDetails += `${speed}: ${operatorList}<br>`; // or \n for new lines
-					});
-
-					// If you want to list speeds or other info, you can do so similarly
 
 					// Build #esim_plan_other_details HTML
 					// Example: Reuse the same layout from your "Additional Information" card
