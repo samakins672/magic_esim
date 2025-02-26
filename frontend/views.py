@@ -20,6 +20,54 @@ popular_country_codes = {country.get('alpha_2') for country in popular_countries
 for country in countries:
     country['is_popular'] = country.get('alpha_2') in popular_country_codes if 'alpha_2' in country else False
 
+def new_index(request):
+    # Pass both datasets to the template
+    return render(request, 'new/index.html', {
+        'countries': countries,
+        'popular_countries': popular_countries
+    })
+
+def new_esim(request, plan_type, location_code, type, package_code):
+    # Find country name based on location_code for single type
+    country_name = "Unknown Country"
+    
+    if type == "single":
+        for country in countries:
+            if country.get('alpha_2', '').upper() == location_code.upper():
+                country_name = country.get('name', 'Unknown Country')
+                break
+    elif type == "region":
+        # You can map location codes for regions if needed
+        region_mapping = {
+            "GL-12": "Global",
+            "GL-13": "Global",
+            "GL-14": "Global",
+            "AS": "Asia",
+            "AF": "Africa",
+            "EU": "European Union",
+            "CA": "Caribbean",
+            "NA": "North America",
+            "SA": "South America",
+        }
+        country_name = region_mapping.get(location_code.upper(), "Unknown Region")
+
+    # Pass data to the template
+    return render(request, 'new/checkout.html', {
+        'location_code': location_code,
+        'country_name': country_name,
+        'plan_type': plan_type,
+        'type': type,
+        'package_code': package_code
+    })
+
+def new_signup(request):
+    return render(request, 'new/signup.html')
+
+def verify(request, email):
+    return render(request, 'new/verification.html', {
+        'email': email
+    })
+
 def index(request):
     # Pass both datasets to the template
     return render(request, 'index.html', {

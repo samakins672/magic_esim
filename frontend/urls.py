@@ -5,6 +5,10 @@ from . import views
 app_name = 'frontend'
 
 urlpatterns = [
+    path('new/', views.new_index, name='index'),
+    path('new/esim/<str:plan_type>/<str:type>/<str:location_code>/<str:package_code>', views.new_esim, name='esim'),
+    path('new/signup/', views.new_signup, name='signup'),
+    path('verify/<str:email>', views.verify, name='verify'),
     path('', views.index, name='index'),
     path('signup/', views.signup, name='signup'),
     path('reset-password/', views.reset_password, name='reset-password'),

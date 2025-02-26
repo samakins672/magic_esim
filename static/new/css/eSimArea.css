@@ -1,0 +1,449 @@
+.eSimArea {
+    width: 100%;
+    height: auto;
+    padding: 30px;
+    background-color: var(--backColor2);
+    border-radius: 27px;
+}
+
+.eSimArea>h2 {
+    color: var(--sTextColor);
+    font-size: var(--fs12);
+    background: var(--themeBtnColor);
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    width: fit-content;
+    padding: 7px 13px;
+    border-radius: 20px;
+    font-weight: 700;
+}
+
+.eSimArea>h1 {
+    color: var(--sTextColor);
+    font-size: var(--fs18);
+    margin: 15px 0 25px 0;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.eSimArea>h1>span {
+    font-weight: 700;
+}
+
+.eSimAcBtns {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    margin-bottom: 30px;
+    overflow: auto;
+}
+
+.eSimAcBtns>button {
+    height: 37px;
+    border-radius: 20px;
+    padding: 0px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.15s;
+    color: var(--sTextColor);
+    font-size: var(--fs14);
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    background-color: transparent;
+}
+
+.eSimAcBtns>button>svg {
+    width: 15px;
+    stroke-width: 3;
+    height: auto;
+}
+
+.eSimAcBtns>button[aria-selected="true"] {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.localEsimArea {
+    width: 100%;
+    height: auto;
+}
+
+.eSimSearchBar {
+    width: 100%;
+    height: 50px;
+    border: 1px solid var(--borderColor);
+    background-color: rgba(0, 0, 0, 0.27);
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 17px;
+    gap: 15px;
+    margin-bottom: 19px;
+}
+
+.eSimSearchBar>span>svg {
+    width: 21px;
+    height: auto;
+    stroke-width: 3;
+    color: var(--sTextColor);
+}
+
+.eSimSearchBar>input {
+    width: 100%;
+    height: 100%;
+    color: var(--sTextColor);
+    font-size: var(--fs14);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+.localeSims,
+.regioneSims,
+.globaleSims {
+    width: 100%;
+    height: auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    gap: 9px;
+}
+
+.oneLocaleSim,
+.oneRegioneSim,
+.oneGlobaleSim {
+    width: 100%;
+    height: 65px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.07);
+    border: none;
+    gap: 15px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.oneLocaleSim>img {
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.oneLocaleSim>h1,
+.oneRegioneSim>h1,
+.oneGlobaleSim>h1 {
+    color: var(--sTextColor);
+    font-size: var(--fs18);
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.oneLocaleSim>span,
+.oneRegioneSim>span,
+.oneGlobaleSim>span {
+    font-size: 24px;
+    color: var(--sTextColor);
+    margin-left: auto;
+}
+
+.showAllBtn {
+    width: 100%;
+    height: 50px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.07);
+    border: none;
+    cursor: pointer;
+    color: var(--sTextColor);
+    font-size: var(--fs14);
+    font-weight: 600;
+    text-transform: capitalize;
+    margin-top: 19px;
+}
+
+.oneRegioneSim>.imgBox,
+.oneGlobaleSim>.imgBox {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.27);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.oneRegioneSim>.imgBox>img,
+.oneGlobaleSim>.imgBox>img {
+    width: 65%;
+    height: auto;
+    object-fit: contain;
+    filter: invert();
+}
+
+.packagesArea {
+    width: 100%;
+    height: auto;
+}
+
+.packagesArea>button {
+    display: flex;
+    align-items: center;
+    color: var(--sTextColor);
+    font-size: var(--fs14);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    background-color: transparent;
+    border: none;
+    margin-bottom: 15px;
+}
+
+.packagesArea>button>svg {
+    width: 15px;
+    stroke-width: 4;
+    height: auto;
+}
+
+.areaImgBox {
+    width: 100%;
+    height: 150px;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    padding: 15px 20px;
+    margin-bottom: 24px;
+}
+
+.areaImgBox>img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    filter: brightness(0.85);
+}
+
+.blurArea {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), transparent, rgba(0, 0, 0, 0.9) 80%);
+    display: block;
+    top: 0;
+    left: 0;
+    z-index: 3;
+}
+
+.packAreaDets {
+    width: 100%;
+    height: fit-content;
+    position: relative;
+    z-index: 5;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    align-self: flex-end;
+}
+
+.areaDets>p {
+    color: var(--sTextColor);
+    font-size: var(--fs14);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    width: fit-content;
+    margin-bottom: 7px;
+}
+
+.areaDets>h1 {
+    color: white;
+    font-size: var(--fs34);
+}
+
+.areaDets>h1>span {
+    text-transform: capitalize;
+}
+
+.packAreaDets>img {
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.allBundlesArea {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.standardPacksArea,
+.unlimitedPacksArea {
+    width: 100%;
+    height: auto;
+}
+
+.standardPacksArea>h1,
+.unlimitedPacksArea>h1 {
+    color: var(--sTextColor);
+    font-size: var(--fs18);
+    font-weight: 700;
+    text-transform: capitalize;
+    margin-bottom: 15px;
+}
+
+.bundlesArea {
+    width: 100%;
+    height: auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    gap: 9px;
+}
+
+.oneBundle {
+    width: 100%;
+    height: 75px;
+    padding: 0 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.07);
+    border: none;
+    gap: 15px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.bundleDetsA {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.bundleDetsA>h1 {
+    color: var(--sTextColor);
+    font-size: var(--fs24);
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.bundleDetsA>h2 {
+    color: var(--sTextColor);
+    font-size: var(--fs12);
+    letter-spacing: 1px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.bundleDetsB {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+}
+
+.bundleDetsB>h1 {
+    color: var(--sTextColor);
+    font-size: var(--fs24);
+    font-weight: 700;
+}
+
+.bundleDetsB>span {
+    color: var(--sTextColor);
+    font-size: 20px;
+}
+
+@media only screen and (max-width: 768px) {
+    .eSimArea {
+        padding: 23px;
+    }
+
+    .eSimArea>h1 {
+        font-size: var(--fs17);
+    }
+
+    .localeSims,
+    .regioneSims,
+    .globaleSims {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .oneLocaleSim>h1,
+    .oneRegioneSim>h1,
+    .oneGlobaleSim>h1 {
+        font-size: var(--fs17);
+        font-weight: 600;
+    }
+    
+    .areaDets>h1 {
+        font-size: var(--fs28);
+    }
+
+    .bundlesArea {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .bundleDetsA>h1 {
+        font-size: var(--fs22);
+    }
+
+    .bundleDetsB>h1 {
+        font-size: var(--fs22);
+    }
+}
+
+@media only screen and (max-width: 576px) {
+    .eSimArea {
+        padding: 16px;
+    }
+
+    .eSimArea>h1 {
+        font-size: var(--fs15);
+    }
+
+    .oneLocaleSim>h1,
+    .oneRegioneSim>h1,
+    .oneGlobaleSim>h1 {
+        font-size: var(--fs15);
+        font-weight: 600;
+    }
+
+    .areaDets>p {
+        font-size: var(--fs12);
+    }
+    
+    .areaDets>h1 {
+        font-size: var(--fs24);
+    }
+
+    .packAreaDets>img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .bundleDetsA>h1 {
+        font-size: var(--fs20);
+    }
+
+    .bundleDetsB>h1 {
+        font-size: var(--fs20);
+    }
+}

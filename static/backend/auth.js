@@ -2,8 +2,8 @@
 $(document).on('submit', '#userAuth', function (e) {
     e.preventDefault();
 
-    var submitButton = $('#submitBtn');
-    submitButton.html('<span class="spinner-border mx-auto" role="status" aria-hidden="true"></span>').attr('disabled', true);
+    loader = $('.loading');
+    loader.removeClass("d-none");
 
     email = $('#userAuth [name="email"]').val();
 
@@ -25,21 +25,16 @@ $(document).on('submit', '#userAuth', function (e) {
         },
         success: function (response) {
             console.log(response.message);
-            showToast(response.message, 'bg-success');
             
-            $('.user_email').text(email);
-            $('#otpVerifyForm [name="email"]').val(email);
-
-            // Open modal on success
-            $('#verificationModal').modal('show');
+            // Redirect to verification after signup success
+            window.location.href = '/verify/' + email;
         },
         error: function (error) {
             console.error(error);
-            showToast("User with this email already exists", 'bg-danger');
+            $('.formAlert').removeClass('d-none').text("User with this email already exists.");
         },
         complete: function() {
-            // Revert button text and re-enable the button
-            submitButton.html('Submit changes').attr('disabled', false);
+            loader.addClass("d-none");
         }
     });
 });
@@ -47,11 +42,8 @@ $(document).on('submit', '#userAuth', function (e) {
 $(document).on('submit', '#signInForm', function (e) {
     e.preventDefault();
 
-    // Get the button element
-    var submitButton = $('#submitBtn');
-
-    // Change button text to spinner
-    submitButton.html('<span class="spinner-border mx-auto" role="status" aria-hidden="true"></span>').attr('disabled', true);
+    loader = $('.loading');
+    loader.removeClass("d-none");
 
     var formData = JSON.stringify({
         email: $('#signInForm [name="email"]').val(),
@@ -83,8 +75,7 @@ $(document).on('submit', '#signInForm', function (e) {
             }
         },
         complete: function () {
-            // Revert button text and re-enable the button
-            submitButton.html('Log in').attr('disabled', false);
+            loader.addClass("d-none");
         }
     });
 });
@@ -92,11 +83,8 @@ $(document).on('submit', '#signInForm', function (e) {
 $(document).on('submit', '#otpVerifyForm', function (e) {
     e.preventDefault();
 
-    // Get the button element
-    var submitButton = $('#confirm-btn');
-
-    // Change button text to spinner
-    submitButton.html('<span class="spinner-border mx-auto" role="status" aria-hidden="true"></span>').attr('disabled', true);
+    loader = $('.loading');
+    loader.removeClass("d-none");
 
     const code = $('.code-input').map(function () {
         return $(this).val();
@@ -117,22 +105,21 @@ $(document).on('submit', '#otpVerifyForm', function (e) {
         },
         success: function (response) {
             console.log(response.message);
-            showToast(response.message, 'bg-success');
 
             // Redirect to login after verification is successful
             window.location.href = '/login';
         },
         error: function (error) {
             // On error show error message
-            if (error.responseJSON.message.error !== undefined) {
-                showToast(error.responseJSON.message.error, 'bg-danger');
+            if (error.responseJSON.message !== undefined) {
+                message = error.responseJSON.message;
             } else {
-                showToast('Server error! Try again later.', 'bg-danger');
+                message = 'Invalid OTP';
             }
+            $('.formAlert').removeClass('d-none').text(message);
         },
         complete: function () {
-            // Revert button text and re-enable the button
-            submitButton.html('Confirm').attr('disabled', false);
+            loader.addClass("d-none");
         }
     });
 });

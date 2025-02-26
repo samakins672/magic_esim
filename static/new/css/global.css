@@ -1,0 +1,63 @@
+:root{
+    --backColor1 : #0C0C0D;
+    --backColor2: #1C1C1E;
+    --backColor3: #373739;
+    --themeBtnColor: #fe720b;
+    --borderColor: rgba(255, 255, 255, 0.07);
+    --sTextColor: rgba(255, 255, 255, 0.85);
+    --secondTextColor: rgba(255, 255, 255, 0.5);
+    --font1: Inter, Arial, Verdana, sans-serif;
+    --fs12: 12px;
+    --fs13: 13px;
+    --fs14: 14px;
+    --fs15: 15px;
+    --fs17: 17px;
+    --fs18: 18px;
+    --fs20: 20px;
+    --fs22: 22px;
+    --fs24: 24px;
+    --fs28: 28px;
+    --fs34: 34px;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body{
+    width: 100%;
+    height: 100%;
+    scroll-behavior: smooth;
+}
+
+body{
+    background-color: var(--backColor1);
+    font-family: var(--font1);
+}
+
+.innerSpacing{
+    width: 90%;
+    max-width: 1080px;
+}
+
+.d-none {
+    display: none !important;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #eaeafd42;
+}

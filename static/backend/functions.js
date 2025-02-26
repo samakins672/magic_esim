@@ -4,17 +4,8 @@ $(document).ready(function () {
 	$(document).on('click', '.show-country-esims', function (e) {
 		const locationCode = $(this).data("location_code");
 
-		// Show loading spinner (block UI)
-		$("#navs-pills-justified-local").block({
-			message: '<div class="spinner-border text-white" role="status"></div>',
-			css: {
-				backgroundColor: "transparent",
-				border: "0"
-			},
-			overlayCSS: {
-				opacity: .5
-			}
-		});
+		loader = $('.loading');
+		loader.removeClass("d-none");
 
 		// Fetch eSIM plans via AJAX
 		$.ajax({
@@ -47,22 +38,16 @@ $(document).ready(function () {
 						const formattedDuration = plan.duration > 1 ? `${plan.duration} Days` : `${plan.duration} Day`;
 
 						const card = `
-						<div class="col-md-6">
-							<div class="card shadow border-dark rounded-5 border-1 cursor-pointer show_plan_details" data-package_code="${plan.packageCode}"  data-plan_type="single" 
-								data-price="${plan.formattedPrice}" data-currency="${plan.currencyCode}" data-location_code="${locationCode}" data-seller="esimaccess"
-								data-bs-toggle="modal" data-bs-target="#planDetailsModal">
-								<div class="card-header d-flex align-items-center justify-content-between p-4">
-									<span class="d-flex flex-column align-items-start justify-content-between">
-										<h5 class="m-0 fs-4 fw-bold text-dark">${plan.formattedVolume}</h5>
-										<p class="m-0">${formattedDuration}</p>
-									</span>
-									<span class="fs-4 text-dark d-flex gap-2 align-items-center justify-content-between">
-										$${plan.formattedPrice}
-										<i class="bx bx-sm bxs-right-arrow-circle"></i>
-									</span>
+							<a href="esim/s/single/${locationCode}/${plan.packageCode}" class="oneBundle">
+								<div class="bundleDetsA">
+									<h1>${plan.formattedVolume}</h1>
+									<h2>${formattedDuration}</h2>
 								</div>
-							</div>
-						</div>
+								<div class="bundleDetsB">
+									<h1>$<span>${plan.formattedPrice}</span></h1>
+									<span class="material-symbols-outlined">keyboard_arrow_right</span>
+								</div>
+							</a>
 						`;
 						planCards.append(card);
 					});
@@ -72,22 +57,16 @@ $(document).ready(function () {
 						const formattedDuration = plan.duration > 1 ? `${plan.duration} Days` : `${plan.duration} Day`;
 
 						const card = `
-						<div class="col-md-6">
-							<div class="card shadow border-dark rounded-5 border-1 cursor-pointer show_unlimited_details" data-package_code="${plan.name}"  data-plan_type="single" 
-								data-price="${plan.formattedPrice}" data-currency="USD" data-location_code="${locationCode}" data-seller="esimgo"
-								data-bs-toggle="modal" data-bs-target="#planDetailsModal">
-								<div class="card-header d-flex align-items-center justify-content-between p-4">
-									<span class="d-flex flex-column align-items-start justify-content-between">
-										<h5 class="m-0 fs-4 fw-bold text-dark">${formattedDuration}</h5>
-										<p class="m-0">∞ GB</p>
-									</span>
-									<span class="fs-4 text-dark d-flex gap-2 align-items-center justify-content-between">
-										$${plan.formattedPrice}
-										<i class="bx bx-sm bxs-right-arrow-circle"></i>
-									</span>
+							<a href="esim/u/single/${locationCode}/${plan.name}" class="oneBundle">
+								<div class="bundleDetsA">
+									<h1>${formattedDuration}</h1>
+									<h2>Unlimited GB</h2>
 								</div>
-							</div>
-						</div>
+								<div class="bundleDetsB">
+									<h1>$<span>${plan.formattedPrice}</span></h1>
+									<span class="material-symbols-outlined">keyboard_arrow_right</span>
+								</div>
+							</a>
 						`;
 						unlimitedCards.append(card);
 					});
@@ -95,9 +74,11 @@ $(document).ready(function () {
 					// Show eSIM plans, hide countries
 					$('.esim_country').text(sortedPlans[0].locationNetworkList[0].locationName);
 					$('.local_esim_flag').attr('src', `https://flagcdn.com/w320/${locationCode.toLowerCase()}.png`);
-					$('.esim_local_hero').attr('style', `background: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 80%)), url('${response.data.unlimited[0].imageUrl}') center center; height: 30vh; background-size: cover;`);
-					$('#countries-list').addClass('d-none');
-					$('.esims_show').removeClass('d-none');
+					$('.esim_local_hero').attr('src', response.data.unlimited[0].imageUrl);
+					$('.localEsimArea').addClass('d-none');
+					$('.regioneSims').addClass('d-none');
+					$('.globaleSims').addClass('d-none');
+					$('.packagesArea').removeClass('d-none');
 				} else {
 					showToast('No eSIM plans available for this location.', 'bg-danger');
 				}
@@ -106,8 +87,11 @@ $(document).ready(function () {
 				showToast('Failed to fetch eSIM plans. Please try again later.', 'bg-danger');
 			},
 			complete: function () {
-				// Unblock UI
-				$("#navs-pills-justified-local").unblock();
+				loader.addClass("d-none");
+
+				// Smooth scroll to the landing_esim
+				const landing_esim = document.getElementById('eSim');
+				landing_esim.scrollIntoView({ behavior: 'smooth', block: 'start' });
 			}
 		});
 	});
@@ -117,17 +101,8 @@ $(document).ready(function () {
 		const locationCode = $(this).data("location_code");
 		const region = $(this).data("region");
 
-		// Show loading spinner (block UI)
-		$("#navs-pills-justified-regions").block({
-			message: '<div class="spinner-border text-white" role="status"></div>',
-			css: {
-				backgroundColor: "transparent",
-				border: "0"
-			},
-			overlayCSS: {
-				opacity: .5
-			}
-		});
+		loader = $('.loading');
+		loader.removeClass("d-none");
 
 		// Fetch eSIM plans via AJAX
 		$.ajax({
@@ -137,8 +112,8 @@ $(document).ready(function () {
 			success: function (response) {
 				if (response.status) {
 					// Populate eSIM cards
-					const planCards = $('#esim-region-cards');
-					const unlimitedCards = $('#unlimited-esim-region-cards');
+					const planCards = $('#esim-plan-cards');
+					const unlimitedCards = $('#unlimited-esim-plan-cards');
 					planCards.empty(); // Clear previous content
 					unlimitedCards.empty(); // Clear previous content
 					// Filter and sort plans
@@ -156,22 +131,16 @@ $(document).ready(function () {
 						const formattedDuration = plan.duration > 1 ? `${plan.duration} Days` : `${plan.duration} Day`;
 
 						const card = `
-						<div class="col-md-6">
-							<div class="card shadow border-dark rounded-5 border-1 cursor-pointer show_plan_details" data-package_code="${plan.packageCode}"  data-plan_type="single" 
-								data-price="${plan.formattedPrice}" data-currency="${plan.currencyCode}" data-location_code="${locationCode}" data-seller="esimaccess"
-								data-bs-toggle="modal" data-bs-target="#planDetailsModal">
-								<div class="card-header d-flex align-items-center justify-content-between p-4">
-									<span class="d-flex flex-column align-items-start justify-content-between">
-										<h5 class="m-0 fs-4 fw-bold text-dark">${plan.formattedVolume}</h5>
-										<p class="m-0">${formattedDuration}</p>
-									</span>
-									<span class="fs-4 text-dark d-flex gap-2 align-items-center justify-content-between">
-										$${plan.formattedPrice}
-										<i class="bx bx-sm bxs-right-arrow-circle"></i>
-									</span>
+							<a href="esim/s/region/${locationCode}/${plan.packageCode}" class="oneBundle">
+								<div class="bundleDetsA">
+									<h1>${plan.formattedVolume}</h1>
+									<h2>${formattedDuration}</h2>
 								</div>
-							</div>
-						</div>
+								<div class="bundleDetsB">
+									<h1>$<span>${plan.formattedPrice}</span></h1>
+									<span class="material-symbols-outlined">keyboard_arrow_right</span>
+								</div>
+							</a>
 						`;
 						planCards.append(card);
 					});
@@ -181,33 +150,28 @@ $(document).ready(function () {
 						const formattedDuration = plan.duration > 1 ? `${plan.duration} Days` : `${plan.duration} Day`;
 
 						const card = `
-						<div class="col-md-6">
-							<div class="card shadow border-dark rounded-5 border-1 cursor-pointer show_unlimited_details" data-package_code="${plan.name}"  data-plan_type="single" 
-								data-price="${plan.formattedPrice}" data-currency="USD" data-location_code="${locationCode}" data-seller="esimgo"
-								data-bs-toggle="modal" data-bs-target="#planDetailsModal">
-								<div class="card-header d-flex align-items-center justify-content-between p-4">
-									<span class="d-flex flex-column align-items-start justify-content-between">
-										<h5 class="m-0 fs-4 fw-bold text-dark">${formattedDuration}</h5>
-										<p class="m-0">∞ GB</p>
-									</span>
-									<span class="fs-4 text-dark d-flex gap-2 align-items-center justify-content-between">
-										$${plan.formattedPrice}
-										<i class="bx bx-sm bxs-right-arrow-circle"></i>
-									</span>
+							<a href="esim/u/region/${locationCode}/${plan.name}" class="oneBundle">
+								<div class="bundleDetsA">
+									<h1>${formattedDuration}</h1>
+									<h2>Unlimited GB</h2>
 								</div>
-							</div>
-						</div>
+								<div class="bundleDetsB">
+									<h1>$<span>${plan.formattedPrice}</span></h1>
+									<span class="material-symbols-outlined">keyboard_arrow_right</span>
+								</div>
+							</a>
 						`;
 						unlimitedCards.append(card);
 					});
 
 					// Show eSIM plans, hide countries
-					$('.esim_region').text(region);
-					if (response.data.unlimited.length > 0) {
-						$('.esim_region_hero').attr('style', `background: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 80%)), url('${response.data.unlimited[0].imageUrl}') center center; height: 30vh; background-size: cover;`);
-					}
-					$('#regions-list').addClass('d-none');
-					$('.esims_region_show').removeClass('d-none');
+					$('.esim_country').text(region);
+					$('.local_esim_flag').attr('src', ``);
+					$('.esim_local_hero').attr('src', response.data.unlimited[0].imageUrl);
+					$('.localEsimArea').addClass('d-none');
+					$('.regioneSims').addClass('d-none');
+					$('.globaleSims').addClass('d-none');
+					$('.packagesArea').removeClass('d-none');
 				} else {
 					showToast('No eSIM plans available for this location.', 'bg-danger');
 				}
@@ -216,8 +180,11 @@ $(document).ready(function () {
 				showToast('Failed to fetch eSIM plans. Please try again later.', 'bg-danger');
 			},
 			complete: function () {
-				// Unblock UI
-				$("#navs-pills-justified-regions").unblock();
+				loader.addClass("d-none");
+
+				// Smooth scroll to the landing_esim
+				const landing_esim = document.getElementById('eSim');
+				landing_esim.scrollIntoView({ behavior: 'smooth', block: 'start' });	
 			}
 		});
 	});
@@ -227,17 +194,8 @@ $(document).ready(function () {
 		const locationCode = $(this).data("location_code");
 		const region = "Global";
 
-		// Show loading spinner (block UI)
-		$("#navs-pills-justified-global").block({
-			message: '<div class="spinner-border text-white" role="status"></div>',
-			css: {
-				backgroundColor: "transparent",
-				border: "0"
-			},
-			overlayCSS: {
-				opacity: .5
-			}
-		});
+		loader = $('.loading');
+		loader.removeClass("d-none");
 
 		// Fetch eSIM plans via AJAX
 		$.ajax({
@@ -247,8 +205,8 @@ $(document).ready(function () {
 			success: function (response) {
 				if (response.status) {
 					// Populate eSIM cards
-					const planCards = $('#esim-global-cards');
-					const unlimitedCards = $('#unlimited-esim-global-cards');
+					const planCards = $('#esim-plan-cards');
+					const unlimitedCards = $('#unlimited-esim-plan-cards');
 					planCards.empty(); // Clear previous content
 					unlimitedCards.empty(); // Clear previous content
 					// Filter and sort plans
@@ -266,22 +224,16 @@ $(document).ready(function () {
 						const formattedDuration = plan.duration > 1 ? `${plan.duration} Days` : `${plan.duration} Day`;
 
 						const card = `
-						<div class="col-md-6">
-							<div class="card shadow border-dark rounded-5 border-1 cursor-pointer show_plan_details" data-package_code="${plan.packageCode}"  data-plan_type="single" 
-								data-price="${plan.formattedPrice}" data-currency="${plan.currencyCode}" data-location_code="${locationCode}" data-seller="esimaccess"
-								data-bs-toggle="modal" data-bs-target="#planDetailsModal">
-								<div class="card-header d-flex align-items-center justify-content-between p-4">
-									<span class="d-flex flex-column align-items-start justify-content-between">
-										<h5 class="m-0 fs-4 fw-bold text-dark">${plan.formattedVolume}</h5>
-										<p class="m-0">${formattedDuration}</p>
-									</span>
-									<span class="fs-4 text-dark d-flex gap-2 align-items-center justify-content-between">
-										$${plan.formattedPrice}
-										<i class="bx bx-sm bxs-right-arrow-circle"></i>
-									</span>
+							<a href="esim/s/region/${locationCode}/${plan.packageCode}" class="oneBundle">
+								<div class="bundleDetsA">
+									<h1>${plan.formattedVolume}</h1>
+									<h2>${formattedDuration}</h2>
 								</div>
-							</div>
-						</div>
+								<div class="bundleDetsB">
+									<h1>$<span>${plan.formattedPrice}</span></h1>
+									<span class="material-symbols-outlined">keyboard_arrow_right</span>
+								</div>
+							</a>
 						`;
 						planCards.append(card);
 					});
@@ -291,33 +243,28 @@ $(document).ready(function () {
 						const formattedDuration = plan.duration > 1 ? `${plan.duration} Days` : `${plan.duration} Day`;
 
 						const card = `
-						<div class="col-md-6">
-							<div class="card shadow border-dark rounded-5 border-1 cursor-pointer show_unlimited_details" data-package_code="${plan.name}"  data-plan_type="single" 
-								data-price="${plan.formattedPrice}" data-currency="USD" data-location_code="${locationCode}" data-seller="esimgo"
-								data-bs-toggle="modal" data-bs-target="#planDetailsModal">
-								<div class="card-header d-flex align-items-center justify-content-between p-4">
-									<span class="d-flex flex-column align-items-start justify-content-between">
-										<h5 class="m-0 fs-4 fw-bold text-dark">${formattedDuration}</h5>
-										<p class="m-0">∞ GB</p>
-									</span>
-									<span class="fs-4 text-dark d-flex gap-2 align-items-center justify-content-between">
-										$${plan.formattedPrice}
-										<i class="bx bx-sm bxs-right-arrow-circle"></i>
-									</span>
+							<a href="esim/u/region/${locationCode}/${plan.name}" class="oneBundle">
+								<div class="bundleDetsA">
+									<h1>${formattedDuration}</h1>
+									<h2>Unlimited GB</h2>
 								</div>
-							</div>
-						</div>
+								<div class="bundleDetsB">
+									<h1>$<span>${plan.formattedPrice}</span></h1>
+									<span class="material-symbols-outlined">keyboard_arrow_right</span>
+								</div>
+							</a>
 						`;
 						unlimitedCards.append(card);
 					});
 
 					// Show eSIM plans, hide countries
-					$('.esim_global').text(region);
-					if (response.data.unlimited.length > 0) {
-						$('.esim_global_hero').attr('style', `background: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 80%)), url('/static/img/illustrations/world-map.png') center center; height: 30vh; background-size: cover;`);
-					}
-					$('#global-list').addClass('d-none');
-					$('.esims_global_show').removeClass('d-none');
+					$('.esim_country').text(region);
+					$('.local_esim_flag').attr('src', ``);
+					$('.esim_local_hero').attr('src', '/static/img/illustrations/world-map.png');
+					$('.localEsimArea').addClass('d-none');
+					$('.regioneSims').addClass('d-none');
+					$('.globaleSims').addClass('d-none');
+					$('.packagesArea').removeClass('d-none');
 				} else {
 					showToast('No eSIM plans available for this location.', 'bg-danger');
 				}
@@ -326,48 +273,34 @@ $(document).ready(function () {
 				showToast('Failed to fetch eSIM plans. Please try again later.', 'bg-danger');
 			},
 			complete: function () {
-				// Unblock UI
-				$("#navs-pills-justified-global").unblock();
+				loader.addClass("d-none");
+
+				// Smooth scroll to the landing_esim
+				const landing_esim = document.getElementById('eSim');
+				landing_esim.scrollIntoView({ behavior: 'smooth', block: 'start' });
 			}
 		});
 	});
 
 	// Handle "Back to Countries" button
 	$(document).on('click', '#back-to-countries-btn', function (e) {
-		$('.esims_show').addClass('d-none');
-		$('#countries-list').removeClass('d-none');
+		$('.localEsimArea').removeClass('d-none');
+		$('.packagesArea').addClass('d-none');
+
+		// Remove aria-selected from all buttons
+		$('.eSimAcBtns button').attr('aria-selected', 'false');
 
 		// Smooth scroll to the landing_esim
-		const landing_esim = document.getElementById('landingESIM');
-		landing_esim.scrollIntoView({ behavior: 'smooth', block: 'start' });
-	});
-
-	// Handle "Back to Regions" button
-	$(document).on('click', '#back-to-regions-btn', function (e) {
-		$('.esims_region_show').addClass('d-none');
-		$('#regions-list').removeClass('d-none');
-
-		// Smooth scroll to the landing_esim
-		const landing_esim = document.getElementById('landingESIM');
-		landing_esim.scrollIntoView({ behavior: 'smooth', block: 'start' });
-	});
-
-	// Handle "Back to Global" button
-	$(document).on('click', '#back-to-global-btn', function (e) {
-		$('.esims_global_show').addClass('d-none');
-		$('#global-list').removeClass('d-none');
-
-		// Smooth scroll to the landing_esim
-		const landing_esim = document.getElementById('landingESIM');
+		const landing_esim = document.getElementById('eSim');
 		landing_esim.scrollIntoView({ behavior: 'smooth', block: 'start' });
 	});
 
 	// Toggle countries
 	$("#toggle-countries-btn").on("click", function () {
-		const isShowingPopular = $(this).text() === "Show 200+ Countries";
+		const isShowingPopular = $(this).text() === "Show All Countries";
 
 		if (isShowingPopular) {
-			// Show 200+ Countries
+			// Show All Countries
 			$("#countries-list .country-item").removeClass("d-none");
 			$(this).text("Show Popular Countries");
 		} else {
@@ -379,12 +312,13 @@ $(document).ready(function () {
 					$(this).removeClass("d-none");
 				}
 			});
-			$(this).text("Show 200+ Countries");
+			$(this).text("Show All Countries");
 
-			// Smooth scroll to the landing_esim
-			const landing_esim = document.getElementById('landingESIM');
-			landing_esim.scrollIntoView({ behavior: 'smooth', block: 'start' });
 		}
+		
+		// Smooth scroll to the landing_esim
+		const landing_esim = document.getElementById('eSim');
+		landing_esim.scrollIntoView({ behavior: 'smooth', block: 'start' });
 	});
 
 	// Handle click on "Show Plan Details" button
@@ -855,7 +789,7 @@ $(document).ready(function () {
 		let searchValue = $(this).val().toLowerCase(); // Get input and convert to lowercase
 
 		$(".country-item").each(function () {
-			let countryName = $(this).find("span").text().trim().toLowerCase(); // Get the country name
+			let countryName = $(this).find("h1").text().trim().toLowerCase(); // Get the country name
 
 			// Show or hide based on match
 			if (countryName.includes(searchValue)) {
@@ -864,5 +798,22 @@ $(document).ready(function () {
 				$(this).addClass("d-none");
 			}
 		});
+	});
+
+	$('.eSimAcBtns button').on('click', function () {
+		// Get target content area from data-target
+		const target = $(this).data('target');
+
+		// Remove aria-selected from all buttons
+		$('.eSimAcBtns button').attr('aria-selected', 'false');
+
+		// Add aria-selected to the clicked button
+		$(this).attr('aria-selected', 'true');
+
+		// Hide all content areas
+		$('.localEsimArea, .regioneSims, .globaleSims, .packagesArea').addClass('d-none');
+
+		// Show the corresponding content area
+		$(target).removeClass('d-none');
 	});
 });

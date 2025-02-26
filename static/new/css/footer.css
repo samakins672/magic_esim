@@ -1,0 +1,218 @@
+.footer {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    overflow: hidden;
+}
+
+.footer>.innerSpacing {
+    height: auto;
+    border-top-left-radius: 27px;
+    border-top-right-radius: 27px;
+}
+
+.footerSections {
+    width: 100%;
+    height: auto;
+    display: grid;
+    grid-template-columns: 40% 20% 20% 20%;
+    padding: 60px 0 40px 0;
+}
+
+.fDownloadArea>h1 {
+    color: var(--sTextColor);
+    font-size: var(--fs22);
+    font-weight: 600;
+    line-height: 1.3;
+    width: 90%;
+}
+
+.fDownloadArea>p {
+    color: var(--sTextColor);
+    font-size: var(--fs12);
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+    margin: 15px 0 24px 0;
+    font-weight: 500;
+    width: 90%;
+}
+
+.fDownloadButtons {
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.fDownloadButtons>a {
+    width: fit-content;
+    height: fit-content;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgb(0, 0, 0);
+    padding: 9px 15px;
+    display: flex;
+    align-items: center;
+    color: var(--textMain);
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.fDownloadButtons>a>img{
+    height: 27px;
+    width: auto;
+    display: block;
+}
+
+.flinksArea{
+    width: 100%;
+    height: auto;
+}
+
+.flinksArea>h1{
+    color: var(--secondTextColor);
+    font-size: var(--fs14);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 15px;
+}
+
+.fLinks{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.fLinks>a{
+    color: var(--sTextColor);
+    font-size: var(--fs14);
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    line-height: 1.5;
+}
+
+.fIntroArea>a{
+    width: fit-content;
+    height: fit-content;
+}
+
+.fIntroArea>a>img{
+    height: 40px;
+    width: auto;
+    display: block;
+}
+
+.fIntroArea>h1 {
+    color: var(--sTextColor);
+    font-size: var(--fs22);
+    font-weight: 600;
+    width: 90%;
+    margin: 15px 0;
+}
+
+.fIntroArea>p {
+    color: var(--sTextColor);
+    font-size: var(--fs12);
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+    font-weight: 500;
+    /* width: 90%; */
+}
+
+.copyrightArea{
+    width: 100%;
+    padding: 20px 0 30px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.copyrightArea>p{
+    color: var(--secondTextColor);
+    font-size: var(--fs12);
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+.paymentOptions{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+}
+
+.paymentOptions>img{
+    height: 18px;
+    width: auto;
+    display: block;
+    filter: invert();
+}
+
+.fSocialLinks{
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+}
+
+.fSocialLinks>a{
+    width: fit-content;
+    height: fit-content;
+    text-decoration: none;
+    color: var(--sTextColor);
+}
+
+.fSocialLinks>a>svg{
+    width: 20px;
+    height: 20px;
+    stroke-width: 2;
+}
+
+@media only screen and (max-width: 992px) {
+    .footerSections {
+        grid-template-columns: 50% 50%;
+        gap: 50px 0;
+    }
+    .fDownloadArea{
+        grid-area: 1 / 1 / 2 / 3;
+    }  
+    .fIntroArea{
+        grid-area: 3 / 1 / 4 / 3;
+    }    
+    .fDownloadArea, .fIntroArea, .flinksArea{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    .fDownloadArea>h1, .fIntroArea>h1 {
+        font-size: var(--fs20);
+        width: 80%;
+        text-align: center;
+    }
+    .fDownloadArea>p, .fIntroArea>p , .fLinks{
+        width: 80%;
+        text-align: center;
+    }
+    .fDownloadButtons {
+        justify-content: center;
+    }
+    .fIntroArea>a>img{
+        height: 37px;
+    }
+    .fIntroArea>p {
+        width: 80%;
+    }
+    .copyrightArea{
+        flex-direction: column-reverse;
+        gap: 19px;
+    }
+}

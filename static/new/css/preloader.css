@@ -1,0 +1,67 @@
+.preloader{
+    width: 100%;
+    height: 100dvh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999999999999;
+    background-color: var(--backColor1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.preloadingBorder{
+    width: fit-content;
+    height: fit-content;
+    position: relative;
+    overflow: hidden;
+    border-radius: 18px;
+    padding: 4px;
+}
+
+.preloadingBorder::after {
+    content: '';
+    width: 500px;
+    height: 500px;
+    background: linear-gradient(var(--themeBtnColor), var(--backColor1), var(--themeBtnColor));
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transform-origin: center center; 
+    animation: spin 2s infinite linear;
+    z-index: -1;
+}
+
+@keyframes spin {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.preLogoBox{
+    width: fit-content;
+    height: fit-content;
+    padding: 11px 20px;
+    background-color: var(--backColor1);
+    border-radius: 15px;
+}
+
+.preLogoBox>img{
+    width: 140px;
+    height: auto;
+    display: block;
+}
+
+@media only screen and (max-width: 768px) {
+    .preLogoBox>img{
+        width: 120px;
+    }
+  }

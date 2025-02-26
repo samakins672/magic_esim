@@ -26,6 +26,7 @@ urlpatterns = [
 
     # Frontend Routes
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='frontend_login'),
+    path('new/login/', auth_views.LoginView.as_view(template_name='new/login.html'), name='new_frontend_login'),
     path("", include("frontend.urls")),  # Include frontend URLs
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

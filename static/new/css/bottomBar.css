@@ -1,0 +1,146 @@
+.bottomBar{
+    width: 100%;
+    height: 70%;
+    max-height: 350px;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    background-color: var(--backColor3);
+    border-top-left-radius: 27px;
+    border-top-right-radius: 27px;
+    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+    z-index: 500;
+    transform: translateY(127%);
+    transition: 0.27s ease-out;
+}
+
+.bottomBar::before{
+    content: '';
+    width: 80px;
+    height: 6px;
+    position: absolute;
+    background-color: var(--backColor2);
+    border-radius: 20px;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 15px;
+}
+
+.closeBtn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--backColor3);
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: var(--sTextColor);
+    font-size: 18px;
+    cursor: pointer;
+    stroke-width: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: -55px;
+    right: 30px;
+    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+    z-index: 500;
+}
+
+.closeBtn>svg {
+    width: 26px;
+    height: auto;
+}
+
+.linkPacks{
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-y: auto;
+}
+
+.linkPackArea{
+    width: 100%;
+    height: auto;
+}
+
+.linkPackArea>h1{
+    color: var(--secondTextColor);
+    font-size: var(--fs14);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin: 0 0 15px 15px;
+}
+
+.linkArea{
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.bottomBarNavLink{
+    width: 100%;
+    height: 65px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    background: var(--backColor2);
+    border: none;
+    gap: 15px;
+    cursor: pointer;
+    color: var(--sTextColor);
+    color: var(--sTextColor);
+    font-size: var(--fs18);
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+.svgBox {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.27);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.svgBox>svg {
+    width: 65%;
+    height: auto;
+    stroke-width: 2;
+}
+
+.bottomBarNavLink>svg {
+    color: var(--sTextColor);
+    width: 21px;
+    height: auto;
+    stroke-width: 3;
+    margin-left: auto;
+}
+
+@media only screen and (max-width: 768px){
+    .bottomBarNavLink{
+        font-size: var(--fs17);
+        font-weight: 600;
+    }
+    .svgBox {
+        width: 38px !important;
+        height: 38px !important;
+    }
+}
+
+@media only screen and (max-width: 576px){
+    .bottomBarNavLink{
+        font-size: var(--fs15);
+    }
+    .linkPacks{
+        padding: 30px 16px;
+    }
+}

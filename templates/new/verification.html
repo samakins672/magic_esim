@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'partials/new/head.html' %}
+    <!-- WEBSITE TITLE -->
+    <title>Magic eSIM - Verification</title>
+
+    <link rel="stylesheet" href="{% static 'new/css/verification.css' %}">
+</head>
+
+<body>
+
+    <div class="verifyScreen">
+
+        <div class="verifyBox">
+            <div class="formLogo">
+                <a href="/"><img src="{% static 'new/assets/branding/preloader.webp' %}" alt=""></a>
+            </div>
+            <h1>Enter verification code</h1>
+            <p>Your verification code is sent to:&nbsp;<span>{{ email }}</span></p>
+
+            <!-- FORM ALERT -->
+            <h2 class="formAlert d-none">*<span>Form alert statement shown here!</span>*</h2>          
+
+            <form id="otpVerifyForm" class="resetPassForm">
+                <input type="hidden" name="email" value="{{ email }}">
+
+                <div class="otp-input">
+                    <input type="number" min="0" max="9" class="code-input" required>
+                    <input type="number" min="0" max="9" class="code-input" required>
+                    <input type="number" min="0" max="9" class="code-input" required>
+                    <input type="number" min="0" max="9" class="code-input" required>
+                </div>
+                <h2 class="resendCode">Didn't get the code yet?&nbsp;<button id="resend-timer">Resend in&nbsp;<span>27s</span></button></h2>
+                <button type="submit" class="submitBtn">Verify</button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- JS FILES -->
+    {% include 'partials/new/scripts.html' %}
+    <script src="{% static 'backend/auth.js' %}"></script>
+    <script src="{% static 'new/js/otp.js' %}"></script>
+
+</body>
+
+</html>

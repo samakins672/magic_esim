@@ -1,0 +1,448 @@
+.mainContent {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0 16px;
+}
+
+.contentArea {
+    width: 100%;
+    max-width: 786px;
+    height: auto;
+}
+
+.checkoutArea {
+    width: 100%;
+    height: auto;
+    min-height: 100dvh;
+}
+
+.checkoutArea>div {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 30px 0 150px 0;
+}
+
+.backBtn {
+    width: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+    background: var(--backColor2);
+    border: none;
+    font-size: var(--fs14);
+    color: var(--sTextColor);
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.backBtn>svg {
+    width: 19px;
+    height: auto;
+    stroke-width: 3;
+}
+
+.checkoutHeading {
+    color: var(--sTextColor);
+    font-size: var(--fs28);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.bundleDetailsArea,
+.supportedCountriesArea,
+.additionalInfoArea,
+.voucherEnterArea,
+.paymentMethodArea {
+    width: 100%;
+    height: auto;
+    padding: 30px;
+    background-color: var(--backColor2);
+    border-radius: 27px;
+}
+
+.bundleDetailsAreaInner {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+}
+
+.countryImg {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.countryImg>img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.bundleDets {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.bundleDets>h1 {
+    text-transform: capitalize;
+    color: var(--sTextColor);
+    font-size: var(--fs18);
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+.bundleDets>p {
+    color: var(--sTextColor);
+    font-size: var(--fs14);
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+.bundleDetailsAreaLine {
+    width: 100%;
+    height: 1px;
+    margin: 15px auto;
+    background-color: var(--borderColor);
+    border: none;
+}
+
+.totalPrice {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.totalPrice>h1 {
+    color: var(--sTextColor);
+    font-size: var(--fs17);
+    letter-spacing: 0.5px;
+    font-weight: 700;
+}
+
+.supportedCountriesArea>h1,
+.additionalInfoArea>h1,
+.voucherEnterArea>h1,
+.paymentMethodArea>h1 {
+    color: var(--sTextColor);
+    font-size: var(--fs20);
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+
+.supportedCountriesAreaList {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.oneSupportedCountry {
+    width: 100%;
+    height: auto;
+    display: flex;
+    border-radius: 20px;
+    background-color: var(--backColor3);
+    align-items: center;
+    gap: 15px;
+    padding: 11px 17px;
+}
+
+.oneSupportedCountry>img {
+    width: 35px !important;
+    height: 35px !important;
+    display: block;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.oneSupportedCountry>h1 {
+    text-transform: capitalize;
+    color: var(--sTextColor);
+    font-size: var(--fs15);
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.addInfos {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.oneAddInfo {
+    background-color: var(--backColor3);
+    border-radius: 20px;
+    padding: 15px 17px;
+}
+
+.oneAddInfo>h1 {
+    text-transform: capitalize;
+    color: var(--sTextColor);
+    font-size: var(--fs14);
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.oneAddInfo>h1>svg {
+    width: 21px;
+    height: auto;
+    stroke-width: 2;
+}
+
+.oneAddInfoDets {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.singleAddInfoDet {
+    display: flex;
+    color: var(--secondTextColor);
+    gap: 15px;
+}
+
+.singleAddInfoDet>svg {
+    width: 7px;
+    height: auto;
+}
+
+.singleAddInfoDet>p {
+    width: 90%;
+    height: auto;
+    font-size: var(--fs14);
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.5px;
+}
+
+.enterVoucherHere {
+    width: 100%;
+    height: 50px;
+    border: 1px solid var(--borderColor);
+    background-color: rgba(0, 0, 0, 0.27);
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 17px;
+    gap: 15px;
+}
+
+.enterVoucherHere>svg {
+    width: 21px;
+    height: auto;
+    stroke-width: 3;
+    color: var(--themeBtnColor);
+}
+
+.enterVoucherHere>input {
+    width: 100%;
+    height: 100%;
+    color: var(--sTextColor);
+    font-size: var(--fs14);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+.paymentMethodArea>h1 {
+    margin-bottom: 0;
+}
+
+.paymentMethodArea>p {
+    font-size: var(--fs14);
+    color: green;
+    display: flex;
+    align-items: center;
+    margin: 7px 0 24px 0;
+}
+
+.paymentMethodArea>p>svg {
+    width: 19px;
+    height: auto;
+    stroke-width: 3;
+}
+
+.paymentOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.onePaymentOption>input[type='radio'] {
+    display: none;
+}
+
+.onePaymentOption>label {
+    width: fit-content;
+    height: fit-content;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.onePaymentOption>label>.circle {
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--borderColor);
+    border-radius: 7px;
+    background-color: rgba(0, 0, 0, 0.27);
+    display: block;
+    position: relative;
+}
+
+.onePaymentOption>label>.circle::before {
+    content: '';
+    width: 65%;
+    height: 65%;
+    border-radius: 4px;
+    background-color: var(--themeBtnColor);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+.onePaymentOption>label>img {
+    height: 27px;
+    width: auto;
+    display: block;
+    filter: invert();
+}
+
+.onePaymentOption>input[type='radio']:checked+label>.circle {
+    border-color: var(--themeBtnColor);
+}
+
+.onePaymentOption>input[type='radio']:checked+label>.circle::before {
+    display: block;
+}
+
+.actionBtnArea {
+    width: 97.5%;
+    max-width: 786px;
+    height: auto;
+    border-top-left-radius: 27px;
+    border-top-right-radius: 27px;
+    background-color: var(--backColor3);
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+    padding: 8px;
+}
+
+.actionBtnArea>button {
+    width: 100%;
+    border: none;
+    height: 54px;
+    border-radius: 20px;
+    transition: 0.15s;
+    color: var(--sTextColor);
+    font-size: var(--fs18);
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    background-color: var(--themeBtnColor);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+@media only screen and (max-width: 768px) {
+    .mainContent {
+        padding: 0 8px;
+    }
+
+    .backBtn {
+        font-size: var(--fs13);
+        margin-left: 10px;
+    }
+
+    .backBtn>svg {
+        width: 16px;
+    }
+
+    .checkoutHeading {
+        font-size: var(--fs24);
+        margin-left: 10px;
+
+    }
+
+    .bundleDetailsArea,
+    .supportedCountriesArea,
+    .additionalInfoArea,
+    .voucherEnterArea,
+    .paymentMethodArea {
+        padding: 27px 23px;
+    }
+
+    .supportedCountriesArea>h1,
+    .additionalInfoArea>h1,
+    .voucherEnterArea>h1,
+    .paymentMethodArea>h1 {
+        font-size: var(--fs20);
+    }
+}
+
+@media only screen and (max-width: 576px) {
+     .bundleDetailsArea,
+    .supportedCountriesArea,
+    .additionalInfoArea,
+    .voucherEnterArea,
+    .paymentMethodArea {
+        padding: 20px 16px;
+    }
+
+    .supportedCountriesArea>h1,
+    .additionalInfoArea>h1,
+    .voucherEnterArea>h1,
+    .paymentMethodArea>h1 {
+        font-size: var(--fs18);
+    }
+
+    .oneSupportedCountry>img {
+        width: 30px !important;
+        height: 30px !important;
+    }
+    .oneSupportedCountry>h1 {
+        font-size: var(--fs14);
+    }
+    .singleAddInfoDet>p {
+        font-size: var(--fs13);
+    }
+    .onePaymentOption>label>.circle {
+        width: 23px;
+        height: 23px;
+    }
+    .onePaymentOption>label>img {
+        height: 24px;
+    }
+    .actionBtnArea>button{
+        font-size: var(--fs16);
+    }
+}
