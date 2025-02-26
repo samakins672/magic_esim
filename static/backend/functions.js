@@ -164,10 +164,11 @@ $(document).ready(function () {
 						unlimitedCards.append(card);
 					});
 
+					planImageURL = response.data.unlimited.length > 0 ? response.data.unlimited[0].imageUrl : 'https://esimgo-cms-images-prod.s3.eu-west-1.amazonaws.com/North_America_bbe3181858.jpg';
 					// Show eSIM plans, hide countries
 					$('.esim_country').text(region);
 					$('.local_esim_flag').attr('src', `/static/img/regions/${locationCode.toLowerCase()}.png`);
-					$('.esim_local_hero').attr('src', response.data.unlimited[0].imageUrl);
+					$('.esim_local_hero').attr('src', planImageURL);
 					$('.localEsimArea').addClass('d-none');
 					$('.regioneSims').addClass('d-none');
 					$('.globaleSims').addClass('d-none');

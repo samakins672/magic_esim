@@ -103,10 +103,11 @@ $(document).on('submit', '#signInForm', function (e) {
         error: function (error) {
             // On error show error message
             if (error.responseJSON.message.error !== undefined) {
-                showToast(error.responseJSON.message.error, 'bg-danger');
+                message = error.responseJSON.message.error;
             } else {
-                showToast('Invalid email or password', 'bg-danger');
+                message = 'Invalid email or password';
             }
+            $('.formAlert').removeClass('d-none').text(message);
         },
         complete: function () {
             loader.addClass("d-none");
