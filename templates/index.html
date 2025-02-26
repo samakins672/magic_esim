@@ -1,1471 +1,861 @@
 {% load static %}
 <!DOCTYPE html>
-
-<html lang="en" class="layout-navbar-fixed layout-compact light-style layout-menu-fixed" dir="ltr"
-  data-theme="theme-default" data-assets-path="{% static '' %}" data-template="vertical-menu-template"
-  data-style="light">
+<html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-  <title>Get eSIMs for International Travels - Magic eSIM</title>
+    {% include 'partials/head.html' %}
 
-  <meta name="csrf-token" content="{{ csrf_token }}">
-
-  <!-- Google verification tag -->
-  <meta name="google-site-verification" content="xHAbK23udJWTGHJKLiGQlmym3bAoYgq9-qOXutbKkoo" />
-
-  <meta name="description"
-    content="Get the best eSIM and VoIP solutions for international travels. Stay connected anywhere in the world with Magic eSIM." />
-  <meta name="keywords" content="eSIM, VoIP, international travel, global connectivity, Magic eSIM">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="{% static 'img/favicon/favicon.ico' %}" />
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-    rel="stylesheet">
-
-  <!-- Icons -->
-  <link rel="stylesheet" href="{% static 'vendor/fonts/boxicons.css' %}" />
-  <link rel="stylesheet" href="{% static 'vendor/fonts/fontawesome.css' %}" />
-  <link rel="stylesheet" href="{% static 'vendor/fonts/flag-icons.css' %}" />
-
-  <!-- Core CSS -->
-  <link rel="stylesheet" href="{% static 'vendor/css/core.css' %}" class="template-customizer-core-css" />
-  <link rel="stylesheet" href="{% static 'vendor/css/theme-default.css' %}" class="template-customizer-theme-css" />
-  <link rel="stylesheet" href="{% static 'css/demo.css' %}" />
-  <link rel="stylesheet" href="{% static 'vendor/css/pages/front-page.css' %}" />
-
-  <!-- Vendors CSS -->
-  <link rel="stylesheet" href="{% static 'vendor/libs/nouislider/nouislider.css' %}" />
-  <link rel="stylesheet" href="{% static 'vendor/libs/swiper/swiper.css' %}" />
-  <link rel="stylesheet" href="{% static 'vendor/libs/spinkit/spinkit.css' %}" />
-
-  <!-- Page CSS -->
-  <link rel="stylesheet" href="{% static 'vendor/css/pages/front-page-landing.css' %}" />
-
-  <!-- Helpers -->
-  <script src="{% static 'vendor/js/helpers.js' %}"></script>
-  <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-  <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
-  <script src="{% static 'vendor/js/template-customizer.js' %}"></script>
-  <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-  <script src="{% static 'js/front-config.js' %}"></script>
-
-  <script src="{% static 'vendor/js/dropdown-hover.js' %}"></script>
-  <script src="{% static 'vendor/js/mega-dropdown.js' %}"></script>
+    <!-- WEBSITE TITLE -->
+    <title>Magic eSIM - Get eSIMs for International Travels</title>
+    
+    <link rel="stylesheet" href="{% static 'new/css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'new/css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'new/css/bottomBar.css' %}">
+    <link rel="stylesheet" href="{% static 'new/css/webIntro.css' %}">
+    <link rel="stylesheet" href="{% static 'new/css/videoArea.css' %}">
+    <link rel="stylesheet" href="{% static 'new/css/eSimArea.css' %}">
+    <link rel="stylesheet" href="{% static 'new/css/qualities.css' %}">
+    <link rel="stylesheet" href="{% static 'new/css/reviews.css' %}">
+    <link rel="stylesheet" href="{% static 'new/css/getVirtualNumber.css' %}">
+    <link rel="stylesheet" href="{% static 'new/css/accordian.css' %}">
 
 </head>
 
-<body>
+<body onload="preload()">
 
-  <!-- Navbar: Start -->
-  <nav class="layout-navbar shadow-none py-0">
-    <div class="container">
-      <div class="navbar navbar-expand-lg landing-navbar px-3 px-md-8">
-        <!-- Menu logo wrapper: Start -->
-        <div class="navbar-brand app-brand demo d-flex py-0 me-4 me-xl-8">
-          <!-- Mobile menu toggle: Start-->
-          <button class="navbar-toggler border-0 px-0 me-4" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-            aria-label="Toggle navigation">
-            <i class="tf-icons bx bx-menu align-middle text-heading fw-bold"></i>
-          </button>
-          <!-- Mobile menu toggle: End-->
-          <a href="/" class="app-brand-link">
-            <span class="app-brand-logo demo">
-              <img src="{% static 'img/logo.png' %}" alt="logo" class="img-fluid" width="160"
-                data-app-light-img="logo.png" data-app-dark-img="logo-dark.png" />
-            </span>
-          </a>
+    <div class="preloader">
+        <div class="preloadingBorder">
+            <div class="preLogoBox">
+                <img src="{% static 'new/assets/branding/preloader.webp' %}" alt="">
+            </div>
         </div>
-        <!-- Menu logo wrapper: End -->
-        <!-- Menu wrapper: Start -->
-        <div class="collapse navbar-collapse landing-nav-menu ps-5" id="navbarSupportedContent">
-          <button class="navbar-toggler border-0 text-heading position-absolute end-0 top-0 scaleX-n1-rtl p-2"
-            type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <i class="tf-icons bx bx-x"></i>
-          </button>
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <a class="nav-link fw-bold" aria-current="page" href="#landingHero">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link fw-bold" href="#landingESIM">eSIM</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link fw-bold" href="#landingVirtualNumbers">Virtual Numbers</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link fw-bold" href="#landingFAQ">FAQs</a>
-            </li>
-            <!-- <li class="nav-item">
-              <a class="nav-link fw-bold" href="#landingContact">Contact Us</a>
-            </li> -->
-          </ul>
-        </div>
-        <div class="landing-menu-overlay d-lg-none"></div>
-        <!-- Menu wrapper: End -->
-        <!-- Toolbar: Start -->
-        <ul class="navbar-nav flex-row align-items-center ms-auto">
-
-          <!-- Style Switcher -->
-          <li class="nav-item dropdown-style-switcher dropdown me-2 me-xl-1">
-            <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-              <i class='bx'></i>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end dropdown-styles">
-              <li>
-                <a class="dropdown-item" href="javascript:void(0);" data-theme="light">
-                  <span class="align-middle"><i class='bx bx-sun me-3'></i>Light</span>
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="javascript:void(0);" data-theme="dark">
-                  <span class="align-middle"><i class="bx bx-moon me-3"></i>Dark</span>
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="javascript:void(0);" data-theme="system">
-                  <span class="align-middle"><i class="bx bx-desktop me-3"></i>System</span>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <!-- / Style Switcher-->
-
-          <!-- navbar button: Start -->
-          {% if user.is_authenticated %}
-          <li>
-            <a href="/dashboard" class="btn btn-primary me-3 rounded-pill">
-              <span class="tf-icons bx bx-home-circle scaleX-n1-rtl me-1"></span>Dashboard</a>
-          </li>
-          {% else %}
-          <li>
-            <a href="/signup" class="btn btn-primary me-3 rounded-pill d-none d-md-inline-block">Sign Up</a>
-            <a href="/login" class="btn btn-light rounded-pill">
-              <span class="tf-icons bx bx-log-in-circle scaleX-n1-rtl me-1"></span>
-              Login
-            </a>
-          </li>
-          {% endif %}
-          <!-- navbar button: End -->
-        </ul>
-        <!-- Toolbar: End -->
-      </div>
     </div>
-  </nav>
-  <!-- Navbar: End -->
 
-  <!-- Sections:Start -->
-  <div data-bs-spy="scroll" class="scrollspy-example">
-    <!-- Hero: Start -->
-    <section id="hero-animation">
-      <div id="landingHero" class="section-py landing-hero position-relative">
-        <img src="{% static 'img/front-pages/backgrounds/hero-bg.png' %}" alt="hero background"
-          class="position-absolute top-0 start-50 translate-middle-x object-fit-cover w-100 h-100" data-speed="1" />
-        <div class="container">
-          <div class="hero-text-box text-center position-relative">
-            <h1 class="text-primary hero-title display-6 fw-extrabold">Stay connected globally with affordable rates
-            </h1>
-            <h2 class="hero-sub-title h6 mb-6">
-              Join millions of satisfied users who trust our eSIMs <br class="d-none d-lg-block" />
-              For seamless global connectivity and affordable rates
-            </h2>
-            <!-- <div class="landing-hero-btn d-inline-block position-relative">
-              <span class="hero-btn-item position-absolute d-none d-md-flex fw-bold">Join community
-                <img src="{% static 'img/front-pages/icons/Join-community-arrow.png' %}" alt="Join community arrow"
-                  class="scaleX-n1-rtl" /></span>
-                <a href="javascript:;" class="me-2">
-                  <img src="{% static 'img/front-pages/landing-page/apple-icon.png' %}" alt="Download on the App Store"
-                    height="50px" />
+    <div class="navbar">
+        <div class="innerSpacing">
+
+            <div class="logoBox">
+                <a href="/">
+                    <img src="{% static 'new/assets/branding/logo.webp' %}" alt="">
                 </a>
-                <a href="javascript:;">
-                  <img src="{% static 'img/front-pages/landing-page/google-play-icon.png' %}" alt="Get it on Google Play"
-                    height="50px" />
+            </div>
+
+            <div class="navLinks">
+                <a href="" class="navHome">Home</a>
+                <a href="#eSim" class="navEsim">eSIM</a>
+                <a href="#virtualNumber" class="navVn">Virtual Numbers</a>
+                <a href="#FAQs" class="navFaq">FAQs</a>
+            </div>
+
+            <div class="navActionBtns">
+                <button class="themeBtn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 8a2.83 2.83 0 0 0 4 4a4 4 0 1 1-4-4m0-6v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4l1.4 1.4M2 12h2m16 0h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4" />
+                    </svg></button>
+                {% if user.is_authenticated %}
+                <!-- GO TO DASHBOARD AREA -->
+                <a href="/logout" id="dashBtn">
+                    <span class="material-symbols-outlined">logout</span> &nbsp;Logout
                 </a>
-            </div> -->
-          </div>
+                {% else %}
+                <a href="/signup" class="nSUBtn">Sign Up</a>
+                <a href="/login" class="nLBtn">
+                    <span class="material-symbols-outlined">login</span> &nbsp;Login
+                </a>
+                {% endif %}
 
-          <!-- <div class="d-flex justify-content-center align-items-center">
-            <div class="input-group" style="max-width: 400px">
-              <input type="text" class="form-control" placeholder="Search..." aria-label="Search" />
-              <span class="input-group-text">
-                <i class="bx bx-md bx-search fs-4"></i>
-              </span>
+                <button class="menuBtn" onclick="openSidebar()"><svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24">
+                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            d="M4 12h16M4 6h16M4 18h16" />
+                    </svg></button>
             </div>
-          </div> -->
+
         </div>
-      </div>
+    </div>
 
-    </section>
-    <!-- Hero: End -->
+    <div class="bottomBar">
+        <button class="closeBtn" onclick="closeSidebar()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                    d="M18 6L6 18M6 6l12 12" />
+            </svg></button>
 
-    <!-- eSIMs: Start -->
-    <section id="landingESIM" class="section-py landing-esim">
-      <div class="container">
-        <div class="text-center mb-2">
-          <span class="badge bg-label-primary">Magic eSIMs</span>
+        <div class="linkPacks">
+
+            <div class="linkPackArea">
+                <h1>Main</h1>
+                <div class="linkArea">
+                    <button class="bottomBarNavLink" onclick="closeSidebar(), window.location.href='#'">
+                        <div class="svgBox"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                    d="M15 14c-2.67 0-8 1.33-8 4v2h16v-2c0-2.67-5.33-4-8-4m-9-4V7H4v3H1v2h3v3h2v-3h3v-2m6 2a4 4 0 0 0 4-4a4 4 0 0 0-4-4a4 4 0 0 0-4 4a4 4 0 0 0 4 4" />
+                            </svg></div>
+                        <span>Sign up</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                d="m9 18l6-6l-6-6" />
+                        </svg>
+                    </button>
+                    <button class="bottomBarNavLink" onclick="closeSidebar(), window.location.href='#eSim'">
+                        <div class="svgBox"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                    d="M20.828 16.828C22 15.657 22 13.771 22 10a3.86 3.86 0 0 0-1.136-2.731l-4.133-4.133A3.86 3.86 0 0 0 14 2c-3.771 0-5.657 0-6.83 1.172c-.377.377-.633.83-.807 1.395C7.371 4.5 8.55 4.5 9.896 4.5H10c1.427 0 2.789.571 3.792 1.575l4.133 4.133A5.36 5.36 0 0 1 19.5 14v.104c0 1.346 0 2.525-.067 3.532c.565-.174 1.018-.43 1.395-.808" />
+                                <path fill="currentColor" fill-rule="evenodd"
+                                    d="M10 22c-3.771 0-5.657 0-6.828-1.172S2 17.771 2 14s0-5.657 1.172-6.828S6.229 6 10 6a3.86 3.86 0 0 1 2.731 1.136l4.133 4.133A3.86 3.86 0 0 1 18 14c0 3.771 0 5.657-1.172 6.828S13.771 22 10 22m-2.707-3.293C7.586 19 8.057 19 9 19h.5v-5H9c-.943 0-1.414 0-1.707.293S7 15.057 7 16v1c0 .943 0 1.414.293 1.707m5.414 0C12.414 19 11.943 19 11 19h-.5v-2H13c0 .943 0 1.414-.293 1.707M11 14c.943 0 1.414 0 1.707.293S13 15.057 13 16h-2.5v-2z"
+                                    clip-rule="evenodd" />
+                            </svg></div>
+                        <span>eSIM</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                d="m9 18l6-6l-6-6" />
+                        </svg>
+                    </button>
+                    <button class="bottomBarNavLink" onclick="closeSidebar(), window.location.href='#virtualNumber'">
+                        <div class="svgBox"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                    d="M3 12c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h8c1.1 0 2 .9 2 2v5c0 1.1-.9 2-2 2H9v3l-3-3zm18 6c1.1 0 2-.9 2-2v-5c0-1.1-.9-2-2-2h-6v1c0 2.2-1.8 4-4 4v2c0 1.1.9 2 2 2h2v3l3-3z" />
+                            </svg></div>
+                        <span>Virtual numbers</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                d="m9 18l6-6l-6-6" />
+                        </svg>
+                    </button>
+                    <button class="bottomBarNavLink" onclick="closeSidebar(), window.location.href='#FAQs'">
+                        <div class="svgBox"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                    d="M15.25 2h-6.5A6.76 6.76 0 0 0 2 8.75v6.5A6.76 6.76 0 0 0 8.75 22h6.5A6.76 6.76 0 0 0 22 15.25v-6.5A6.76 6.76 0 0 0 15.25 2m-3.28 16.58a1 1 0 1 1 0-2a1 1 0 0 1 0 2m3.79-7.59a3.7 3.7 0 0 1-.91 1.29a3.6 3.6 0 0 1-1.35.81a1 1 0 0 0-.63.93v.73a1 1 0 0 1-2 0v-.77a3.06 3.06 0 0 1 .56-1.7a3.13 3.13 0 0 1 1.39-1.07a1.8 1.8 0 0 0 .67-.39c.186-.17.332-.378.43-.61a1.8 1.8 0 0 0 .13-.72a1.8 1.8 0 0 0-.16-.72a2.3 2.3 0 0 0-.65-.72c-.279-.2-.6-.33-.94-.38a2.29 2.29 0 0 0-2.51 1.29a1.002 1.002 0 0 1-1.82-.84a4.35 4.35 0 0 1 1.92-2a4.27 4.27 0 0 1 2.74-.41a4.1 4.1 0 0 1 1.77.72c.53.379.964.875 1.27 1.45c.24.493.37 1.032.38 1.58a3.55 3.55 0 0 1-.29 1.53" />
+                            </svg></div>
+                        <span>FAQs</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                d="m9 18l6-6l-6-6" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
         </div>
-        <h4 class="text-center mb-4">
-          We got your Internet connection covered
-          <span class="position-relative fw-extrabold z-1">
-            Anywhere, Everywhere
-            <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="laptop charging"
-              class="section-title-img position-absolute object-fit-contain bottom-0 z-n1">
-          </span>
-        </h4>
-        <div class="nav-align-top mb-6">
-          <ul class="nav nav-pills mb-4 justify-content-center gap-3" role="tablist">
-            <li class="nav-item mb-1 mb-sm-0" role="presentation">
-              <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
-                data-bs-target="#navs-pills-justified-local" aria-controls="navs-pills-justified-local"
-                aria-selected="true"><i class="tf-icons bx bx-map me-2"></i>Local</button>
-            </li>
-            <li class="nav-item mb-1 mb-sm-0" role="presentation">
-              <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
-                data-bs-target="#navs-pills-justified-regions" aria-controls="navs-pills-justified-regions"
-                aria-selected="false" tabindex="-1"><i class="tf-icons bx bx-world me-2"></i>Regions</button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
-                data-bs-target="#navs-pills-justified-global" aria-controls="navs-pills-justified-global"
-                aria-selected="false" tabindex="-1"><i class="tf-icons bx bx-globe me-2"></i> Global</button>
-            </li>
-          </ul>
 
-          <div class="tab-content mx-auto rounded-5 bg-light w-100 w-md-75">
-            <div class="tab-pane fade show active" id="navs-pills-justified-local" role="tabpanel">
-              <!-- Country List -->
-              <div class="row g-5 text-center pt-3 pb-3" id="countries-list">
-                <div class="input-group input-group-lg input-group-merge rounded-pill">
-                  <span class="input-group-text" id="basic-addon-search31"><i class="icon-base bx bx-search"></i></span>
-                  <input id="search_country" type="text" class="form-control" placeholder="Search..." aria-label="Search..." aria-describedby="basic-addon-search31">
-                </div>
-                {% for country in countries %}
-                <div class="col-12 col-md-6 col-lg-4 country-item {% if not country.is_popular %}d-none{% endif %}"
-                  data-popular="{{ country.is_popular }}">
-                  <a href="javascript:;" data-location_code="{{ country.alpha_2 }}"
-                    class="d-flex justify-content-between py-3 px-4 shadow align-items-center fw-bold text-dark show-country-esims bg-white rounded-pill">
-                    <span>
-                      <img src="https://flagcdn.com/w320/{{ country.alpha_2|lower }}.png" alt="{{ country.name }}"
-                        class="me-2 rounded-circle" width="40px" height="40px" />
-                      {{ country.name }}
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
-                </div>
-                {% endfor %}
-                <div class="text-center">
-                  <button id="toggle-countries-btn" class="btn btn-md rounded-pill btn-primary">Show 200+ Countries</button>
-                </div>
-              </div>
+    </div>
 
-              <!-- eSIM Plan Cards -->
-              <div class="d-none esims_show">
-                <div class="text-left">
-                  <button id="back-to-countries-btn" class="btn btn-md rounded-pill btn-dark">
-                    <i class="bx bx-sm bx-left-arrow-alt"></i> Back to Countries
-                  </button>
-                </div>
+    <div class="loading d-none">
+        <div class="loadingCircle"></div>
+    </div>
 
-                <div class="col-12 mt-3">
-                  <div class="border shadow border-dark rounded-5 rounded-bottom border-2 p-5 d-flex align-items-end justify-content-between esim_local_hero" style="background: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 80%)), url(https://flagcdn.com/w320/de.png); height: 30vh;">
-                    <h4 class="m-0 text-white fw-bold mb-5 esim_country">eSIM {{country}}</h4>
-                    <img src="https://flagcdn.com/w320/de.png" class="rounded mb-5 local_esim_flag" style="width: 60px; height: auto;">
-                  </div>
-                </div>
-                <div class="col-12 mt-5 mb-0 h4 text-dark fw-bolder text-start">Standard Bundles</div>
+    <div class="mainContent">
+        <div class="contentArea">
 
-                <div class="row g-3 text-center pt-3 pb-3" id="esim-plan-cards">
-                  <!-- Dynamically rendered eSIM plan cards will go here -->
+            <div class="webIntro">
+                <div class="poweredBy">
+                    <h2>Powered by B&B Technologies</h2>
+                    <img src="{% static 'new/assets/branding/bsb.webp' %}" alt="">
                 </div>
-
-                <div class="col-12 mt-5 mb-0 h4 text-dark fw-bolder text-start">Unlimited Bundles</div>
-
-                <div class="row g-3 text-center pt-3 pb-3" id="unlimited-esim-plan-cards">
-                  <!-- Dynamically rendered Unlimited eSIM plan cards will go here -->
-                </div>
-              </div>
+                <h1>Get our eSIM and stay connected globally with affordable rates</h1>
+                <p>24/7 Support&nbsp;&nbsp;<span>●</span>&nbsp;&nbsp;1-Click
+                    Installation&nbsp;&nbsp;<span>●</span>&nbsp;&nbsp;Free
+                    VPN&nbsp;&nbsp;<span>●</span>&nbsp;&nbsp;Money-Back
+                    Guarantee&nbsp;&nbsp;<span>●</span>&nbsp;&nbsp;SwitchLess Networks</p>
             </div>
 
-            <div class="tab-pane fade" id="navs-pills-justified-regions" role="tabpanel">
-              <div class="row g-5 text-center pt-3 pb-3" id="regions-list">
-                <!-- Added `g-3` for uniform spacing -->
-                <div class="col-12 col-md-6 col-lg-4">
-                  <a href="javascript:;" data-location_code="AF" data-region="Africa"
-                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
-                    <span>
-                      <img src="{% static 'img/regions/af.png' %}" alt="Africa" class="me-2 rounded-circle"
-                        width="40px" />
-                      Africa
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
+            <div class="videoArea">
+                <video src="{% static 'new/assets/misc/esim.mp4' %}" autoplay muted loop></video>
+                <div class="videoAreaDets">
+                    <p>Because speed matters</p>
+                    <h1>Get 5G access at just<br>few steps</h1>
+                    <a href="">Try now&nbsp;&nbsp;<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                d="m18 8l4 4l-4 4M2 12h20" />
+                        </svg></a>
                 </div>
-                <div class="col-12 col-md-6 col-lg-4">
-                  <a href="javascript:;" data-location_code="AS" data-region="Asia"
-                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
-                    <span>
-                      <img src="{% static 'img/regions/as.png' %}" alt="Asia" class="me-2 rounded-circle"
-                        width="40px" />
-                      Asia
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4">
-                  <a href="javascript:;" data-location_code="EU" data-region="Europe"
-                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
-                    <span>
-                      <img src="{% static 'img/regions/eu.png' %}" alt="Europe" class="me-2 rounded-circle"
-                        width="40px" />
-                      Europe
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4">
-                  <a href="javascript:;" data-location_code="NA" data-region="North America"
-                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
-                    <span>
-                      <img src="{% static 'img/regions/na.png' %}" alt="North America" class="me-2 rounded-circle"
-                        width="40px" />
-                      North America
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4">
-                  <a href="javascript:;" data-location_code="SA" data-region="South America"
-                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
-                    <span>
-                      <img src="{% static 'img/regions/sa.png' %}" alt="South America" class="me-2 rounded-circle"
-                        width="40px" />
-                      South America
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4">
-                  <a href="javascript:;" data-location_code="CA" data-region="Caribbean"
-                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-region-esims">
-                    <span>
-                      <img src="{% static 'img/regions/cb.png' %}" alt="Caribbean" class="me-2 rounded-circle"
-                        width="40px" />
-                      Caribbean
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
-                </div>
-              </div>
-
-              <!-- eSIM Plan Cards -->
-              <div class="d-none esims_region_show">
-                <div class="text-left">
-                  <button id="back-to-regions-btn" class="btn btn-md rounded-pill btn-dark">
-                    <i class="bx bx-sm bx-left-arrow-alt"></i> Back to Regions
-                  </button>
-                </div>
-
-                <div class="col-12 mt-3">
-                  <div
-                    class="border shadow border-dark rounded-5 rounded-bottom border-2 p-5 d-flex align-items-end justify-content-between esim_region_hero"
-                    style="background: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 80%)), url(https://flagcdn.com/w320/de.png); height: 30vh;">
-                    <h4 class="m-0 text-white fw-bold mb-5 esim_region">eSIM {{country}}</h4>
-                  </div>
-                </div>
-                <div class="col-12 mt-5 mb-0 h4 text-dark fw-bolder text-start">Standard Bundles</div>
-
-                <div class="row g-3 text-center pt-3 pb-3" id="esim-region-cards">
-                  <!-- Dynamically rendered eSIM plan cards will go here -->
-                </div>
-
-                <div class="col-12 mt-5 mb-0 h4 text-dark fw-bolder text-start">Unlimited Bundles</div>
-
-                <div class="row g-3 text-center pt-3 pb-3" id="unlimited-esim-region-cards">
-                  <!-- Dynamically rendered Unlimited eSIM plan cards will go here -->
-                </div>
-              </div>
             </div>
 
-            <div class="tab-pane fade" id="navs-pills-justified-global" role="tabpanel">
-              <div class="row g-5 text-center pt-3 pb-3" id="global-list">
-                <!-- Added `g-3` for uniform spacing -->
-                <div class="col-12 col-md-6 col-lg-4">
-                  <a href="javascript:;" data-location_code="GL-12"
-                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-global-esims">
-                    <span>
-                      <img src="{% static 'img/regions/as.png' %}" alt="Asia" class="me-2 rounded-circle"
-                        width="40px" />
-                      Global (120+ areas)
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4">
-                  <a href="javascript:;" data-location_code="GL-13"
-                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-global-esims">
-                    <span>
-                      <img src="{% static 'img/regions/as.png' %}" alt="Asia" class="me-2 rounded-circle"
-                        width="40px" />
-                      Global (130+ areas)
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4">
-                  <a href="javascript:;" data-location_code="GL-14"
-                    class="d-flex justify-content-between py-3 px-4 shadow bg-white rounded-pill align-items-center fw-bold text-dark show-global-esims">
-                    <span>
-                      <img src="{% static 'img/regions/as.png' %}" alt="Asia" class="me-2 rounded-circle"
-                        width="40px" />
-                      Global (140+ areas)
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
-                </div>
-              </div>
+            <div class="eSimArea" id="eSim">
+                <h2>Magic eSIMs</h2>
+                <h1>We got your Internet connection covered <span>Anywhere, Everywhere</span>.</h1>
 
-              <!-- eSIM Global Plan Cards -->
-              <div class="d-none esims_global_show">
-                <div class="text-left">
-                  <button id="back-to-global-btn" class="btn btn-md rounded-pill btn-dark">
-                    <i class="bx bx-sm bx-left-arrow-alt"></i> Back to Globals
-                  </button>
+                <div class="eSimAcBtns">
+                    <button data-target=".localEsimArea" aria-selected="true">
+                        <span class="material-symbols-outlined">location_on</span>&nbsp;&nbsp;Local
+                    </button>
+                    <button data-target=".regioneSims">
+                        <span class="material-symbols-outlined">globe</span>&nbsp;&nbsp;Regions
+                    </button>
+                    <button data-target=".globaleSims">
+                        <span class="material-symbols-outlined">language</span>&nbsp;&nbsp;Global
+                    </button>
                 </div>
 
-                <div class="col-12 mt-3">
-                  <div
-                    class="border shadow border-dark rounded-5 rounded-bottom border-2 p-5 d-flex align-items-end justify-content-between esim_global_hero"
-                    style="background: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 80%)), url(https://flagcdn.com/w320/de.png); height: 30vh;">
-                    <h4 class="m-0 text-white fw-bold mb-5 esim_global">eSIM {{country}}</h4>
-                  </div>
-                </div>
-                <div class="col-12 mt-5 mb-0 h4 text-dark fw-bolder text-start">Standard Bundles</div>
-
-                <div class="row g-5 text-center pt-3 pb-3" id="esim-global-cards">
-                  <!-- Dynamically rendered eSIM plan cards will go here -->
-                </div>
-
-                <div class="col-12 mt-5 mb-0 h4 text-dark fw-bolder text-start">Unlimited Bundles</div>
-
-                <div class="row g-3 text-center pt-3 pb-3" id="unlimited-esim-global-cards">
-                  <!-- Dynamically rendered Unlimited eSIM plan cards will go here -->
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- eSIMs: End -->
-
-    <!-- eSIM features: Start -->
-    <section id="landingEsimFeatures" class="section-py landing-esimfeatures">
-      <div class="container">
-        <div class="text-center mb-4">
-          <span class="badge bg-label-primary">Step-by-Step Guide</span>
-        </div>
-        <h4 class="text-center mb-1">
-          <span class="position-relative fw-extrabold z-1">How to Get Your eSIM
-            <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="esim icon"
-              class="section-title-img position-absolute object-fit-contain bottom-0 z-n1">
-          </span>
-        </h4>
-        <p class="text-center mb-12">Follow these simple steps to activate your eSIM and start enjoying seamless
-          connectivity.</p>
-        <div class="features-icon-wrapper row gx-0 gy-6 g-sm-12">
-          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
-            <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/user.svg' %}" alt="signup" />
-            </div>
-            <h5 class="mb-2">Sign Up</h5>
-            <p class="features-icon-description">Create an account on our platform to begin the eSIM activation process.
-            </p>
-          </div>
-          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
-            <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/paper.svg' %}" alt="choose plan" />
-            </div>
-            <h5 class="mb-2">Choose a Plan</h5>
-            <p class="features-icon-description">Select the eSIM plan that best suits your data and connectivity needs.
-            </p>
-          </div>
-          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
-            <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/check.svg' %}" alt="verify identity" />
-            </div>
-            <h5 class="mb-2">Verify Your Identity</h5>
-            <p class="features-icon-description">Complete the verification process to ensure secure activation of your
-              eSIM.</p>
-          </div>
-          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
-            <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/rocket.svg' %}" alt="activate esim" />
-            </div>
-            <h5 class="mb-2">Activate Your eSIM</h5>
-            <p class="features-icon-description">Receive your eSIM QR code and activate it on your device instantly.</p>
-          </div>
-          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
-            <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/laptop.svg' %}" alt="setup complete" />
-            </div>
-            <h5 class="mb-2">Start Using Your eSIM</h5>
-            <p class="features-icon-description">Enjoy seamless connectivity and explore new possibilities with your
-              eSIM.</p>
-          </div>
-          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
-            <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/user.svg' %}" alt="support" />
-            </div>
-            <h5 class="mb-2">Need Help?</h5>
-            <p class="features-icon-description">Contact our support team anytime for assistance with your eSIM setup.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- eSIM features: End -->
-
-    <!-- virtual numbers: Start -->
-    <section id="landingVirtualNumbers" class="section-py bg-body landing-virtualnumbers pb-0">
-      <div class="container pb-5">
-        <div class="text-center mb-2">
-          <span class="badge bg-label-primary">Magic Virtual Numbers</span>
-        </div>
-        <h4 class="text-center mb-4">
-          <span class="position-relative fw-extrabold z-1">
-            Become anonymous online,
-            <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="laptop charging"
-              class="section-title-img position-absolute object-fit-contain bottom-0 z-n1">
-          </span>
-          get your virtual phone number
-        </h4>
-        <div class="nav-align-top mb-5">
-          <!-- <ul class="nav nav-pills mb-4 justify-content-center gap-3" role="tablist">
-            <li class="nav-item mb-1 mb-sm-0" role="presentation">
-              <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
-                data-bs-target="#navs-pills-justified-countries" aria-controls="navs-pills-justified-countries"
-                aria-selected="true"><i class="tf-icons bx bx-map me-2"></i>Numbers for Countries</button>
-            </li>
-            <li class="nav-item mb-1 mb-sm-0" role="presentation">
-              <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
-                data-bs-target="#navs-pills-justified-services" aria-controls="navs-pills-justified-services"
-                aria-selected="false" tabindex="-1"><i class="tf-icons bx bx-message-rounded me-2"></i>Numbers for Services</button>
-            </li>
-          </ul> -->
-
-          <div class="tab-content">
-            <!-- <div class="tab-pane fade" id="navs-pills-justified-countries" role="tabpanel">
-              <div class="row g-5 text-center pt-3 pb-3">
-                {% for country in countries %}
-                <div class="col-12 col-md-6 col-lg-4 country-item {% if not country.is_popular %}d-none{% endif %}"
-                  data-popular="{{ country.is_popular }}">
-                  <a href="javascript:;"
-                    class="d-flex justify-content-between py-3 px-4 shadow rounded align-items-center fw-bold text-dark">
-                    <span>
-                      <img src="https://flagcdn.com/w320/{{ country.alpha_2|lower }}.png" alt="{{ country.name }}"
-                        class="me-2 rounded" width="60px" height="40px" />
-                      {{ country.name }}
-                    </span>
-                    <i class="bx bx-md bx-chevron-right"></i>
-                  </a>
-                </div>
-                {% endfor %}
-              </div>
-            </div> -->
-
-            <div class="tab-pane fade show active" id="navs-pills-justified-services" role="tabpanel">
-              <div class="row justify-content-center">
-                <form id="virtualNumberRequestForm" class="col-12 col-md-6">
-                  <div class="row g-4">
-                    <div class="col-md-6">
-                      <label class="form-label" for="full_name">Full Name</label>
-                      <input type="text" class="form-control" name="full_name" placeholder="First & Last name"
-                        required />
+                <div class="localEsimArea">
+                    <div class="eSimSearchBar">
+                        <span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8" />
+                                    <path d="m21 21l-4.3-4.3" />
+                                </g>
+                            </svg>
+                        </span>
+                        <input id="search_country" type="text" placeholder="Where do you need internet?">
                     </div>
-                    <div class="col-md-6">
-                      <label class="form-label" for="email">Email</label>
-                      <input type="email" name="email" class="form-control" required placeholder="name@domain.com" />
+                    <div id="countries-list" class="localeSims">
+                        {% for country in countries %}
+                        <div class="country-item {% if not country.is_popular %}d-none{% endif %}" data-popular="{{ country.is_popular }}" >
+                            <button class="oneLocaleSim show-country-esims" data-location_code="{{ country.alpha_2 }}">
+                                <img src="https://flagcdn.com/w320/{{ country.alpha_2|lower }}.png" alt="{{ country.name }}">
+                                <h1>{{ country.name }}</h1>
+                                <span class="material-symbols-outlined">keyboard_arrow_right</span>
+                            </button>
+                        </div>
+                        {% endfor %}
                     </div>
-                    <div class="col-12">
-                      <label class="form-label" for="nationality">Nationality:</label>
-                      <input type="text" name="nationality" class="form-control" placeholder="Kenyan" required />
+                    <button id="toggle-countries-btn" class="showAllBtn" type="button">Show All Countries</button>
+                </div>
+
+                <div class="regioneSims d-none">
+                    <button class="oneRegioneSim show-region-esims" data-location_code="AF" data-region="Africa">
+                        <div class="imgBox">
+                            <img src="{% static 'new/assets/regions/africa.webp' %}" alt="">
+                        </div>
+                        <h1>africa</h1>
+                        <span class="material-symbols-outlined">keyboard_arrow_right</span>
+                    </button>
+                    <button class="oneRegioneSim show-region-esims" data-location_code="AS" data-region="Asia">
+                        <div class="imgBox">
+                            <img src="{% static 'new/assets/regions/asia.webp' %}" alt="">
+                        </div>
+                        <h1>asia</h1>
+                        <span class="material-symbols-outlined">keyboard_arrow_right</span>
+                    </button>
+                    <button class="oneRegioneSim show-region-esims" data-location_code="EU" data-region="Europe">
+                        <div class="imgBox">
+                            <img src="{% static 'new/assets/regions/europe.webp' %}" alt="">
+                        </div>
+                        <h1>europe</h1>
+                        <span class="material-symbols-outlined">keyboard_arrow_right</span>
+                    </button>
+                    <button class="oneRegioneSim show-region-esims" data-location_code="NA" data-region="North America">
+                        <div class="imgBox">
+                            <img src="{% static 'new/assets/regions/northAmerica.webp' %}" alt="">
+                        </div>
+                        <h1>north america</h1>
+                        <span class="material-symbols-outlined">keyboard_arrow_right</span>
+                    </button>
+                    <button class="oneRegioneSim show-region-esims" data-location_code="SA" data-region="South America">
+                        <div class="imgBox">
+                            <img src="{% static 'new/assets/regions/southAmerica.webp' %}" alt="">
+                        </div>
+                        <h1>south america</h1>
+                        <span class="material-symbols-outlined">keyboard_arrow_right</span>
+                    </button>
+                    <button class="oneRegioneSim show-region-esims" data-location_code="CA" data-region="Caribbean">
+                        <div class="imgBox">
+                            <img src="{% static 'new/assets/regions/caribbean.webp' %}" alt="">
+                        </div>
+                        <h1>caribbean</h1>
+                        <span class="material-symbols-outlined">keyboard_arrow_right</span>
+                    </button>
+                </div>
+
+                <div class="globaleSims d-none">
+                    <button class="oneGlobaleSim show-global-esims" data-location_code="GL-12">
+                        <div class="imgBox">
+                            <img src="{% static 'new/assets/global/global.webp' %}" alt="">
+                        </div>
+                        <h1>global (120+ areas)</h1>
+                        <span class="material-symbols-outlined">keyboard_arrow_right</span>
+                    </button>
+                    <button class="oneGlobaleSim show-global-esims" data-location_code="GL-13">
+                        <div class="imgBox">
+                            <img src="{% static 'new/assets/global/global.webp' %}" alt="">
+                        </div>
+                        <h1>global (130+ areas)</h1>
+                        <span class="material-symbols-outlined">keyboard_arrow_right</span>
+                    </button>
+                    <button class="oneGlobaleSim show-global-esims" data-location_code="GL-14">
+                        <div class="imgBox">
+                            <img src="{% static 'new/assets/global/global.webp' %}" alt="">
+                        </div>
+                        <h1>global (140+ areas)</h1>
+                        <span class="material-symbols-outlined">keyboard_arrow_right</span>
+                    </button>
+                </div>
+
+                <div class="packagesArea d-none">
+
+                    <button id="back-to-countries-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                d="m15 18l-6-6l6-6" />
+                        </svg>&nbsp;Go back</button>
+                    <div class="areaImgBox">
+                        <img class="esim_local_hero" src="https://images.unsplash.com/photo-1422464804701-7d8356b3a42f?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
+                        <div class="packAreaDets">
+                            <div class="areaDets">
+                                <p>Best eSIMs for travelers</p>
+                                <h1>eSIM <span class="esim_country">united states</span></h1>
+                            </div>
+                            <img class="local_esim_flag" src="{% static 'new/assets/flags/us.webp' %}" alt="">
+                        </div>
+                        <div class="blurArea"></div>
                     </div>
-                    <div class="col-12">
-                      <label class="form-label" for="purpose">Purpose/Service:</label>
-                      <textarea name="purpose" class="form-control" rows="3" required
-                        placeholder="Write your purpose/service for the virtual number here"></textarea>
+
+                    <div class="allBundlesArea">
+                        <div class="standardPacksArea">
+                            <h1>standard bundles</h1>
+                            <div id="esim-plan-cards" class="bundlesArea">
+                                <!--  -->
+                            </div>
+                        </div>
+                        <div class="unlimitedPacksArea">
+                            <h1>unlimited bundles</h1>
+                            <div id="unlimited-esim-plan-cards" class="bundlesArea">
+                                <!--  -->
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-12">
-                      <label class="form-label" for="service_country">Service Country</label>
-                      <input type="text" name="service_country" class="form-control" placeholder="United Kingdom"
-                        required />
+
+                </div>
+            </div>
+
+            <div class="qualitiesArea">
+                <h1>Stable and trustworthy internet connection</h1>
+                <div class="qualitiesHere">
+                    <div class="oneQuality">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zm0 0a9 9 0 1 1 18 0m0 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2z" />
+                                <path d="M21 16v2a4 4 0 0 1-4 4h-5" />
+                            </g>
+                        </svg>
+                        <h1>24/7 Support</h1>
+                        <p>Typical response time – within 6 hours.</p>
                     </div>
-                    <div class="col-12">
-                      <button id="submitBtn1" type="submit" class="btn btn-primary">Send Request</button>
+                    <div class="oneQuality">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M3.85 8.62a4 4 0 0 1 4.78-4.77a4 4 0 0 1 6.74 0a4 4 0 0 1 4.78 4.78a4 4 0 0 1 0 6.74a4 4 0 0 1-4.77 4.78a4 4 0 0 1-6.75 0a4 4 0 0 1-4.78-4.77a4 4 0 0 1 0-6.76" />
+                                <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8m4 2V6" />
+                            </g>
+                        </svg>
+                        <h1>100% money-back guarantee</h1>
+                        <p>If you're not happy with the service, we'll provide a hassle-free refund.</p>
                     </div>
-                  </div>
+                    <div class="oneQuality">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9m2.9 2.8a6.14 6.14 0 0 0-.8 7.5" />
+                                <circle cx="12" cy="9" r="2" />
+                                <path
+                                    d="M16.2 4.8c2 2 2.26 5.11.8 7.47M19.1 1.9a9.96 9.96 0 0 1 0 14.1m-9.6 2h5M8 22l4-11l4 11" />
+                            </g>
+                        </svg>
+                        <h1>SwitchLess Networks</h1>
+                        <p>If a different mobile operator offers 5G, we'll switch you to it immediately.</p>
+                    </div>
+                    <div class="oneQuality">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                                <path d="m9 12l2 2l4-4" />
+                            </g>
+                        </svg>
+                        <h1>Free VPN</h1>
+                        <p>Enjoy your favorite services wherever you are — absolutely free.</p>
+                    </div>
+                    <div class="oneQuality">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 20h.01M2 8.82a15 15 0 0 1 20 0M5 12.859a10 10 0 0 1 14 0m-10.5 3.57a5 5 0 0 1 7 0" />
+                        </svg>
+                        <h1>Hotspot mode</h1>
+                        <p>Easily and quickly share internet with other devices.</p>
+                    </div>
+                    <div class="oneQuality">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="18" height="18" x="3" y="3" rx="2" />
+                                <path d="M11 9h4a2 2 0 0 0 2-2V3" />
+                                <circle cx="9" cy="9" r="2" />
+                                <path d="M7 21v-4a2 2 0 0 1 2-2h4" />
+                                <circle cx="15" cy="15" r="2" />
+                            </g>
+                        </svg>
+                        <h1>1-Click Installation</h1>
+                        <p>Activate your eSIM in minutes by simply pressing the “Install eSIM” button.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reviewsArea">
+                <h1>Hear from our customers</h1>
+                <div class="slidingReviews">
+                    <div class="oneReviewSlide oneReviewSlide1">
+                        <h1>Digital Nomad</h1>
+                        <p>"Magic eSIM has revolutionized how I stay connected while traveling. No more waiting in line
+                            for SIM cards at airports!"</p>
+                        <div class="revDets">
+                            <div class="revStars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg></div>
+                            <p>Sophia C.</p>
+                            <img src="{% static 'new/assets/flags/us.webp' %}" alt="">
+                        </div>
+                    </div>
+                    <div class="oneReviewSlide oneReviewSlide2">
+                        <h1>Entrepreneur</h1>
+                        <p>"The virtual number service is a game-changer for my business. I can now manage multiple
+                            customer regions effortlessly."</p>
+                        <div class="revDets">
+                            <div class="revStars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg></div>
+                            <p>James R.</p>
+                            <img src="{% static 'new/assets/flags/ar.webp' %}" alt="">
+                        </div>
+                    </div>
+                    <div class="oneReviewSlide oneReviewSlide3">
+                        <h1>Frequent Traveler</h1>
+                        <p>"Setting up my eSIM was incredibly fast and easy with Magic eSIM. I was connected in minutes
+                            and loved the smooth experience."</p>
+                        <div class="revDets">
+                            <div class="revStars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg></div>
+                            <p>Linda W.</p>
+                            <img src="{% static 'new/assets/flags/gb.webp' %}" alt="">
+                        </div>
+                    </div>
+                    <div class="oneReviewSlide oneReviewSlide4">
+                        <h1>Tech Enthusiast</h1>
+                        <p>"Thanks to Magic eSIM, I no longer have to worry about roaming charges. The plans are
+                            affordable and reliable."</p>
+                        <div class="revDets">
+                            <div class="revStars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg></div>
+                            <p>Michael B.</p>
+                            <img src="{% static 'new/assets/flags/la.webp' %}" alt="">
+                        </div>
+                    </div>
+                    <div class="oneReviewSlide oneReviewSlide5">
+                        <h1>Freelancer</h1>
+                        <p>"Magic eSIM's virtual number has helped me stay connected with clients worldwide without
+                            additional infrastructure."</p>
+                        <div class="revDets">
+                            <div class="revStars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg></div>
+                            <p>Emma J.</p>
+                            <img src="{% static 'new/assets/flags/de.webp' %}" alt="">
+                        </div>
+                    </div>
+                    <div class="oneReviewSlide oneReviewSlide6">
+                        <h1>Digital Nomad</h1>
+                        <p>"Magic eSIM has revolutionized how I stay connected while traveling. No more waiting in line
+                            for SIM cards at airports!"</p>
+                        <div class="revDets">
+                            <div class="revStars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg></div>
+                            <p>Sophia C.</p>
+                            <img src="{% static 'new/assets/flags/us.webp' %}" alt="">
+                        </div>
+                    </div>
+                    <div class="oneReviewSlide oneReviewSlide7">
+                        <h1>Entrepreneur</h1>
+                        <p>"The virtual number service is a game-changer for my business. I can now manage multiple
+                            customer regions effortlessly."</p>
+                        <div class="revDets">
+                            <div class="revStars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg></div>
+                            <p>James R.</p>
+                            <img src="{% static 'new/assets/flags/ar.webp' %}" alt="">
+                        </div>
+                    </div>
+                    <div class="oneReviewSlide oneReviewSlide8">
+                        <h1>Frequent Traveler</h1>
+                        <p>"Setting up my eSIM was incredibly fast and easy with Magic eSIM. I was connected in minutes
+                            and loved the smooth experience."</p>
+                        <div class="revDets">
+                            <div class="revStars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z" />
+                                </svg></div>
+                            <p>Linda W.</p>
+                            <img src="{% static 'new/assets/flags/gb.webp' %}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="virtualNumberBox" id="virtualNumber">
+                <h1>Get your virtual phone number</h1>
+                <p>Send a request to get your virtual number.</p>
+                <form id="virtualNumberRequestForm" class="vnForm">
+                    <div class="oneInput">
+                        <label for="fullName">Full name <span>*</span></label>
+                        <input type="text" name="full_name" placeholder="First and last name" required>
+                    </div>
+                    <div class="oneInput">
+                        <label for="email">E-mail <span>*</span></label>
+                        <input type="text" name="email" placeholder="abc@example.com" required>
+                    </div>
+                    <div class="oneInput">
+                        <label for="nationality">Nationality <span>*</span></label>
+                        <input type="text" name="nationality" placeholder="e.g. American" required>
+                    </div>
+                    <div class="oneInput">
+                        <label for="serviceCountry">Service country <span>*</span></label>
+                        <input type="text" name="service_country" placeholder="United states" required>
+                    </div>
+                    <div class="oneInput textareaInput">
+                        <label for="purpose">Purpose/Service <span>*</span></label>
+                        <textarea name="purpose" placeholder="Write your purpose for virtual number"
+                            required></textarea>
+                    </div>
+                    <button type="submit" class="vnSubmitBtn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11zm7.318-19.539l-10.94 10.939" />
+                        </svg>&nbsp;<span>Send request</span></button>
                 </form>
-              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- virtual numbers: End -->
 
-    <!-- virtual numbers features: Start -->
-    <section id="landingNumberFeatures" class="section-py landing-numberfeatures">
-      <div class="container">
-        <div class="text-center mb-4">
-          <span class="badge bg-label-primary">Step-by-Step Guide</span>
-        </div>
-        <h4 class="text-center mb-1">
-          <span class="position-relative fw-extrabold z-1">How to Get Your Virtual Number
-            <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="virtual number icon"
-              class="section-title-img position-absolute object-fit-contain bottom-0 z-n1">
-          </span>
-        </h4>
-        <p class="text-center mb-12">Follow these simple steps to set up your virtual number and start making calls
-          globally.</p>
-        <div class="features-icon-wrapper row gx-0 gy-6 g-sm-12">
-          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
-            <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/user.svg' %}" alt="signup" />
-            </div>
-            <h5 class="mb-2">Sign Up</h5>
-            <p class="features-icon-description">Create an account on our platform to start your virtual number setup
-              process.</p>
-          </div>
-          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
-            <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/paper.svg' %}" alt="choose number" />
-            </div>
-            <h5 class="mb-2">Choose Your Number</h5>
-            <p class="features-icon-description">Select a virtual number from our wide range of available countries and
-              regions.</p>
-          </div>
-          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
-            <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/check.svg' %}" alt="verify identity" />
-            </div>
-            <h5 class="mb-2">Verify Your Identity</h5>
-            <p class="features-icon-description">Complete the verification process for secure activation of your virtual
-              number.</p>
-          </div>
-          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
-            <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/rocket.svg' %}" alt="activate number" />
-            </div>
-            <h5 class="mb-2">Activate Your Virtual Number</h5>
-            <p class="features-icon-description">Activate your virtual number instantly and configure it for calls or
-              messaging.</p>
-          </div>
-          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
-            <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/laptop.svg' %}" alt="start using" />
-            </div>
-            <h5 class="mb-2">Start Using Your Virtual Number</h5>
-            <p class="features-icon-description">Make and receive calls or messages globally with your virtual number.
-            </p>
-          </div>
-          <div class="col-lg-4 col-sm-6 text-center features-icon-box">
-            <div class="text-center mb-4">
-              <img src="{% static 'img/front-pages/icons/user.svg' %}" alt="support" />
-            </div>
-            <h5 class="mb-2">Need Help?</h5>
-            <p class="features-icon-description">Our support team is here to help you with any issues or questions you
-              have.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- virtual numbers features: End -->
-
-    <!-- Real customers reviews: Start -->
-    <section id="landingReviews" class="section-py bg-body landing-reviews pb-0">
-      <!-- What people say slider: Start -->
-      <div class="container">
-        <div class="row align-items-center gx-0 gy-4 g-lg-5 mb-5 pb-md-5">
-          <div class="col-md-6 col-lg-5 col-xl-3">
-            <div class="mb-4">
-              <span class="badge bg-label-primary">Real Customers Reviews</span>
-            </div>
-            <h4 class="mb-1">
-              <span class="position-relative fw-extrabold z-1">What people love
-                <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="customer reviews icon"
-                  class="section-title-img position-absolute object-fit-contain bottom-0 z-n1">
-              </span>
-            </h4>
-            <p class="mb-5 mb-md-12">
-              Hear from real customers about how our eSIM and Virtual Number services are transforming their lives.
-            </p>
-            <div class="landing-reviews-btns">
-              <button id="reviews-previous-btn" class="btn btn-icon btn-label-primary reviews-btn me-3" type="button">
-                <i class="bx bx-chevron-left bx-md"></i>
-              </button>
-              <button id="reviews-next-btn" class="btn btn-icon btn-label-primary reviews-btn" type="button">
-                <i class="bx bx-chevron-right bx-md"></i>
-              </button>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-7 col-xl-9">
-            <div class="swiper-reviews-carousel overflow-hidden">
-              <div class="swiper" id="swiper-reviews">
-                <div class="swiper-wrapper">
-                  <!-- Review 1 -->
-                  <div class="swiper-slide">
-                    <div class="card h-100">
-                      <div class="card-body text-body d-flex flex-column justify-content-between h-100">
-                        <p>
-                          “Magic eSIM has revolutionized how I stay connected while traveling. No more waiting in line
-                          for SIM cards at airports!”
-                        </p>
-                        <div class="text-warning mb-4">
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                        </div>
-                        <div class="d-flex align-items-center">
-                          <div class="avatar me-3 avatar-sm">
-                            <img src="{% static 'img/avatars/1.png' %}" alt="Avatar" class="rounded-circle" />
-                          </div>
-                          <div>
-                            <h6 class="mb-0">Sophia Carter</h6>
-                            <p class="small text-muted mb-0">Digital Nomad</p>
-                          </div>
-                        </div>
-                      </div>
+            <div class="accordianArea" id="FAQs">
+                <h1>FAQs about eSIM cards from Magic eSIM</h1>
+                <div class="single-open">
+                    <div class="panel">
+                        <div class="panel-header"><span>What is an eSIM and how can you use Magic eSim?</span><svg
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    d="m6 9l6 6l6-6" />
+                            </svg></div>
+                        <div class="panel-content">eSIM, or embedded SIM (also known as a digital SIM card, electronic
+                            SIM card, or virtual SIM card), is a cloud-based mobile number that enables users to
+                            activate and manage multiple cellular plans on one device. It removes the need for a
+                            physical SIM card and provides the convenience of having several cellular providers on a
+                            single device. eSIM also offers extra features, such as the ability to add a secondary line
+                            for international travel and separate data plans for personal and business use.</div>
                     </div>
-                  </div>
-
-                  <!-- Review 2 -->
-                  <div class="swiper-slide">
-                    <div class="card h-100">
-                      <div class="card-body text-body d-flex flex-column justify-content-between h-100">
-                        <p>
-                          “The virtual number service is a game-changer for my business. I can now manage multiple
-                          customer regions effortlessly.”
-                        </p>
-                        <div class="text-warning mb-4">
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                        </div>
-                        <div class="d-flex align-items-center">
-                          <div class="avatar me-3 avatar-sm">
-                            <img src="{% static 'img/avatars/7.png' %}" alt="Avatar" class="rounded-circle" />
-                          </div>
-                          <div>
-                            <h6 class="mb-0">James Roberts</h6>
-                            <p class="small text-muted mb-0">Entrepreneur</p>
-                          </div>
-                        </div>
-                      </div>
+                    <div class="panel">
+                        <div class="panel-header"><span>Can I make phone calls or send SMS messages?</span><svg
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    d="m6 9l6 6l6-6" />
+                            </svg></div>
+                        <div class="panel-content">Our prepaid eSIM plans are designed for data-only use and do not
+                            include a mobile phone number. For voice calls and text messages, we recommend using VoIP
+                            apps like Facebook Messenger, WhatsApp, Viber, Telegram, or Skype. This allows users to stay
+                            connected globally without the need for a traditional international SIM card from mobile
+                            operators or carriers when traveling.</div>
                     </div>
-                  </div>
-
-                  <!-- Review 3 -->
-                  <div class="swiper-slide">
-                    <div class="card h-100">
-                      <div class="card-body text-body d-flex flex-column justify-content-between h-100">
-                        <p>
-                          “Setting up my eSIM was incredibly fast and easy with Magic eSIM. I was connected in minutes
-                          and loved the smooth experience.”
-                        </p>
-                        <div class="text-warning mb-4">
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                        </div>
-                        <div class="d-flex align-items-center">
-                          <div class="avatar me-3 avatar-sm">
-                            <img src="{% static 'img/avatars/5.png' %}" alt="Avatar" class="rounded-circle" />
-                          </div>
-                          <div>
-                            <h6 class="mb-0">Linda Wong</h6>
-                            <p class="small text-muted mb-0">Frequent Traveler</p>
-                          </div>
-                        </div>
-                      </div>
+                    <div class="panel">
+                        <div class="panel-header"><span>Can an eSIM be reused?</span><svg
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    d="m6 9l6 6l6-6" />
+                            </svg></div>
+                        <div class="panel-content">Each QR code is a unique identifier that can only be used on one
+                            device. It cannot be reused on another device or the same device after the eSIM profile is
+                            deleted. This ensures the code remains secure and is only used on the intended device.</div>
                     </div>
-                  </div>
-
-                  <!-- Review 4 -->
-                  <div class="swiper-slide">
-                    <div class="card h-100">
-                      <div class="card-body text-body d-flex flex-column justify-content-between h-100">
-                        <p>
-                          “Thanks to Magic eSIM, I no longer have to worry about roaming charges. The plans are
-                          affordable and reliable.”
-                        </p>
-                        <div class="text-warning mb-4">
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star-half"></i>
-                        </div>
-                        <div class="d-flex align-items-center">
-                          <div class="avatar me-3 avatar-sm">
-                            <img src="{% static 'img/avatars/6.png' %}" alt="Avatar" class="rounded-circle" />
-                          </div>
-                          <div>
-                            <h6 class="mb-0">Michael Brown</h6>
-                            <p class="small text-muted mb-0">Tech Enthusiast</p>
-                          </div>
-                        </div>
-                      </div>
+                    <div class="panel">
+                        <div class="panel-header"><span>When does the eSIM mobile data plan start?</span><svg
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    d="m6 9l6 6l6-6" />
+                            </svg></div>
+                        <div class="panel-content">The eSIM data plan duration begins immediately after the purchase is
+                            completed. If you don’t plan to use mobile data right away, you can select "Activate later"
+                            during the purchase of a new prepaid plan and activate it within the next 12 months.</div>
                     </div>
-                  </div>
-
-                  <!-- Review 5 -->
-                  <div class="swiper-slide">
-                    <div class="card h-100">
-                      <div class="card-body text-body d-flex flex-column justify-content-between h-100">
-                        <p>
-                          “Magic eSIM's virtual number has helped me stay connected with clients worldwide without
-                          additional infrastructure.”
-                        </p>
-                        <div class="text-warning mb-4">
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                          <i class="bx bxs-star"></i>
-                        </div>
-                        <div class="d-flex align-items-center">
-                          <div class="avatar me-3 avatar-sm">
-                            <img src="{% static 'img/avatars/5.png' %}" alt="Avatar" class="rounded-circle" />
-                          </div>
-                          <div>
-                            <h6 class="mb-0">Emma Johnson</h6>
-                            <p class="small text-muted mb-0">Freelancer</p>
-                          </div>
-                        </div>
-                      </div>
+                    <div class="panel">
+                        <div class="panel-header"><span>Can I extend the expiration of my current eSIM cellular data
+                                plan?</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    d="m6 9l6 6l6-6" />
+                            </svg></div>
+                        <div class="panel-content">You can easily extend your plan. We'll notify you via push
+                            notification and email when you've used 70% of your data, so you can top up your Magic eSim
+                            account anytime through our app. The app offers various payment options, making it simple to
+                            choose the best one for you.</div>
                     </div>
-                  </div>
+                    <div class="panel">
+                        <div class="panel-header"><span>Is eSIM secure?</span><svg xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    d="m6 9l6 6l6-6" />
+                            </svg></div>
+                        <div class="panel-content">Yes, eSIM technology is secure for several reasons. First, eSIMs are
+                            embedded directly into devices, making it hard for unauthorized users to remove or tamper
+                            with them. Second, eSIMs use secure elements to store sensitive data like your mobile
+                            identity, helping prevent hacking. Additionally, activating an eSIM requires scanning a QR
+                            code or entering a specific activation code, adding an extra layer of security. Overall,
+                            eSIM technology offers a strong and reliable way to secure your mobile communications.</div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header"><span>Can I use tethering or a Personal Hotspot?</span><svg
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    d="m6 9l6 6l6-6" />
+                            </svg></div>
+                        <div class="panel-content">You can easily share mobile data with other devices using your Magic
+                            eSim profile. Simply install the Magic eSim profile on your device and enable the Personal
+                            Hotspot in the settings. This feature is enabled by default, and there are no extra charges
+                            for using it. However, any data used while tethering will be deducted from your plan.</div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header"><span>How do I transfer my eSIM to a new phone?</span><svg
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    d="m6 9l6 6l6-6" />
+                            </svg></div>
+                        <div class="panel-content">Before transferring your eSIM, ensure that your new smartphone
+                            supports eSIM technology. Contact our team to have a new eSIM profile created, then log into
+                            your Magic eSim account on the new device to install the QR code. Make sure to confirm that
+                            you are using a different device to ensure the settings are updated correctly.</div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header"><span>Are there any contracts like traditional eSIM
+                                carriers?</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    d="m6 9l6 6l6-6" />
+                            </svg></div>
+                        <div class="panel-content">You don’t need to sign any contract to use Magic eSim’s eSIM. You can
+                            activate and deactivate it at any time based on your travel needs.</div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header"><span>Why is my data speed slow?</span><svg
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    d="m6 9l6 6l6-6" />
+                            </svg></div>
+                        <div class="panel-content">The speed of your mobile data can be influenced by various factors,
+                            including the type of smartphone you're using, the network technology available, the
+                            websites or apps you're accessing, the time of day, network congestion, and the data usage
+                            in your area. Additionally, download and upload speeds can depend on the network
+                            infrastructure and broadband connection type in your country. Slow internet speed is often
+                            caused by poor coverage from the mobile operator and can usually be improved by restarting
+                            your phone.</div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header"><span>What makes Magic eSim different from other eSIM
+                                services?</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    d="m6 9l6 6l6-6" />
+                            </svg></div>
+                        <div class="panel-content">Magic eSim stands out from other eSIM providers by partnering with
+                            local operators in over 200 destinations worldwide, offering affordable data packs without
+                            intermediaries, ensuring strong coverage, providing virtual phone numbers, integrating VPN
+                            technology for added security, and offering a seamless activation process.</div>
+                    </div>
                 </div>
-
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-              </div>
             </div>
-          </div>
+
         </div>
-      </div>
-      <!-- What people say slider: End -->
-      <hr class="m-0 mt-6 mt-md-12" />
-      <!-- Logo slider: Start -->
-      <div class="container">
-        <div class="swiper-logo-carousel pt-8">
-          <div class="swiper" id="swiper-clients-logos">
-            <div class="swiper-wrapper">
-              <div class="swiper-slide">
-                <img src="{% static 'img/front-pages/branding/logo_1-light.png' %}" alt="client logo"
-                  class="client-logo" data-app-light-img="front-pages/branding/logo_1-light.png"
-                  data-app-dark-img="front-pages/branding/logo_1-dark.png" />
-              </div>
-              <div class="swiper-slide">
-                <img src="{% static 'img/front-pages/branding/logo_2-light.png' %}" alt="client logo"
-                  class="client-logo" data-app-light-img="front-pages/branding/logo_2-light.png"
-                  data-app-dark-img="front-pages/branding/logo_2-dark.png" />
-              </div>
-              <div class="swiper-slide">
-                <img src="{% static 'img/front-pages/branding/logo_3-light.png' %}" alt="client logo"
-                  class="client-logo" data-app-light-img="front-pages/branding/logo_3-light.png"
-                  data-app-dark-img="front-pages/branding/logo_3-dark.png" />
-              </div>
-              <div class="swiper-slide">
-                <img src="{% static 'img/front-pages/branding/logo_4-light.png' %}" alt="client logo"
-                  class="client-logo" data-app-light-img="front-pages/branding/logo_4-light.png"
-                  data-app-dark-img="front-pages/branding/logo_4-dark.png" />
-              </div>
-              <div class="swiper-slide">
-                <img src="{% static 'img/front-pages/branding/logo_5-light.png' %}" alt="client logo"
-                  class="client-logo" data-app-light-img="front-pages/branding/logo_5-light.png"
-                  data-app-dark-img="front-pages/branding/logo_5-dark.png" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Logo slider: End -->
-    </section>
-    <!-- Real customers reviews: End -->
-
-    <!-- Fun facts: Start -->
-    <section id="landingFunFacts" class="section-py landing-fun-facts">
-      <div class="container">
-        <div class="row gy-6">
-          <div class="col-sm-6 col-lg-3">
-            <div class="card border border-primary shadow-none">
-              <div class="card-body text-center">
-                <img src="{% static 'img/front-pages/icons/laptop.svg' %}" alt="active users" class="mb-4" />
-                <h3 class="mb-0">15k+</h3>
-                <p class="fw-bold mb-0">
-                  Active Users<br />
-                  Worldwide
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 col-lg-3">
-            <div class="card border border-success shadow-none">
-              <div class="card-body text-center">
-                <img src="{% static 'img/front-pages/icons/user-success.svg' %}" alt="connected devices" class="mb-4" />
-                <h3 class="mb-0">30k+</h3>
-                <p class="fw-bold mb-0">
-                  Devices Connected<br />
-                  with eSIM
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 col-lg-3">
-            <div class="card border border-info shadow-none">
-              <div class="card-body text-center">
-                <img src="{% static 'img/front-pages/icons/diamond-info.svg' %}" alt="customer satisfaction"
-                  class="mb-4" />
-                <h3 class="mb-0">4.9/5</h3>
-                <p class="fw-bold mb-0">
-                  Customer<br />
-                  Satisfaction
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 col-lg-3">
-            <div class="card border border-warning shadow-none">
-              <div class="card-body text-center">
-                <img src="{% static 'img/front-pages/icons/check-warning.svg' %}" alt="countries supported"
-                  class="mb-4" />
-                <h3 class="mb-0">200+</h3>
-                <p class="fw-bold mb-0">
-                  Countries<br />
-                  Supported
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- Fun facts: End -->
-
-    <!-- CTA: Start -->
-    <section id="landingCTA" class="section-py landing-cta position-relative p-lg-0 pb-0">
-      <img src="{% static 'img/front-pages/backgrounds/cta-bg-light.png' %}"
-        class="position-absolute bottom-0 end-0 scaleX-n1-rtl h-100 w-100 z-n1" alt="cta background"
-        data-app-light-img="front-pages/backgrounds/cta-bg-light.png"
-        data-app-dark-img="front-pages/backgrounds/cta-bg-dark.png" />
-      <div class="container">
-        <div class="row align-items-center gy-12">
-          <div class="col-lg-7 text-start text-sm-center text-lg-start">
-            <h3 class="cta-title text-primary fw-bold mb-1">Ready to try eSIMs and change the way you stay connected?
-            </h3>
-            <h5 class="text-body mb-8">
-              Download the Magic eSIM app to purchase, manage, and top up your eSIMs anytime, anywhere!
-            </h5>
-            <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-3">
-              <a href="javascript:;">
-                <img src="{% static 'img/front-pages/landing-page/apple-icon.png' %}" alt="Download on the App Store"
-                  height="50px" />
-              </a>
-              <a href="javascript:;">
-                <img src="{% static 'img/front-pages/landing-page/google-play-icon.png' %}" alt="Get it on Google Play"
-                  height="50px" />
-              </a>
-            </div>
-          </div>
-          <div class="col-lg-5 pt-lg-12 text-center text-lg-end">
-            <img src="{% static 'img/front-pages/landing-page/cta-dashboard.png' %}" alt="cta dashboard"
-              class="img-fluid mt-lg-4" />
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- CTA: End -->
-
-    <!-- FAQ: Start -->
-    <section id="landingFAQ" class="section-py bg-body landing-faq">
-      <div class="container">
-        <div class="text-center mb-4">
-          <span class="badge bg-label-primary">FAQ</span>
-        </div>
-        <h4 class="text-center mb-1">Frequently asked
-          <span class="position-relative fw-extrabold z-1">questions
-            <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="faq icon"
-              class="section-title-img position-absolute object-fit-contain bottom-0 z-n1">
-          </span>
-        </h4>
-        <p class="text-center mb-12 pb-md-4">Find answers to common questions about Magic eSIM and Virtual Number
-          services.</p>
-        <div class="row gy-12 align-items-center">
-          <div class="col-lg-5">
-            <div class="text-center">
-              <img src="{% static 'img/front-pages/landing-page/faq-boy-with-logos.png' %}" alt="faq graphic"
-                class="faq-image" />
-            </div>
-          </div>
-          <div class="col-lg-7">
-            <div class="accordion" id="accordionExample">
-              <div class="card accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                  <button type="button" class="accordion-button" data-bs-toggle="collapse"
-                    data-bs-target="#accordionOne" aria-expanded="true" aria-controls="accordionOne">
-                    How do I activate my eSIM?
-                  </button>
-                </h2>
-                <div id="accordionOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-                  <div class="accordion-body">
-                    Activating your eSIM is simple! Once you purchase an eSIM plan, you'll receive a QR code. Scan the
-                    QR code
-                    with your device's eSIM settings, and your eSIM will be activated instantly.
-                  </div>
-                </div>
-              </div>
-              <div class="card accordion-item">
-                <h2 class="accordion-header" id="headingTwo">
-                  <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse"
-                    data-bs-target="#accordionTwo" aria-expanded="false" aria-controls="accordionTwo">
-                    Can I use a virtual number for business purposes?
-                  </button>
-                </h2>
-                <div id="accordionTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
-                  data-bs-parent="#accordionExample">
-                  <div class="accordion-body">
-                    Yes, our virtual numbers are ideal for businesses! You can use them to manage customer calls,
-                    streamline
-                    communications, and even integrate them into your business tools for messaging and support.
-                  </div>
-                </div>
-              </div>
-              <div class="card accordion-item">
-                <h2 class="accordion-header" id="headingThree">
-                  <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse"
-                    data-bs-target="#accordionThree" aria-expanded="false" aria-controls="accordionThree">
-                    Is Magic eSIM compatible with my device?
-                  </button>
-                </h2>
-                <div id="accordionThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
-                  data-bs-parent="#accordionExample">
-                  <div class="accordion-body">
-                    Magic eSIM is compatible with most modern devices that support eSIM technology. Please check your
-                    device's specifications or contact our support team for assistance.
-                  </div>
-                </div>
-              </div>
-              <div class="card accordion-item">
-                <h2 class="accordion-header" id="headingFour">
-                  <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse"
-                    data-bs-target="#accordionFour" aria-expanded="false" aria-controls="accordionFour">
-                    How many countries are supported?
-                  </button>
-                </h2>
-                <div id="accordionFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
-                  data-bs-parent="#accordionExample">
-                  <div class="accordion-body">
-                    Magic eSIM and Virtual Number services are available in over 200 countries, making it easy to stay
-                    connected wherever you are.
-                  </div>
-                </div>
-              </div>
-              <div class="card accordion-item">
-                <h2 class="accordion-header" id="headingFive">
-                  <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse"
-                    data-bs-target="#accordionFive" aria-expanded="false" aria-controls="accordionFive">
-                    What are the benefits of a virtual number?
-                  </button>
-                </h2>
-                <div id="accordionFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
-                  data-bs-parent="#accordionExample">
-                  <div class="accordion-body">
-                    A virtual number allows you to have a phone number from any country without needing a physical SIM.
-                    It's
-                    perfect for international businesses, remote workers, and individuals who need flexible
-                    communication.
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- FAQ: End -->
-
-
-    <!-- Contact Us: Start -->
-    <!-- <section id="landingContact" class="section-py bg-body landing-contact">
-      <div class="container">
-        <div class="text-center mb-4">
-          <span class="badge bg-label-primary">Contact Us</span>
-        </div>
-        <h4 class="text-center mb-1">
-          <span class="position-relative fw-extrabold z-1">Get in Touch
-            <img src="{% static 'img/front-pages/icons/section-title-icon.png' %}" alt="contact icon"
-              class="section-title-img position-absolute object-fit-contain bottom-0 z-n1">
-          </span>
-        </h4>
-        <p class="text-center mb-12 pb-md-4">Have questions about Magic eSIM or Virtual Numbers? We’re here to help.</p>
-        <div class="row g-6">
-          <div class="col-lg-5">
-            <div class="contact-img-box position-relative border p-2 h-100">
-              <img src="{% static 'img/front-pages/icons/contact-border.png' %}" alt="contact border"
-                class="contact-border-img position-absolute d-none d-lg-block scaleX-n1-rtl" />
-              <img src="{% static 'img/front-pages/landing-page/contact-customer-service.png' %}"
-                alt="contact customer service" class="contact-img w-100 scaleX-n1-rtl" />
-              <div class="p-4 pb-2">
-                <div class="row g-4">
-                  <div class="col-md-6 col-lg-12 col-xl-6">
-                    <div class="d-flex align-items-center">
-                      <div class="badge bg-label-primary rounded p-1_5 me-3"><i class="bx bx-envelope"></i></div>
-                      <div>
-                        <p class="mb-0">Email</p>
-                        <h6 class="mb-0"><a href="mailto:support@esimmagic.com"
-                            class="text-heading">support@esimmagic.com</a></h6>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6 col-lg-12 col-xl-6">
-                    <div class="d-flex align-items-center">
-                      <div class="badge bg-label-success rounded p-1_5 me-3"><i class="bx bx-phone-call"></i></div>
-                      <div>
-                        <p class="mb-0">Phone</p>
-                        <h6 class="mb-0"><a href="tel:+18001234567" class="text-heading">+1 800 123 4567</a></h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-7">
-            <div class="card h-100">
-              <div class="card-body">
-                <h4 class="mb-2">Send a Message</h4>
-                <p class="mb-6">
-                  Reach out for assistance with payments, accounts, licensing, partnerships, or any other inquiries.
-                  We're happy to help!
-                </p>
-                <form>
-                  <div class="row g-4">
-                    <div class="col-md-6">
-                      <label class="form-label" for="contact-form-fullname">Full Name</label>
-                      <input type="text" class="form-control" id="contact-form-fullname" placeholder="John Doe" />
-                    </div>
-                    <div class="col-md-6">
-                      <label class="form-label" for="contact-form-email">Email</label>
-                      <input type="email" id="contact-form-email" class="form-control"
-                        placeholder="johndoe@example.com" />
-                    </div>
-                    <div class="col-12">
-                      <label class="form-label" for="contact-form-message">Message</label>
-                      <textarea id="contact-form-message" class="form-control" rows="11"
-                        placeholder="Write your message here"></textarea>
-                    </div>
-                    <div class="col-12">
-                      <button type="submit" class="btn btn-primary">Send Message</button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section> -->
-    <!-- Contact Us: End -->
-
-    <!-- Plan details Modal -->
-    <div class="modal modal-lg fade" id="planDetailsModal" tabindex="-1" role="dialog"
-      aria-labelledby="planDetailsModalLabel">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title text-dark fw-bold" id="planDetailsModalLabel">Plan Details</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form id="planDetailsForm">
-              <input type="hidden" name="user" value="{{ user.id }}">
-              <input type="hidden" name="price">
-              <input type="hidden" name="currency">
-              <input type="hidden" name="package_code">
-              <input type="hidden" name="seller">
-              <div class="row g-5">
-
-                <div class="col-12" id="esim_plan_details">
-                  <div class="card shadow flex-md-row align-items-center border-primary border-1">
-                    <div class="col-12 col-md-6 text-center pt-md-0 pt-5">
-                      <img src="https://flagcdn.com/w320/gb.png" class="img-fluid rounded-4">
-                    </div>
-                    <div class="card-body col-12 col-md-6">
-                      <ul class="list-unstyled text-start mb-4">
-                        <li class="d-flex flex-row justify-content-between fw-bold py-4">
-                          <strong>Coverage:</strong> <span>United Kingdom</span>
-                        </li>
-                        <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top">
-                          <strong>Data:</strong> <span>500 MB</span>
-                        </li>
-                        <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top">
-                          <strong>Validity:</strong> <span>1 Day</span>
-                        </li>
-                        <li class="d-flex flex-row justify-content-between fw-bold py-4 border-top">
-                          <strong>Price:</strong> <span class="fs-5 text-primary">$3.40 USD</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-12 g-5 d-flex flex-column flex-md-row" id="esim_plan_other_details">
-                  <div class="col-12 col-md-6 p-5">
-                    <h5 class="m-0 text-primary fw-bold">Supported Countries</h5>
-                    <div class="text-center overflow-auto" style="max-height: 350px">
-                      <ul class="list-unstyled text-start mb-0" id="vertical-scroll_bar">
-                        <li class="py-2 border-bottom d-flex align-items-center justify-content-between">
-                          <p class="mb-0">United Kingdom</p> <img src="https://flagcdn.com/w320/gb.png" class="rounded"
-                            height="30px">
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="col-12 col-md-6 card bg-lighter">
-                    <div class="card-header pb-2 text-dark fw-bolder">
-                      <h5 class="m-0 text-primary fw-bold">Additional Information</h5>
-                    </div>
-                    <div class="card-body text-center">
-                      <ul class="list-unstyled text-start mb-0">
-                        <li class="py-2 d-flex align-items-center text-dark">
-                          <i class="bx bx-broadcast me-3"></i>
-                          <div>
-                            <p class="mb-0">Network(s):</p>
-                            <span class="fw-bold">United Kingdom</span>
-                          </div>
-                        </li>
-                        <li class="py-2 d-flex align-items-center text-dark">
-                          <i class="bx bx-message-alt-detail me-3"></i>
-                          <div>
-                            <p class="mb-0">Plan Type:
-                            </p>
-                            <span class="fw-bold">United Kingdom</span>
-                          </div>
-                        </li>
-                        <li class="py-2 d-flex align-items-center text-dark">
-                          <i class="bx bx-list-check me-3"></i>
-                          <div>
-                            <p class="mb-0">Validity Policy:</p>
-                            <span class="fw-bold">The validity period starts when the eSIM connects to a mobile
-                              network in its coverage area. If you install the eSIM outside of the coverage area,
-                              you can connect to a network when you arrive.</span>
-                          </div>
-                        </li>
-                        <li class="py-2 d-flex align-items-center text-dark">
-                          <i class="bx bxs-layer-plus me-3"></i>
-                          <div>
-                            <p class="mb-0">Top-Up Option</p>
-                            <span class="fw-bold">Available</span>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-12 mt-0 py-8" id="payment_method_card">
-                  <h5>Choose Payment Gateway:</h5>
-                  <div class="row g-5">
-                    <div class="col-md col-lg-12 col-xl-6">
-                      <div class="form-check custom-option custom-option-basic checked">
-                        <label
-                          class="form-check-label custom-option-content form-check-input-payment d-flex gap-4 align-items-center"
-                          for="CoinPayments">
-                          <input name="payment_gateway" class="form-check-input" type="radio" value="CoinPayments"
-                            id="CoinPayments" checked="">
-                          <span class="custom-option-body">
-                            <img src="https://www.coinpayments.net/images/pub/buynow-grey.png"
-                              alt="Buy Now with CoinPayments.net" height="40">
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-                    <div class="col-md col-lg-12 col-xl-6">
-                      <div class="form-check custom-option custom-option-basic">
-                        <label
-                          class="form-check-label custom-option-content form-check-input-payment d-flex gap-4 align-items-center"
-                          for="Stripe" data-toggle="tooltip" data-placement="top">
-                          <input name="payment_gateway" class="form-check-input" type="radio" value="Stripe" id="Stripe"
-                            disabled="">
-                          <span class="custom-option-body">
-                            <img src="/static/img/icons/brands/stripe.png" alt="Buy Now with Stripe" height="40">
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  {% if user.is_authenticated %}
-                  <button id="submitBtn" type="submit" class="btn btn-success mt-3 w-100 btn-lg">Checkout</button>
-                  {% else %}
-                  <a href="/login" class="btn btn-success mt-3 w-100 btn-lg">Login to Checkout</a>
-                  {% endif %}
-                </div>
-
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
     </div>
 
-  </div>
-  <!-- / Sections:End -->
+    <div class="footer">
+        <div class="innerSpacing">
 
-  <!-- Footer: Start -->
-  <footer class="landing-footer bg-body footer-text">
-    <div class="footer-top position-relative overflow-hidden z-1">
-      <img src="{% static 'img/front-pages/backgrounds/footer-bg.png' %}" alt="footer bg"
-        class="footer-bg banner-bg-img z-n1" />
-      <div class="container">
-        <div class="row gx-0 gy-6 g-lg-10">
-          <div class="col-lg-5">
-            <a href="/" class="app-brand-link mb-6">
-              <span class="app-brand-logo demo">
-                <img src="{% static 'img/logo-dark.png' %}" alt="Magic eSIM logo" class="img-fluid" width="160" />
-              </span>
-            </a>
-            <p class="footer-text footer-logo-description mb-6">
-              Magic eSIM offers reliable eSIM and virtual number solutions, keeping you connected across the globe.
-            </p>
-          </div>
-          <div class="col-lg-2 col-md-4 col-sm-6">
-            <h6 class="footer-title mb-6">Services</h6>
-            <ul class="list-unstyled">
-              <li class="mb-4">
-                <a href="/#landingESIM" class="footer-link">eSIM Plans</a>
-              </li>
-              <li class="mb-4">
-                <a href="/#landingVirtualNumbers" class="footer-link">Virtual Numbers</a>
-              </li>
-              <li class="mb-4">
-                <a href="/#landingFAQ" class="footer-link">FAQs</a>
-              </li>
-              <!-- <li>
-                <a href="/#landingContact" class="footer-link">Contact Us</a>
-              </li> -->
-            </ul>
-          </div>
-          <div class="col-lg-2 col-md-4 col-sm-6">
-            <h6 class="footer-title mb-6">Quick links</h6>
-            <ul class="list-unstyled">
-              <li class="mb-4">
-                <a href="/privacy-policy" class="footer-link">Privacy Policy</a>
-              </li>
-              <li class="mb-4">
-                <a href="/terms-and-conditions" class="footer-link">Terms & Conditions</a>
-              </li>
-              <li>
-                <a href="mailto:support@esimmagic.com" class="footer-link">Support</a>
-              </li>
-            </ul>
-          </div>
-          <div class="col-lg-3 col-md-4">
-            <h6 class="footer-title mb-6">Get the Magic eSIM App</h6>
-            <a href="javascript:;" class="d-block mb-4"><img
-                src="{% static 'img/front-pages/landing-page/apple-icon.png' %}" alt="Download on the App Store"
-                height="50px" /></a>
-            <a href="javascript:;" class="d-block"><img
-                src="{% static 'img/front-pages/landing-page/google-play-icon.png' %}" alt="Get it on Google Play"
-                height="50px" /></a>
-          </div>
+            <div class="footerSections">
+                <div class="fDownloadArea">
+                    <h1>Get Magic eSIM from AppStore & Google Play</h1>
+                    <p>Download the Magic eSIM app to purchase, manage, and top up your eSIMs anytime, anywhere!</p>
+                    <div class="fDownloadButtons">
+                        <a href=""><img src="{% static 'new/assets/misc/googleplay.webp' %}" alt=""></a>
+                        <a href=""><img src="{% static 'new/assets/misc/appstore.webp' %}" alt=""></a>
+                    </div>
+                </div>
+                <div class="flinksArea">
+                    <h1>Quick links</h1>
+                    <div class="fLinks">
+                        <a href="#eSim">eSIM</a>
+                        <a href="#virtualNumber">Virtual numbers</a>
+                        <a href="#FAQs">FAQs</a>
+                    </div>
+                </div>
+                <div class="flinksArea">
+                    <h1>Documentation</h1>
+                    <div class="fLinks">
+                        <a href="">Privacy policy</a>
+                        <a href="">Terms of service</a>
+                        <a href="">Help & Support</a>
+                    </div>
+                </div>
+                <div class="fIntroArea">
+                    <a href=""><img src="{% static 'new/assets/branding/logo.webp' %}" alt=""></a>
+                    <h1>Magic eSIM</h1>
+                    <p>Join millions of satisfied users who trust our eSIMs for seamless global connectivity and
+                        affordable rates.</p>
+                </div>
+            </div>
+
+            <div class="copyrightArea">
+                <p>Copyright © 2025 Magic eSIM</p>
+                <div class="paymentOptions">
+                    <img src="{% static 'new/assets/misc/coinpayment.webp' %}" alt="">
+                    <img src="{% static 'new/assets/misc/stripe.webp' %}" alt="">
+                </div>
+                <div class="fSocialLinks">
+                    <a href="https://www.facebook.com/share/1HFn22PGMf/"><svg xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4z" />
+                        </svg></a>
+                    <a href="https://www.instagram.com/bsbtechnologiesksa?igsh=MWF3N3B0aXhyYnFrZQ=="><svg
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <g fill="none" fill-rule="evenodd">
+                                <path
+                                    d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+                                <path fill="currentColor"
+                                    d="M16 3a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8a5 5 0 0 1 5-5zm0 2H8a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3m-4 3a4 4 0 1 1 0 8a4 4 0 0 1 0-8m0 2a2 2 0 1 0 0 4a2 2 0 0 0 0-4m4.5-3.5a1 1 0 1 1 0 2a1 1 0 0 1 0-2" />
+                            </g>
+                        </svg></a>
+                    <a
+                        href="https://www.linkedin.com/in/b-s-b-technologies-452a43350?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"><svg
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z" />
+                        </svg></a>
+                    <a href="https://x.com/bsbtechnologies?t=Re5hG56ouPa1GuYl_pzWJQ&s=09"><svg
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M10.488 14.651L15.25 21h7l-7.858-10.478L20.93 3h-2.65l-5.117 5.886L8.75 3h-7l7.51 10.015L2.32 21h2.65zM16.25 19L5.75 5h2l10.5 14z" />
+                        </svg></a>
+                    <a href="https://www.snapchat.com/add/bbtechnologies?share_id=MfPPDvGe2n4&locale=en-US"><svg
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <g fill="none" fill-rule="evenodd">
+                                <path
+                                    d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+                                <path fill="currentColor"
+                                    d="M12 2a6 6 0 0 0-6 6v1.875L5.1 9.2a1 1 0 1 0-1.2 1.6l1.866 1.4c-.444 1.168-1.527 2.39-3.28 3.443a1.01 1.01 0 0 0-.318 1.412C3.286 18.732 5.06 20 7 20c.677 0 1.203.43 1.724.809C9.456 21.34 10.423 22 12 22s2.543-.659 3.275-1.191C15.797 20.429 16.323 20 17 20c1.94 0 3.714-1.268 4.832-2.945a1.01 1.01 0 0 0-.318-1.412c-1.753-1.053-2.836-2.275-3.28-3.443l1.866-1.4a1 1 0 0 0-1.2-1.6l-.9.675V8a6 6 0 0 0-6-6M8 8a4 4 0 0 1 8 0v3c0 2.198 1.42 4.209 3.538 5.735C18.752 17.556 17.825 18 17 18c-1.378 0-2.264.728-2.9 1.191c-.644.468-1.177.809-2.1.809s-1.457-.341-2.1-.809C9.265 18.728 8.379 18 7 18c-.826 0-1.752-.444-2.538-1.265C6.58 15.209 8 13.199 8 11z" />
+                            </g>
+                        </svg></a>
+                    <a href="https://wa.me/966596753837"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <g fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M12 4a8 8 0 0 0-6.895 12.06l.569.718l-.697 2.359l2.32-.648l.379.243A8 8 0 1 0 12 4M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10a9.96 9.96 0 0 1-5.016-1.347l-4.948 1.382l1.426-4.829l-.006-.007l-.033-.055A9.96 9.96 0 0 1 2 12"
+                                    clip-rule="evenodd" />
+                                <path
+                                    d="M16.735 13.492c-.038-.018-1.497-.736-1.756-.83a1 1 0 0 0-.34-.075c-.196 0-.362.098-.49.291c-.146.217-.587.732-.723.886c-.018.02-.042.045-.057.045c-.013 0-.239-.093-.307-.123c-1.564-.68-2.751-2.313-2.914-2.589c-.023-.04-.024-.057-.024-.057c.005-.021.058-.074.085-.101c.08-.079.166-.182.249-.283l.117-.14c.121-.14.175-.25.237-.375l.033-.066a.68.68 0 0 0-.02-.64c-.034-.069-.65-1.555-.715-1.711c-.158-.377-.366-.552-.655-.552c-.027 0 0 0-.112.005c-.137.005-.883.104-1.213.311c-.35.22-.94.924-.94 2.16c0 1.112.705 2.162 1.008 2.561l.041.06c1.161 1.695 2.608 2.951 4.074 3.537c1.412.564 2.081.63 2.461.63c.16 0 .288-.013.4-.024l.072-.007c.488-.043 1.56-.599 1.804-1.276c.192-.534.243-1.117.115-1.329c-.088-.144-.239-.216-.43-.308" />
+                            </g>
+                        </svg></a>
+                </div>
+            </div>
+
         </div>
-      </div>
     </div>
-    <div class="footer-bottom py-3 py-md-5">
-      <div class="container d-flex flex-wrap justify-content-between flex-md-row flex-column text-center text-md-start">
-        <div class="mb-2 mb-md-0">
-          <span class="footer-bottom-text">©
-            <script>
-              document.write(new Date().getFullYear());
-            </script>
-            Magic eSIM. All Rights Reserved.
-          </span>
-        </div>
-        <div>
-          <a href="https://github.com/magicesim" class="me-4" target="_blank">
-            <img src="{% static 'img/front-pages/icons/github.svg' %}" alt="GitHub" />
-          </a>
-          <a href="https://www.facebook.com/magicesim" class="me-4" target="_blank">
-            <img src="{% static 'img/front-pages/icons/facebook.svg' %}" alt="Facebook" />
-          </a>
-          <a href="https://twitter.com/magicesim" class="me-4" target="_blank">
-            <img src="{% static 'img/front-pages/icons/twitter.svg' %}" alt="Twitter" />
-          </a>
-          <a href="https://www.instagram.com/magicesim" target="_blank">
-            <img src="{% static 'img/front-pages/icons/instagram.svg' %}" alt="Instagram" />
-          </a>
-        </div>
-      </div>
-    </div>
-  </footer>
-  <!-- Footer: End -->
 
-  <div id="responseToast" class="position-fixed end-0 m-3 top-0 bs-toast toast" role="alert" aria-live="assertive"
-    aria-atomic="true">
-    <div class="toast-header">
-      <i class="bx bx-bell me-2"></i>
-      <div class="me-auto fw-semibold">Alert</div>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-      ---
-    </div>
-  </div>
-
-  <!-- Core JS -->
-  <!-- build:js assets/vendor/js/core.js -->
-  <script src="{% static 'vendor/libs/jquery/jquery.js' %}"></script>
-  <script src="{% static 'vendor/libs/popper/popper.js' %}"></script>
-  <script src="{% static 'vendor/js/bootstrap.js' %}"></script>
-
-  <!-- endbuild -->
-
-  <!-- Vendors JS -->
-  <script src="{% static 'vendor/libs/nouislider/nouislider.js' %}"></script>
-  <script src="{% static 'vendor/libs/swiper/swiper.js' %}"></script>
-  <script src="{% static 'vendor/libs/block-ui/block-ui.js' %}"></script>
-
-  <!-- Main JS -->
-  <script src="{% static 'js/front-main.js' %}"></script>
-
-  <!-- Page JS -->
-  <script src="{% static 'js/front-page-landing.js' %}"></script>
-  <script src="{% static 'backend/app.js' %}"></script>
-  <script src="{% static 'backend/functions.js' %}"></script>
-  <script src="{% static 'backend/numbers.js' %}"></script>
+    {% include 'partials/scripts.html' %}
 
 </body>
 
 </html>
-
-<!-- beautify ignore:end -->

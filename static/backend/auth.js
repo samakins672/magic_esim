@@ -39,6 +39,42 @@ $(document).on('submit', '#userAuth', function (e) {
     });
 });
 
+$(document).on('submit', '#formAuthentication', function (e) {
+    e.preventDefault();
+
+    loader = $('.loading');
+    loader.removeClass("d-none");
+
+    email = $('#formAuthentication [name="email"]').val();
+
+    var formData = JSON.stringify({
+        email: email
+    });
+
+    $.ajax({
+        url: '/api/auth/password/reset/',
+        method: 'POST',
+        data: formData,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        success: function (response) {
+            console.log(response.message);
+            
+            // Redirect to verification after signup success
+            window.location.href = '/verify/' + email;
+        },
+        error: function (error) {
+            console.error(error);
+            $('.formAlert').removeClass('d-none').text("User with this email doesn't exist.");
+        },
+        complete: function() {
+            loader.addClass("d-none");
+        }
+    });
+});
+
 $(document).on('submit', '#signInForm', function (e) {
     e.preventDefault();
 
@@ -59,12 +95,10 @@ $(document).on('submit', '#signInForm', function (e) {
             'X-CSRFToken': csrfToken
         },
         success: function (response) {
-            // On success, show success message
-            showToast('Log In successful!', 'bg-success');
             console.log('Log In successfully:', response);
 
-            // Redirect to dashboard after login success
-            window.location.href = '/dashboard';
+            // Redirect to home after login success
+            window.location.href = '/';
         },
         error: function (error) {
             // On error show error message

@@ -5,7 +5,7 @@
 <head>
     <title>Magic eSIM - Get eSIMs for International Travels</title>
 
-    {% include 'partials/new/head.html' %}
+    {% include 'partials/head.html' %}
 
     <link rel="stylesheet" href="{% static 'new/css/checkout.css' %}">
 
@@ -223,8 +223,13 @@
                         </div>
                     </div>
 
+
                     <div class="actionBtnArea">
+                        {% if user.is_authenticated %}
                         <button class="submitBtn" type="submit">Pay now</button>
+                        {% else %}
+                        <a href="/login" class="submitBtn">Login to Checkout</a>
+                        {% endif %}
                     </div>
 
                 </form>

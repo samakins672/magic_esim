@@ -1,185 +1,66 @@
 {% load static %}
-
 <!DOCTYPE html>
-<html lang="en" class="layout-navbar-fixed layout-compact light-style layout-menu-fixed" dir="ltr"
-  data-theme="theme-default" data-assets-path="{% static '' %}" data-template="vertical-menu-template"
-  data-style="light">
+<html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    {% include 'partials/head.html' %}
+    <!-- WEBSITE TITLE -->
+    <title>Magic eSIM - Sign up</title>
 
-  <title>Sign Up - Magic eSIM</title>
-
-  {% include 'partials/head.html' %}
-
-  <!-- Google Sign-In API library -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-  <!-- Page CSS -->
-  <link rel="stylesheet" href="{% static 'vendor/css/pages/page-auth.css' %}" />
-
-  <style>
-    .code-input {
-      width: 50px;
-      height: 50px;
-      text-align: center;
-      font-size: 20px;
-      border: 2px solid #00008b;
-      border-radius: 5px;
-      margin: 0 5px;
-    }
-
-    .code-input::-webkit-outer-spin-button,
-    .code-input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      /* For Chrome, Safari, Edge, and Opera */
-      margin: 0;
-    }
-
-    .code-input:focus {
-      outline: none;
-      border-color: #00008b;
-      box-shadow: 0 0 5px rgba(0, 0, 139, 0.5);
-    }
-
-    #resend-timer {
-      cursor: pointer;
-    }
-  </style>
-
+    <!-- CSS FILES -->
+    <link rel="stylesheet" href="{% static 'new/css/signup.css' %}">
 </head>
 
 <body>
-  <!-- Content -->
 
-  <div class="container-xxl">
-    <div class="authentication-wrapper authentication-basic container-p-y">
-      <div class="authentication-inner">
-        <!-- Register Card -->
-        <div class="card">
-          <div class="card-body">
-            <!-- Logo -->
-            <div class="app-brand justify-content-center mt-5">
-              <a href="/" class="app-brand-link gap-2">
-                <span class="app-brand-logo demo">
-                  <img src="{% static 'img/logo.png' %}" alt="logo" class="img-fluid" width="160" 
-                    data-app-light-img="logo.png"
-                    data-app-dark-img="logo-dark.png" />
-                </span>
-              </a>
-            </div>
-            <!-- /Logo -->
-
-            <div class="d-flex flex-column text-center">
-              <h4 class="mb-2 fw-bold">Sign Up to eSIM Magic</h4>
-              <p class="mb-4">Create Your Account with just few steps</p>
-              <div class="d-flex justify-content-center gap-4">
-                <a href="#" class="btn btn-outline-light btn-sm px-5 py-2 rounded-pill">
-                  <img src="{% static 'img/icons/brands/google.png' %}" alt="" class="img-fluid mx-3" width="20px" />
-                </a>
-                <a href="#" class="btn btn-outline-light btn-sm px-5 py-2 rounded-pill">
-                  <img src="{% static 'img/icons/brands/facebook.png' %}" alt="" class="img-fluid mx-3" width="20px" />
-                </a>
-                <a href="#" class="btn btn-outline-light btn-sm px-5 py-2 rounded-pill">
-                  <img src="{% static 'img/icons/brands/apple.png' %}" alt="" class="img-fluid mx-3" width="20px" />
-                </a>
-              </div>
-            </div>
-
-            <div class="divider_line">
-              OR
-            </div>
-
-            <form id="userAuth" class="mb-3">
-              <div class="my-5 row gap-md-0 gap-5">
-                <div class="col-md">
-                  <input type="text" class="form-control form-control-lg rounded-pill" id="first_name" name="first_name"
-                    placeholder="First name" required>
-                </div>
-                <div class="col-md">
-                  <input type="text" class="form-control form-control-lg rounded-pill" id="last_name" name="last_name"
-                    placeholder="Last name" required>
-                </div>
-              </div>
-              <div class="my-5">
-                <input type="email" class="form-control form-control-lg rounded-pill" id="email" name="email"
-                  placeholder="Email" required />
-              </div>
-              <div class="my-5 form-password-toggle">
-                <div class="input-group input-group-merge rounded-pill">
-                  <input type="password" id="password" class="form-control form-control-lg" name="password"
-                    placeholder="Password" aria-describedby="password" required />
-                  <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                </div>
-              </div>
-              <div class="my-5">
-                <input type="text" class="form-control form-control-lg rounded-pill" id="referral_code"
-                  name="referral_code" placeholder="Referral or Voucher Code (Optional)" />
-              </div>
-
-              <div class="my-3">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" required/>
-                  <label class="form-check-label" for="terms-conditions">
-                    I agree to
-                    <a href="javascript:void(0);">privacy policy & terms</a>
-                  </label>
-                </div>
-              </div>
-              <button id="submitBtn" type="submit" class="btn btn-lg btn-primary d-grid w-100 mt-5 rounded-pill">Sign up</button>
-            </form>
-
-            <p class="text-center mb-5">
-              <span>Already have an account?</span>
-              <a href="/login">
-                <span>Login Here</span>
-              </a>
-            </p>
-          </div>
-        </div>
-
-        <!-- Modal -->
-        <div class="modal fade" id="verificationModal" tabindex="-1" aria-labelledby="verificationModalLabel"
-          aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-              <form id="otpVerifyForm">
-                <input type="hidden" name="email"/>
-
-                <div class="modal-body text-center">
-                  <h3><b>Enter verification code</b></h3>
-                  <p>Your verification code has been sent to <span class="text-info user_email">samuel@gmail.com</span></p>
-                  <div class="d-flex justify-content-center mb-3">
-                    <input type="number" maxlength="1" class="code-input" id="code1">
-                    <input type="number" maxlength="1" class="code-input" id="code2">
-                    <input type="number" maxlength="1" class="code-input" id="code3">
-                    <input type="number" maxlength="1" class="code-input" id="code4">
-                  </div>
-                  <p class="mb-5 pb-5">Yet to receive Code? <span id="resend-timer" class="text-info">Resend in
-                      60secs</span></p>
-                </div>
-
-                <div class="modal-footer">
-                  <button id="confirm-btn" type="submit" class="btn btn-lg btn-primary d-grid w-100 mt-5 rounded-pill">Confirm</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-        <!-- Register Card -->
-      </div>
+    <div class="loading d-none">
+        <div class="loadingCircle"></div>
     </div>
-  </div>
 
-  <!-- / Content -->
+    <div class="signUpScreen">
 
-  {% include 'partials/scripts.html' %}
+        <div class="signUpBox">
+            <div class="formLogo">
+                <a href="/"><img src="{% static 'new/assets/branding/preloader.webp' %}" alt=""></a>
+            </div>
+            <h1>Get registered in few steps</h1>
+            <p>Create account and enjoy latest eSIM bundles!</p>
+            
+            <!-- FORM ALERT -->
+            <h2 class="formAlert d-none">*<span>Form alert statement shown here!</span>*</h2>
 
-  <!-- Page JS -->
-  <script src="{% static 'js/otp-handling.js' %}"></script>
-  <script src="{% static 'backend/auth.js' %}"></script>
+            <form id="userAuth" class="signupForm">
+                <div class="oneInput">
+                    <label for="first_name">First name <span>*</span></label>
+                    <input type="text" name="first_name" placeholder="John" required>
+                </div>
+                <div class="oneInput">
+                    <label for="last_name">Second name <span>*</span></label>
+                    <input type="text" name="last_name" placeholder="Doe" required>
+                </div>
+                <div class="oneInput emailInput">
+                    <label for="email">E-mail <span>*</span></label>
+                    <input type="email" name="email" placeholder="abc@example.com" required>
+                </div>
+                <div class="oneInput passInput">
+                    <label for="password">Password <span>*</span></label>
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                <div class="oneInput refInput">
+                    <label for="referral_code">Referral or Voucher (optional)</label>
+                    <input type="text" name="referral_code" placeholder="123XYZ">
+                </div>
+                <button type="submit" class="submitBtn">Sign up</button>
+            </form>
+            <h3 class="agreeStatement">By clicking "Sign up", you agree to our <a href="">Privacy Policy</a> and <a href="">Terms of Service</a>.</h3>
+        </div>
+
+        <p class="alreadyHaveAccount">Already registered? <a href="/login">Login here</a></p>
+
+    </div>
+
+    {% include 'partials/scripts.html' %}
+    <script src="{% static 'backend/auth.js' %}"></script>
 
 </body>
 

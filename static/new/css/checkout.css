@@ -371,7 +371,7 @@
     padding: 8px;
 }
 
-.actionBtnArea>button {
+.actionBtnArea>button, .actionBtnArea>a {
     width: 100%;
     border: none;
     height: 54px;
@@ -388,6 +388,7 @@
     justify-content: center;
     align-items: center;
     text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    text-decoration: none;
 }
 
 @media only screen and (max-width: 768px) {
