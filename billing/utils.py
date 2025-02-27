@@ -1,9 +1,12 @@
-import urllib.request, urllib.parse, urllib.error
 import urllib.request, urllib.error, urllib.parse
 import hmac
 import hashlib
 import json
 import collections
+import requests
+from django.conf import settings
+from datetime import datetime, timedelta, timezone
+
 
 class CoinPayments():
     def __init__(self, publicKey, privateKey, ipn_url):
@@ -56,8 +59,6 @@ class CoinPayments():
 
         return response_body_decoded
 
-
-
     def createTransaction(self, params=None):
         """ Creates a transaction to give to the purchaser
             https://www.coinpayments.net/apidoc-create-transaction
@@ -69,8 +70,6 @@ class CoinPayments():
                        'format': self.format}) 
         return self.Request('post', **params)
 
-
-    
     def getBasicInfo(self, params=None):
         """Gets merchant info based on API key (callee)
            https://www.coinpayments.net/apidoc-get-basic-info
@@ -81,8 +80,6 @@ class CoinPayments():
                        'format': self.format})
         return self.Request('post', **params)
 
-
-    
     def getTransactionInfo(self, params=None):
         """Get transaction info
                        https://www.coinpayments.net/apidoc-get-tx-info
@@ -94,8 +91,6 @@ class CoinPayments():
                        'format': self.format})
         return self.Request('post', **params)
     
-    
-
     def rates(self, params=None):
         """Gets current rates for currencies
            https://www.coinpayments.net/apidoc-rates 
@@ -105,8 +100,6 @@ class CoinPayments():
                        'version': self.version,
                        'format': self.format})
         return self.Request('post', **params)
-
-
 
     def balances(self, params=None):
         """Get current wallet balances
@@ -118,7 +111,6 @@ class CoinPayments():
                        'format': self.format})
         return self.Request('post', **params)
 
-
     def getDepositAddress(self, params=None):
         """Get address for personal deposit use
            https://www.coinpayments.net/apidoc-get-deposit-address
@@ -128,7 +120,6 @@ class CoinPayments():
                        'version': self.version,
                        'format': self.format})
         return self.Request('post', **params)
-
 
     def getCallbackAddress(self, params=None):
         """Get a callback address to recieve info about address status
@@ -164,8 +155,6 @@ class CoinPayments():
                         'format': self.format})
         return self.Request('post', **params)
 
-
-    
     def convertCoins(self, params=None):
         """Convert your balances from one currency to another
             https://www.coinpayments.net/apidoc-convert 
@@ -196,7 +185,6 @@ class CoinPayments():
                         'format': self.format})
         return self.Request('post', **params)
 
-
     def getConversionInfo(self, params=None):
         """Get information about a specific withdrawal based on withdrawal ID
             https://www.coinpayments.net/apidoc-get-conversion-info
@@ -206,3 +194,102 @@ class CoinPayments():
                         'version': self.version,
                         'format': self.format})
         return self.Request('post', **params)
+
+
+def create_tap_payment(amount, currency, customer_email, reference_id, description):
+    """
+    Creates a payment charge in TapPayments.
+    """
+    url = f"{settings.TAP_API_BASE_URL}/charges"
+    headers = {
+        "Authorization": f"Bearer {settings.TAP_SECRET_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "amount": float(amount),
+        "currency": currency,
+        "customer": {
+            "email": customer_email
+        },
+        "source": {
+            "id": "src_all"  # This allows multiple payment methods like card, Apple Pay, etc.
+        },
+        "redirect": {
+            "url": settings.TAP_REDIRECT_URL  # Redirect after payment
+        },
+        "reference": {
+            "transaction": reference_id
+        },
+        "description": description
+    }
+
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        response.raise_for_status()
+        data = response.json()
+
+        if "id" in data:
+            return {
+                "status": True,
+                "payment_id": data["id"],
+                "checkout_url": data["transaction"]["url"],  # URL to redirect user to complete payment
+                "timeout": get_payment_expiry(data)  # URL to redirect user to complete payment
+            }
+        return {"status": False, "message": "Failed to create payment charge."}
+    except requests.RequestException as e:
+        return {"status": False, "message": f"Error creating payment: {str(e)}"}
+
+
+def get_tap_payment_status(payment_id):
+    """
+    Fetches the status of a TapPayments charge.
+    """
+    url = f"{settings.TAP_API_BASE_URL}/charges/{payment_id}"
+    headers = {
+        "Authorization": f"Bearer {settings.TAP_SECRET_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        data = response.json()
+        print(data.get("status"))
+
+        return {
+            "status": data.get("status"),
+            "amount": data.get("amount"),
+            "currency": data.get("currency"),
+            "customer_email": data.get("customer", {}).get("email"),
+            "payment_method": data.get("source", {}).get("type"),
+            "created": data.get("created"),
+        }
+    except requests.RequestException as e:
+        return {"status": "ERROR", "message": str(e)}
+
+
+def get_payment_expiry(response_data):
+    try:
+        # Extract expiry details
+        expiry_period = response_data["transaction"]["expiry"]["period"]  # 30 (minutes)
+        expiry_type = response_data["transaction"]["expiry"]["type"]  # "MINUTE"
+        created_timestamp = int(response_data["transaction"]["created"]) // 1000  # Convert from ms to seconds
+
+        # Convert timestamp to datetime
+        created_datetime = datetime.fromtimestamp(created_timestamp, timezone.utc)
+
+        # Determine expiry time based on type
+        if expiry_type == "MINUTE":
+            expiry_datetime = created_datetime + timedelta(minutes=expiry_period)
+        elif expiry_type == "HOUR":
+            expiry_datetime = created_datetime + timedelta(hours=expiry_period)
+        elif expiry_type == "DAY":
+            expiry_datetime = created_datetime + timedelta(days=expiry_period)
+        else:
+            expiry_datetime = created_datetime  # Default to created time if unknown
+
+        return expiry_datetime
+
+    except KeyError as e:
+        print(f"Missing key in response: {e}")
+        return None

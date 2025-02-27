@@ -98,27 +98,6 @@ def esim_list(request):
     return render(request, 'esims.html', context)
 
 @login_required
-def esim_purchase(request):
-    context = {
-        'user': request.user
-    }
-    return render(request, 'esim_purchase.html', context)
-
-@login_required
-def number_list(request):
-    context = {
-        'user': request.user
-    }
-    return render(request, 'number_list.html', context)
-
-@login_required
-def number_purchase(request):
-    context = {
-        'user': request.user
-    }
-    return render(request, 'number_purchase.html', context)
-
-@login_required
 def profile(request):
     context = {
         'user': request.user

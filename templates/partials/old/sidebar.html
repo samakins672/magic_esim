@@ -1,0 +1,52 @@
+{% load static %}
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" data-bg-class="bg-menu-theme">
+  <div class="app-brand demo mb-3">
+    <a href="/" class="app-brand-link" target="_blank">
+      <span class="app-brand-logo demo">
+        <img src="{% static 'img/logo.png' %}" alt="Magic eSIM logo" class="img-fluid" width="160" 
+          data-app-light-img="logo.png"
+          data-app-dark-img="logo-dark.png" />
+      </span>
+    </a>
+    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+      <i class="bx bx-chevron-left bx-sm"></i>
+    </a>
+  </div>
+
+  <div class="menu-inner-shadow"></div>
+
+  <ul class="menu-inner py-1 ps ps--active-y">    
+    <!-- eSIMS -->
+    <li class="menu-item {% if request.path == '/esims/' %}active{% endif %}">
+      <a href="/esims" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-mobile"></i>
+        <div class="text-truncate">My eSIMs</div>
+      </a>
+    </li>
+
+    <!-- My Orders -->
+    <li class="menu-item {% if request.path == '/orders/' %}active{% endif %}">
+      <a href="/orders" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-cart-alt"></i>
+        <div class="text-truncate">My Orders</div>
+      </a>
+    </li>
+
+    <!-- Virtual Numbers -->
+    <!-- <li class="menu-item {% if request.path == '/numbers/' %}active{% endif %}">
+      <a href="#" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-phone-call"></i>
+        <div class="text-truncate">Numbers</div>
+      </a>
+    </li> -->
+    
+    <!-- My Profile -->
+    <li class="menu-item {% if request.path == '/profile/' %}active{% endif %}">
+      <a href="/profile" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-user-circle"></i>
+        <div class="text-truncate">My Profile</div>
+      </a>
+    </li>
+    
+  </ul>
+</aside>

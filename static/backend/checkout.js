@@ -281,11 +281,9 @@ $(document).on('submit', '#paymentForm', function (e) {
         },
         success: function (response) {
             console.log(response.message);
-            showToast(response.message, 'bg-success');
-            if (response.data.payment_gateway === 'CoinPayments') {
-                window.open(response.data.payment_url, '_blank');
-            }
-            // window.location.href = '/orders';
+            
+            window.open(response.data.payment_url, '_blank');
+            window.location.href = '/orders';
         },
         error: function (error) {
             console.error(error);

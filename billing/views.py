@@ -1,11 +1,12 @@
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from magic_esim.permissions import IsAuthenticatedWithSessionOrJWT
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from .models import Payment
 from esim.utils import fetch_esim_plan_details
 from .serializers import PaymentSerializer
-from billing.utils import CoinPayments
+from billing.utils import CoinPayments, create_tap_payment, get_tap_payment_status
 from django.conf import settings
 from django.urls import reverse
 from rest_framework import serializers
@@ -75,6 +76,40 @@ class PaymentListCreateView(generics.ListCreateAPIView):
             else:
                 # Handle errors (e.g., raise validation error)
                 raise serializers.ValidationError({"status": False, "message": response.get('error')})
+        elif payment.payment_gateway == 'TapPayments':
+            plan_details = fetch_esim_plan_details(payment.package_code, seller=payment.seller)
+            if payment.seller == 'esimgo':
+                # Fetch eSIM plan details
+                esim_plan = plan_details['description']
+            else:
+                esim_plan = plan_details['obj']['packageList'][0]['name']
+
+            print(payment.price)
+            tap_response = create_tap_payment(
+                amount=payment.price,
+                currency=payment.currency,
+                customer_email=self.request.user.email,
+                reference_id=str(payment.ref_id),
+                description=f"Payment for {esim_plan} eSIM plan"
+            )
+
+            print(esim_plan)
+            if tap_response.get("status"):
+                # Save transaction details if creation is successful
+                payment.status = 'PENDING'
+                payment.esim_plan = esim_plan
+                payment.payment_url = tap_response["checkout_url"]
+                payment.gateway_transaction_id = tap_response["payment_id"]
+                payment.expiry_datetime = tap_response['timeout']
+                payment.save()
+
+                self.response_data = {
+                    "status": True,
+                    "message": "Payment created successfully.",
+                    "data": serializer.data,
+                }
+            else:
+                raise serializers.ValidationError({"status": False, "message": tap_response.get("message")})
         else:
             # Default response if no payment gateway is used
             self.response_data = {
@@ -92,67 +127,99 @@ class PaymentStatusCheckView(APIView):
     """
     Check the status of a payment.
     """
-    permission_classes = [IsAuthenticatedWithSessionOrJWT]
+    permission_classes = [AllowAny]
 
     def get(self, request, ref_id):
-        # Get the payment instance
-        try:
-            payment = Payment.objects.get(ref_id=ref_id, user=request.user)
-        except Payment.DoesNotExist:
-            return Response(
-                {"status": False, "message": "Payment not found."},
-                status=status.HTTP_404_NOT_FOUND
-            )
+        if ref_id == "check":
+            tap_id = request.GET.get("tap_id")
+            if not tap_id:
+                return Response({"status": False, "message": "Tap ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Handling TapPayments
+            payment = Payment.objects.filter(gateway_transaction_id=tap_id, payment_gateway="TapPayments").first()
+            if not payment:
+                print(tap_id)
+                return Response({"status": False, "message": "Payment not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        if payment.payment_gateway == 'CoinPayments':
-            # Initialize CoinPayments API
-            cp = CoinPayments(publicKey=settings.COINPAYMENTS_PUBLIC_KEY, 
-                               privateKey=settings.COINPAYMENTS_PRIVATE_KEY,
-                               ipn_url=settings.COINPAYMENTS_IPN_URL)
+            # Fetch TapPayments payment status
+            status_response = get_tap_payment_status(tap_id)
+            payment_status = status_response.get("status", "ERROR")
+            print(status_response)
 
-            # Check the transaction status
-            response = cp.getTransactionInfo({'pmtid': payment.gateway_transaction_id})
-            print(response)
-
-            if response.get('error') == 'ok':
-                payment_status = response['status_text']  # Human-readable status
+            if payment_status == "CAPTURED":  # Payment successful
+                payment.status = "COMPLETED"
+                payment.date_paid = now()
                 
-                if (response['status_text'] == 'Waiting for buyer funds...'):
-                    payment_status = 'PENDING'
-                elif (response['status_text'] == 'Cancelled / Timed Out'):
-                    payment_status = 'FAILED'
-                else:
-                    payment_status = 'COMPLETED'
-                    payment.date_paid = now()
-
-                payment.status = payment_status
-                payment.save()
-
-                return Response({
-                    "status": True,
-                    "message": "Payment status fetched successfully.",
-                    "data": {
-                        "ref_id": payment.ref_id,
-                        "status": payment.status,
-                        "amount": payment.price,
-                        "date_created": payment.date_created,
-                        "expiry_datetime": payment.expiry_datetime,
-                        "currency": payment.currency,
-                        "payment_address": payment.payment_address,
-                        "seller": payment.seller,
-                        "package_code": payment.package_code,
-                        "payment_gateway": payment.payment_gateway,
-                        "transaction_id": payment.gateway_transaction_id,
-                    },
-                })
+            elif payment_status in ["INITIATED", "PENDING"]:
+                payment.status = "PENDING"
             else:
-                # Handle errors from CoinPayments
-                return Response(
-                    {"status": False, "message": response.get('error')},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+                payment.status = "FAILED"
+
+            payment.save()
+
+            return Response({
+                "status": True,
+                "message": "Payment status checked successfully.",
+                "data": {
+                    "ref_id": payment.ref_id,
+                    "status": payment.status,
+                    "amount": payment.price,
+                    "date_created": payment.date_created,
+                    "date_paid": payment.date_paid,
+                    "currency": payment.currency,
+                    "package_code": payment.package_code,
+                    "payment_gateway": payment.payment_gateway,
+                    "transaction_id": payment.gateway_transaction_id,
+                },
+            })
+
         else:
-            return Response(
-                {"status": False, "message": "Unsupported payment gateway."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            # Handle CoinPayments transactions
+            try:
+                payment = Payment.objects.get(ref_id=ref_id)
+            except Payment.DoesNotExist:
+                return Response({"status": False, "message": "Payment not found."}, status=status.HTTP_404_NOT_FOUND)
+
+            if payment.payment_gateway == 'CoinPayments':
+                cp = CoinPayments(
+                    publicKey=settings.COINPAYMENTS_PUBLIC_KEY, 
+                    privateKey=settings.COINPAYMENTS_PRIVATE_KEY,
+                    ipn_url=settings.COINPAYMENTS_IPN_URL
+                )
+
+                response = cp.getTransactionInfo({'pmtid': payment.gateway_transaction_id})
+                if response.get('error') == 'ok':
+                    payment_status = response['status_text']
+                    
+                    if response['status_text'] == 'Waiting for buyer funds...':
+                        payment_status = 'PENDING'
+                    elif response['status_text'] == 'Cancelled / Timed Out':
+                        payment_status = 'FAILED'
+                    else:
+                        payment_status = 'COMPLETED'
+                        payment.date_paid = now()
+
+                    payment.status = payment_status
+                    payment.save()
+
+                    return Response({
+                        "status": True,
+                        "message": "Payment status checked successfully.",
+                        "data": {
+                            "ref_id": payment.ref_id,
+                            "status": payment.status,
+                            "amount": payment.price,
+                            "date_created": payment.date_created,
+                            "expiry_datetime": payment.expiry_datetime,
+                            "currency": payment.currency,
+                            "payment_gateway": payment.payment_gateway,
+                            "transaction_id": payment.gateway_transaction_id,
+                        },
+                    })
+                else:
+                    return Response(
+                        {"status": False, "message": response.get('error')},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+            return Response({"status": False, "message": "Unsupported payment gateway."}, status=status.HTTP_400_BAD_REQUEST)

@@ -10,24 +10,37 @@ User = get_user_model()
 @receiver(post_save, sender=Payment)
 def handle_payment_completed(sender, instance, **kwargs):
     if instance.status == 'COMPLETED':
-        user = instance.user
+        # ✅ Fetch the user from the Payment instance
+        payment = Payment.objects.filter(ref_id=instance.ref_id, package_code=instance.package_code).first()
+
+        if not payment:
+            print("⚠ Payment record not found for the given reference ID.")
+            return
+        
+        user = payment.user  # Fetch user from the payment record
+
+        if not user:
+            print("⚠ Payment has no associated user!")
+            return  # Exit to prevent errors
+
         package_code = instance.package_code
         payment_ref_id = instance.ref_id
         seller = instance.seller
 
-        # Fetch user and payment
-        payment = Payment.objects.filter(ref_id=payment_ref_id, package_code=package_code, user=user).first()
-        if not payment or payment.status == 'PENDING':
-            raise ValueError("Invalid or pending payment reference.")
-        
+        if payment.status == 'PENDING':
+            print("⚠ Invalid or pending payment reference.")
+            return  
+
         if payment.status == 'FAILED':
-            raise ValueError("Payment expired.")
+            print("⚠ Payment expired.")
+            return  
 
         # Fetch eSIM plan details
         plan_details = fetch_esim_plan_details(package_code, seller)
         print(plan_details)
-        if not plan_details or plan_details['success'] == False:
-            raise ValueError("Failed to fetch plan details from the eSIM API.")
+        if not plan_details or plan_details.get('success') == False:
+            print("⚠ Failed to fetch plan details from the eSIM API.")
+            return  
 
         # Calculate expiry date
         plan_details = plan_details['obj']['packageList'][0]
@@ -59,3 +72,4 @@ def handle_payment_completed(sender, instance, **kwargs):
             seller=seller,
             esim_status='PAID'
         )
+        print(f"✅ eSIM created for user {user.email} with Order No: {order_no}")

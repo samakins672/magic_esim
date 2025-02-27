@@ -10,7 +10,7 @@
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
   <title>{{ user.first_name }} {{ user.last_name }} - Magic eSIM</title>
 
-  {% include 'partials/head.html' %}
+  {% include 'partials/old/head.html' %}
   <link rel="stylesheet" href="{% static 'vendor/libs/@form-validation/form-validation.css' %}" />
 
   <!-- Page Css -->
@@ -23,12 +23,12 @@
   <div class="layout-wrapper layout-content-navbar">
     <div class="layout-container">
 
-      {% include 'partials/sidebar.html' %}
+      {% include 'partials/old/sidebar.html' %}
 
       <!-- Layout container -->
       <div class="layout-page">
 
-        {% include 'partials/navbar.html' %}
+        {% include 'partials/old/navbar.html' %}
 
         <!-- Content wrapper -->
         <div class="content-wrapper">
@@ -233,7 +233,7 @@
           </div>
           <!-- / Content -->
 
-          {% include 'partials/footer.html' %}
+          {% include 'partials/old/footer.html' %}
 
           <div class="content-backdrop fade"></div>
         </div>
@@ -248,7 +248,7 @@
   </div>
   <!-- / Layout wrapper -->
 
-  {% include 'partials/scripts.html' %}
+  {% include 'partials/old/scripts.html' %}
 
   <!-- Page JS -->
   <script src="{% static 'backend/auth.js' %}"></script>

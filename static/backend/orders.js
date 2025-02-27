@@ -33,7 +33,7 @@ function populateOrdersTable(orders) {
 
         const confirmPaymentButton = `
         <button class="btn btn-success btn-sm confirm-payment-btn" 
-          data-ref_id="${order.ref_id}">
+          data-ref_id="${order.payment_gateway == 'TapPayments' ? order.gateway_transaction_id : order.ref_id}" data-payment_gateway="${order.payment_gateway}">
           Confirm Payment
         </button>`;
 
@@ -67,11 +67,9 @@ function populateOrdersTable(orders) {
 
 // Function to open modal and populate order details
 $(document).on("click", ".view-details-btn", function () {
-    const orderId = $(this).data("id");
     const gateway_transaction_id = $(this).data("gateway_transaction_id");
     const price = $(this).data("price");
     const currency = $(this).data("currency");
-    const payment_address = $(this).data("payment_address");
     const payment_url = $(this).data("payment_url");
     const payment_gateway = $(this).data("payment_gateway");
     const status = $(this).data("status");
@@ -105,38 +103,44 @@ $(document).ready(function () {
             populateOrdersTable(response);
         }
     });
+});
 
-    $(document).on('click', '.confirm-payment-btn', function (e) {
-		const ref_id = $(this).data("ref_id");
+$(document).on('click', '.confirm-payment-btn', function (e) {
+    const ref_id = $(this).data("ref_id");
+    const payment_gateway = $(this).data("payment_gateway");
 
-        var submitButton = $(this);
-        submitButton.html('<span class="spinner-border m-2 mx-auto" role="status" aria-hidden="true"></span>').attr('disabled', true);
+    var submitButton = $(this);
+    submitButton.html('<span class="spinner-border m-2 mx-auto" role="status" aria-hidden="true"></span>').attr('disabled', true);
 
-        $.ajax({
-            url: `/api/payments/status/${ref_id}/`,
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            success: function (response) {
-                console.log(response.message);
-                showToast(response.message, 'bg-success');
-                location.reload();
-            },
-            error: function (error) {
-                console.error(error);
-                if (error.responseJSON.message.error !== undefined) {
-                    showToast(error.responseJSON.message.error, 'bg-danger');
-                } else {
-                    showToast('Server error! Try again later.', 'bg-danger');
-                }
-            },
-            complete: function () {
-                // Revert button text and re-enable the button
-                submitButton.html('Confirm Payment').attr('disabled', false);
+    if (payment_gateway === 'TapPayments') {
+        url = `/api/payments/status/check/?tap_id=${ref_id}`;
+    } else {
+        url = `/api/payments/status/${ref_id}/`;
+    }
+
+    $.ajax({
+        url: url,
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        success: function (response) {
+            console.log(response.message);
+            showToast(response.message, 'bg-success');
+            location.reload();
+        },
+        error: function (error) {
+            console.error(error);
+            if (error.responseJSON.message !== undefined) {
+                showToast(error.responseJSON.message, 'bg-danger');
+            } else {
+                showToast('Server error! Try again later.', 'bg-danger');
             }
-        });
+        },
+        complete: function () {
+            // Revert button text and re-enable the button
+            submitButton.html('Confirm Payment').attr('disabled', false);
+        }
     });
-
 });

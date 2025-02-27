@@ -13,7 +13,6 @@ urlpatterns = [
     path('logout/', views.frontend_logout, name='frontend_logout'),
     path('esims/', views.esim_list, name='esim_list'),
     path('orders/', views.orders, name='esim_orders'),
-    path('numbers/', views.number_list, name='number_list'),
     path('profile/', views.profile, name='profile'),
     path('settings/', views.settings, name='settings'),
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
