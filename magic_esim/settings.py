@@ -160,7 +160,7 @@ else:
             'HOST': config('DB_HOST'),
             'PORT': config('DB_PORT', default=5432),
             'OPTIONS': {
-                'sslmode': 'disabled',  # Enforce SSL in production
+                'sslmode': 'disable',  # Enforce SSL in production
             },
         }
     }
