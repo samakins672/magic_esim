@@ -5,6 +5,9 @@ import sys
 
 
 def main():
+    from django.core.management.commands.runserver import Command as runserver
+    runserver.default_port = "30000"
+    
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'magic_esim.settings')
     try:
