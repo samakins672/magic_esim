@@ -67,8 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 1000);
 
             var formData = JSON.stringify({
-                email: document.querySelector('#otpVerifyForm [name="email"]').value,
-                phone_number: document.querySelector('#otpVerifyForm [name="phone_number"]').value
+                email: document.querySelector('#otpVerifyForm [name="email"]').value
             });
         
             fetch('/api/auth/otp/request/', {
