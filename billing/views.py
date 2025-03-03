@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from datetime import timedelta
 from django.utils.timezone import now
+import datetime
 
 
 class PaymentListCreateView(generics.ListCreateAPIView):
@@ -223,3 +224,79 @@ class PaymentStatusCheckView(APIView):
                     )
 
             return Response({"status": False, "message": "Unsupported payment gateway."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdatePendingPaymentsView(APIView):
+    """
+    Checks and updates the status of all pending payments in the last 48 hours.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        # Get time threshold for last 48 hours
+        time_threshold = now() - datetime.timedelta(hours=48)
+
+        # Fetch payments that are still PENDING within the last 48 hours
+        pending_payments = Payment.objects.filter(
+            status="PENDING",
+            date_created__gte=time_threshold
+        )
+
+        if not pending_payments.exists():
+            return Response({"status": True, "message": "No pending payments found."}, status=status.HTTP_200_OK)
+
+        updated_payments = []
+
+        for payment in pending_payments:
+            if payment.payment_gateway == "TapPayments":
+                # Fetch TapPayments payment status
+                status_response = get_tap_payment_status(payment.gateway_transaction_id)
+                payment_status = status_response.get("status", "ERROR")
+
+                if payment_status == "COMPLETED":
+                    payment.status = "COMPLETED"
+                    payment.date_paid = now()
+                elif payment_status in ["INITIATED", "PENDING"]:
+                    payment.status = "PENDING"
+                else:
+                    payment.status = "FAILED"
+
+            elif payment.payment_gateway == "CoinPayments":
+                # Check status from CoinPayments
+                cp = CoinPayments(
+                    publicKey=settings.COINPAYMENTS_PUBLIC_KEY, 
+                    privateKey=settings.COINPAYMENTS_PRIVATE_KEY,
+                    ipn_url=settings.COINPAYMENTS_IPN_URL
+                )
+                response = cp.getTransactionInfo({'pmtid': payment.gateway_transaction_id})
+                
+                if response.get("error") == "ok":
+                    payment_status = response["status_text"]
+
+                    if payment_status == "Waiting for buyer funds...":
+                        payment.status = "PENDING"
+                    elif payment_status in ["Cancelled / Timed Out"]:
+                        payment.status = "FAILED"
+                    else:
+                        payment.status = "COMPLETED"
+                        payment.date_paid = now()
+                else:
+                    payment.status = "FAILED"
+
+            # Save updated payment
+            payment.save()
+            updated_payments.append({
+                "ref_id": payment.ref_id,
+                "status": payment.status,
+                "amount": payment.price,
+                "currency": payment.currency,
+                "payment_gateway": payment.payment_gateway,
+                "transaction_id": payment.gateway_transaction_id,
+                "date_paid": payment.date_paid
+            })
+
+        return Response({
+            "status": True,
+            "message": "Pending payments updated successfully.",
+            "updated_payments": updated_payments
+        }, status=status.HTTP_200_OK)
