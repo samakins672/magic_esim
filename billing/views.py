@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from datetime import timedelta
 from django.utils.timezone import now
+from django.shortcuts import redirect
 import datetime
 
 
@@ -157,22 +158,24 @@ class PaymentStatusCheckView(APIView):
                 payment.status = "FAILED"
 
             payment.save()
+            
+            return redirect('/orders/')
 
-            return Response({
-                "status": True,
-                "message": "Payment status checked successfully.",
-                "data": {
-                    "ref_id": payment.ref_id,
-                    "status": payment.status,
-                    "amount": payment.price,
-                    "date_created": payment.date_created,
-                    "date_paid": payment.date_paid,
-                    "currency": payment.currency,
-                    "package_code": payment.package_code,
-                    "payment_gateway": payment.payment_gateway,
-                    "transaction_id": payment.gateway_transaction_id,
-                },
-            })
+            # return Response({
+            #     "status": True,
+            #     "message": "Payment status checked successfully.",
+            #     "data": {
+            #         "ref_id": payment.ref_id,
+            #         "status": payment.status,
+            #         "amount": payment.price,
+            #         "date_created": payment.date_created,
+            #         "date_paid": payment.date_paid,
+            #         "currency": payment.currency,
+            #         "package_code": payment.package_code,
+            #         "payment_gateway": payment.payment_gateway,
+            #         "transaction_id": payment.gateway_transaction_id,
+            #     },
+            # })
 
         else:
             # Handle CoinPayments transactions
