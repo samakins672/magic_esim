@@ -357,6 +357,9 @@ class eSIMProfileView(APIView):
                                 esim_plan = eSIMPlan.objects.get(order_no=order_no)
                                 item['price'] = esim_plan.price
 
+                                # Calculate the difference on a scale of 0 - 1
+                                item['usageScale'] = item['orderUsage'] / item['totalVolume'] if item['totalVolume'] > 0 else 0
+                                
                                 # Convert volume from bytes to GB/MB and format prices
                                 volume_bytes = item['totalVolume'] - item['orderUsage']
 
