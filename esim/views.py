@@ -343,7 +343,7 @@ class eSIMProfileView(APIView):
                     json=filters,
                     headers={"RT-AccessCode": api_token},
                 )
-                print(response.json())
+                
                 if response.status_code == 200 and response.json().get('success', False):
                     # Return the data from the external API
                     data = response.json().get('obj', {}).get('esimList', [])
@@ -356,11 +356,20 @@ class eSIMProfileView(APIView):
                             try:
                                 esim_plan = eSIMPlan.objects.get(order_no=order_no)
                                 item['price'] = esim_plan.price
+
+                                # Convert volume from bytes to GB/MB and format prices
+                                volume_bytes = item['totalVolume'] - item['orderUsage']
+
+                                if volume_bytes >= 1024 ** 3:
+                                    item["formattedVolumeLeft"] = f"{(volume_bytes / (1024 ** 3)):.1f} GB"
+                                else:
+                                    item["formattedVolumeLeft"] = f"{(volume_bytes / (1024 ** 2)):.0f} MB"
+
+                                item["formattedPrice"] = f"{((esim_plan.price / 10000) * 2):.2f}"
                             except eSIMPlan.DoesNotExist:
                                 item['price'] = None
                         enriched_data.append(item)
 
-                    print(enriched_data)
                     return Response({
                         "status": True,
                         "message": "eSIM profile fetched successfully.",
