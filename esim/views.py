@@ -574,7 +574,6 @@ class eSIMPlanDetailView(generics.RetrieveUpdateDestroyAPIView):
             "data": serializer.data
         }, status=status.HTTP_200_OK)
 
-
 class CountriesListView(APIView):
     """
     View to fetch list of countries from JSON file.
@@ -582,6 +581,9 @@ class CountriesListView(APIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
+        parameters=[
+            OpenApiParameter("name", OpenApiTypes.STR, description="Name of the country to filter", required=False),
+        ],
         responses={200: OpenApiTypes.OBJECT},
         description="Get list of all countries"
     )
@@ -594,6 +596,11 @@ class CountriesListView(APIView):
             # Convert alpha_2 to lowercase
             for country in countries:
                 country['alpha_2_lower'] = country['alpha_2'].lower()
+            
+            # Filter by name if query param is provided
+            name_filter = request.query_params.get('name')
+            if name_filter:
+                countries = [country for country in countries if name_filter.lower() in country['name'].lower()]
             
             return Response({
                 "status": True,
