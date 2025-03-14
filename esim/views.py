@@ -473,8 +473,8 @@ class eSIMPlanListCreateView(generics.ListCreateAPIView):
                             plan.volume_used = esim.get("orderUsage", plan.volume_used)
                             plan.save()
 
-                            # Calculate the difference on a scale of 0 - 1
-                            esim['usageScale'] = esim['orderUsage'] / esim['totalVolume'] if esim['totalVolume'] > 0 else 0
+                            # Temporarily pass data to plan object for demonstration
+                            plan.usageScale = round(esim['orderUsage'] / esim['totalVolume'], 1) if esim['totalVolume'] > 0 else 0
 
                             # Calculate duration left and duration left scale
                             activate_time = esim.get('activateTime')
@@ -491,21 +491,22 @@ class eSIMPlanListCreateView(generics.ListCreateAPIView):
                             
                             # Calculate duration left and format it
                             if duration_left >= 86400:
-                                esim['durationLeft'] = f"{duration_left // 86400} days"
+                                plan.durationLeft = f"{duration_left // 86400} days"
                             elif duration_left >= 3600:
-                                esim['durationLeft'] = f"{duration_left // 3600} hours"
+                                plan.durationLeft = f"{duration_left // 3600} hours"
                             else:
-                                esim['durationLeft'] = f"{duration_left // 60} mins"
+                                plan.durationLeft = f"{duration_left // 60} mins"
                             
-                            print(esim['durationLeft'])
                             # Convert volume from bytes to GB/MB and format prices
                             volume_bytes = esim['totalVolume'] - esim['orderUsage']
 
                             if volume_bytes >= 1024 ** 3:
-                                esim["formattedVolumeLeft"] = f"{(volume_bytes / (1024 ** 3)):.1f} GB"
+                                plan.formattedVolumeLeft = f"{(volume_bytes / (1024 ** 3)):.1f} GB"
                             else:
-                                esim["formattedVolumeLeft"] = f"{(volume_bytes / (1024 ** 2)):.0f} MB"
-                            print(esim['formattedVolumeLeft'])
+                                plan.formattedVolumeLeft = f"{(volume_bytes / (1024 ** 2)):.0f} MB"
+                            print(plan.durationLeft)
+                            print(plan.usageScale)
+                            print(plan.formattedVolumeLeft)
                         else:
                             print(f"No eSIM data found for plan {plan.order_no}.")
                     else:
@@ -515,14 +516,38 @@ class eSIMPlanListCreateView(generics.ListCreateAPIView):
             except requests.RequestException as e:
                 print(f"Error fetching eSIM profile for plan {plan.order_no}: {e}")
 
-            updated_plans.append(plan)
+            updated_plans.append({
+                "id": plan.id,
+                "order_no": plan.order_no,
+                "name": plan.name,
+                "slug": plan.slug,
+                "package_code": plan.package_code,
+                "activated_on": plan.activated_on,
+                "volume_used": plan.volume_used,
+                "esim_status": plan.esim_status,
+                "duration": plan.duration,
+                "currency_code": plan.currency_code,
+                "speed": plan.speed,
+                "volume": plan.volume,
+                "price": plan.price,
+                "description": plan.description,
+                "seller": plan.seller,
+                "location_code": plan.location_code,
+                "location_code_lower": plan.location_code.lower(),
+                "expires_on": plan.expires_on,
+                "smdp_status": plan.smdp_status,
+                "duration_unit": plan.duration_unit,
+                "support_top_up_type": plan.support_top_up_type,
+                "usageScale": plan.usageScale,
+                "durationLeft": plan.durationLeft,
+                "formattedVolumeLeft": plan.formattedVolumeLeft,
+            })
 
-        # Serialize the updated plans
-        serializer = self.get_serializer(updated_plans, many=True)
+        print(updated_plans)
         return Response({
             "status": True,
             "message": "User eSIM plans fetched successfully.",
-            "data": serializer.data,
+            "data": updated_plans,
         }, status=status.HTTP_200_OK)
 
 
