@@ -343,6 +343,7 @@ class eSIMProfileView(APIView):
                     json=filters,
                     headers={"RT-AccessCode": api_token},
                 )
+                print(response.json())
                 if response.status_code == 200 and response.json().get('success', False):
                     # Return the data from the external API
                     data = response.json().get('obj', {}).get('esimList', [])
