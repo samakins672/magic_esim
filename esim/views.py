@@ -472,6 +472,40 @@ class eSIMPlanListCreateView(generics.ListCreateAPIView):
                             plan.activated_on = esim.get("activateTime", plan.activated_on)
                             plan.volume_used = esim.get("orderUsage", plan.volume_used)
                             plan.save()
+
+                            # Calculate the difference on a scale of 0 - 1
+                            esim['usageScale'] = esim['orderUsage'] / esim['totalVolume'] if esim['totalVolume'] > 0 else 0
+
+                            # Calculate duration left and duration left scale
+                            activate_time = esim.get('activateTime')
+                            total_duration = esim.get('totalDuration', 0)
+                            if activate_time is not None:
+                                activate_datetime = datetime.strptime(activate_time, "%Y-%m-%dT%H:%M:%S%z")
+                            else:
+                                activate_datetime = datetime.now()
+
+                            expiration_datetime = activate_datetime + timedelta(days=total_duration)
+                            current_datetime = datetime.now()
+
+                            duration_left = (expiration_datetime - current_datetime.replace(tzinfo=activate_datetime.tzinfo)).total_seconds()
+                            
+                            # Calculate duration left and format it
+                            if duration_left >= 86400:
+                                esim['durationLeft'] = f"{duration_left // 86400} days"
+                            elif duration_left >= 3600:
+                                esim['durationLeft'] = f"{duration_left // 3600} hours"
+                            else:
+                                esim['durationLeft'] = f"{duration_left // 60} mins"
+                            
+                            print(esim['durationLeft'])
+                            # Convert volume from bytes to GB/MB and format prices
+                            volume_bytes = esim['totalVolume'] - esim['orderUsage']
+
+                            if volume_bytes >= 1024 ** 3:
+                                esim["formattedVolumeLeft"] = f"{(volume_bytes / (1024 ** 3)):.1f} GB"
+                            else:
+                                esim["formattedVolumeLeft"] = f"{(volume_bytes / (1024 ** 2)):.0f} MB"
+                            print(esim['formattedVolumeLeft'])
                         else:
                             print(f"No eSIM data found for plan {plan.order_no}.")
                     else:
