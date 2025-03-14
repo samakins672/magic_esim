@@ -12,6 +12,7 @@ from decouple import config
 import json
 import os
 from django.conf import settings
+from datetime import datetime, timedelta
 
 
 class eSIMPlanListView(APIView):
@@ -359,8 +360,31 @@ class eSIMProfileView(APIView):
 
                                 # Calculate the difference on a scale of 0 - 1
                                 item['usageScale'] = 1 - (item['orderUsage'] / item['totalVolume']) if item['totalVolume'] > 0 else 0
-                                print(item['usageScale'])
 
+                                # Calculate duration left and duration left scale
+                                activate_time = item.get('activateTime')
+                                total_duration = item.get('totalDuration', 0)
+                                if activate_time != None and total_duration > 0:
+
+                                    activate_datetime = datetime.strptime(activate_time, "%Y-%m-%dT%H:%M:%S%z")
+                                    expiration_datetime = activate_datetime + timedelta(days=total_duration)
+                                    current_datetime = datetime.now()
+
+                                    duration_left = (expiration_datetime - current_datetime.replace(tzinfo=activate_datetime.tzinfo)).total_seconds()
+                                    # Calculate duration left and format it
+                                    if duration_left >= 86400:
+                                        item['durationLeft'] = f"{duration_left // 86400} days"
+                                    elif duration_left >= 3600:
+                                        item['durationLeft'] = f"{duration_left // 3600} hours"
+                                    else:
+                                        item['durationLeft'] = f"{duration_left // 60} mins"
+                                    item['durationLeftScale'] = max(0, min(1, duration_left / (total_duration * 86400))) if total_duration > 0 else 0
+                                else:
+                                    item['durationLeft'] = None
+                                    item['durationLeftScale'] = 0
+
+                                print(item['durationLeft'])
+                                print(item['durationLeftScale'])
                                 # Convert volume from bytes to GB/MB and format prices
                                 volume_bytes = item['totalVolume'] - item['orderUsage']
 
