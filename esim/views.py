@@ -85,13 +85,28 @@ class eSIMPlanListView(APIView):
                 access_obj = response.json().get("obj", {})
                 packages = access_obj.get("packageList", [])
 
-                # If mainRegion was passed, filter
-                main_region = filters.get("mainRegion")
-                if main_region:
+                # Filter packages where slug starts with locationCode and doesn't end with _END or _DAILY
+                location_code = filters.get("locationCode")
+                if location_code and location_code != '!RG' and location_code != '!GL':
                     packages = [
                         item for item in packages
-                        if item.get("slug", "").startswith(main_region)
+                        if item.get("slug", "").startswith(f"{location_code}_") and not item.get("slug", "").endswith(("_End", "_Daily"))
                     ]
+
+                # If mainRegion was passed, filter
+                main_region = filters.get("mainRegion")
+                if main_region and location_code == '!RG':
+                    packages = [
+                        item for item in packages
+                        if item.get("slug", "").startswith(f"{main_region}-") and not item.get("slug", "").endswith(("_End", "_Daily"))
+                    ]
+                    
+                elif main_region and location_code == '!GL':
+                    packages = [
+                        item for item in packages
+                        if item.get("slug", "").startswith(main_region) and not item.get("slug", "").endswith(("_End", "_Daily"))
+                    ]
+
 
                 # Sort by price ascending
                 packages = sorted(packages, key=lambda x: x.get("price", float("inf")))
