@@ -86,9 +86,7 @@
     {% include 'partials/scripts.html' %}
     <script src="{% static 'backend/auth.js' %}"></script>
     <script>
-        function handleCredentialResponse(response) {
-            console.log("Encoded JWT ID token: " + response.credential);
-            
+        function handleCredentialResponse(response) {            
             loader = $('.loading');
             loader.removeClass("d-none");
 
@@ -98,9 +96,8 @@
                 contentType: 'application/json',
                 data: JSON.stringify({ id_token: response.credential }),
                 success: function(data) {
-                    console.log('Login successful:', data);
-                    if (data.success) {
-                        // window.location.href = '/dashboard';
+                    if (data.status) {
+                        window.location.href = '/dashboard';
                     } else {
                         $('.formAlert').removeClass('d-none').text(data.message);
                     }
