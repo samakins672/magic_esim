@@ -258,7 +258,7 @@
                         {% if user.is_authenticated %}
                         <button class="submitBtn" type="submit">Pay now</button>
                         {% else %}
-                        <a href="/login" class="submitBtn">Login to Checkout</a>
+                        <a href="/login?next={{ request.path }}" class="submitBtn">Login to Checkout</a>
                         {% endif %}
                     </div>
 

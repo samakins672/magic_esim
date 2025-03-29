@@ -97,8 +97,13 @@ $(document).on('submit', '#signInForm', function (e) {
         success: function (response) {
             console.log('Log In successfully:', response);
 
-            // Redirect to home after login success
-            window.location.href = '/';
+            const urlParams = new URLSearchParams(window.location.search);
+            const next = urlParams.get('next');
+            if (next) {
+                window.location.href = next;
+            } else {
+                window.location.href = '/';
+            }
         },
         error: function (error) {
             // On error show error message
