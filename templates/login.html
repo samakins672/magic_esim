@@ -86,23 +86,8 @@
     {% include 'partials/scripts.html' %}
     <script src="{% static 'backend/auth.js' %}"></script>
     <script>
-        function decodeJwtResponse(jwt) {
-            // Split the JWT into its parts (header, payload, and signature)
-            const parts = jwt.split('.');
-
-            // Decode the base64-encoded payload
-            const decodedPayload = atob(parts[1]);
-
-            // Parse the JSON-formatted payload
-            const payloadObject = JSON.parse(decodedPayload);
-
-            return payloadObject;
-        }
-
         function handleCredentialResponse(response) {
-            const responsePayload = decodeJwtResponse(response.credential);
-
-            console.log("Encoded JWT ID token: " + responsePayload);
+            console.log("Encoded JWT ID token: " + response.credential);
             
             loader = $('.loading');
             loader.removeClass("d-none");
@@ -111,7 +96,7 @@
                 url: '/api/auth/google/',
                 method: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ token: response.credential }),
+                data: JSON.stringify({ id_token: response.credential }),
                 success: function(data) {
                     console.log('Login successful:', data);
                     if (data.success) {

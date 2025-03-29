@@ -24,8 +24,10 @@ from django.utils.timezone import now
 from rest_framework.response import Response
 from .serializers import GoogleAuthSerializer
 
+
 class GoogleAuthView(generics.GenericAPIView):
     serializer_class = GoogleAuthSerializer
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
