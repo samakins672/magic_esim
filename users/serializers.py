@@ -4,6 +4,7 @@ from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import serializers
 from .models import User
+from django.contrib.auth import authenticate, login
 from django.utils.timezone import now
 import uuid
 
@@ -15,8 +16,10 @@ class GoogleAuthSerializer(serializers.Serializer):
         try:
             # Verify the Google token
             google_user = id_token.verify_oauth2_token(value, requests.Request())
+            print(google_user)
 
-            if google_user['aud'] not in settings.SOCIALACCOUNT_PROVIDERS['google']['SCOPE']:
+            if google_user['aud'] not in settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY:
+                print(google_user['aud'])
                 raise serializers.ValidationError("Invalid Google Client ID.")
 
             return google_user
@@ -36,6 +39,10 @@ class GoogleAuthSerializer(serializers.Serializer):
             "profile_image": profile_image,
             "is_verified": True,
         })
+
+        request = self.context.get("request")
+        if request:
+            login(request, user)
 
         refresh = RefreshToken.for_user(user)
 
