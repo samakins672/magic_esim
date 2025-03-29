@@ -97,7 +97,7 @@
                 data: JSON.stringify({ id_token: response.credential }),
                 success: function(data) {
                     if (data.status) {
-                        window.location.href = '/dashboard';
+                        window.location.href = '/';
                     } else {
                         $('.formAlert').removeClass('d-none').text(data.message);
                     }
