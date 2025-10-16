@@ -348,6 +348,12 @@
     filter: invert();
 }
 
+.onePaymentOption>label>.gatewayText {
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.3px;
+}
+
 .onePaymentOption>input[type='radio']:checked+label>.circle {
     border-color: var(--themeBtnColor);
 }

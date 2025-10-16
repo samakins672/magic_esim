@@ -281,8 +281,11 @@ $(document).on('submit', '#paymentForm', function (e) {
         },
         success: function (response) {
             console.log(response.message);
-            
-            window.open(response.data.payment_url, '_blank');
+
+            const checkoutUrl = response.data.payment_url;
+            if (checkoutUrl) {
+                window.open(checkoutUrl, '_blank');
+            }
             window.location.href = '/orders';
         },
         error: function (error) {
