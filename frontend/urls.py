@@ -16,6 +16,7 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('settings/', views.account_settings, name='settings'),
     path('payments/hyperpay/copy-pay/', views.hyperpay_copy_pay, name='hyperpay_copy_pay'),
+    path('payments/hyperpay/result/', views.hyperpay_copy_pay_result, name='hyperpay_copy_pay_result'),
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
     path('terms-and-conditions/', views.terms_and_conditions, name='terms_and_conditions'),
     path('sitemap.xml', TemplateView.as_view(template_name="sitemap.xml", content_type='application/xml')),

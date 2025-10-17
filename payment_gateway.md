@@ -13,6 +13,7 @@ The payment flow is coordinated by a combination of Django backend services and 
 * **Configuration** – Environment-driven credentials are declared in `magic_esim/settings.py` and loaded from deployment secrets (see section 3.1).【F:magic_esim/settings.py†L239-L274】
 * **Checkout UI** – The customer-facing payment selection is rendered in `templates/checkout.html`, with submission handled via `static/backend/checkout.js` which posts the gateway choice to the API and redirects the user to the provider checkout link.【F:templates/checkout.html†L209-L280】【F:static/backend/checkout.js†L1-L126】【F:static/backend/checkout.js†L142-L210】
 * **Hosted card widget** – HyperPay Copy & Pay renders inside `templates/hyperpay_copy_pay.html`, which loads the payment widget script returned by the checkout API and submits the hosted form back to HyperPay.【F:templates/hyperpay_copy_pay.html†L1-L97】
+* **Return handling** – Customers are redirected to `/payments/hyperpay/result/`, which resolves the checkout ID with HyperPay, updates the matching `Payment` record, and displays the outcome to the shopper.【F:frontend/urls.py†L1-L20】【F:frontend/views.py†L101-L187】【F:templates/hyperpay_copy_pay_result.html†L1-L120】
 
 Understanding these touchpoints is key before extending the system with an additional provider.
 
