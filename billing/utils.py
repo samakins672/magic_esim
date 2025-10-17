@@ -238,15 +238,27 @@ def create_mpgs_checkout(amount, currency, customer_email, reference_id, descrip
         },
     }
 
+    response = None
+    data = None
+
     try:
         response = requests.post(url, json=payload, auth=_mpgs_auth())
-        response.raise_for_status()
-        data = response.json()
 
-        print(
-            "[HyperPay MPGS] Checkout response:",
-            json.dumps(data, indent=2, sort_keys=True),
+        try:
+            data = response.json()
+        except ValueError:
+            data = None
+
+        pretty_payload = (
+            json.dumps(data, indent=2, sort_keys=True) if data is not None else response.text
         )
+
+        print("[HyperPay MPGS] Checkout response:", pretty_payload)
+
+        response.raise_for_status()
+
+        if data is None:
+            data = {}
 
         session_id = data.get("session", {}).get("id")
         success_indicator = data.get("successIndicator")
@@ -272,6 +284,9 @@ def create_mpgs_checkout(amount, currency, customer_email, reference_id, descrip
         message = data.get("error", {}).get("explanation") or data.get("result")
         return {"status": False, "message": message or "Failed to create checkout session."}
     except requests.RequestException as exc:
+        if response is None:
+            print("[HyperPay MPGS] Checkout request failed:", str(exc))
+
         return {"status": False, "message": f"Error creating payment: {exc}"}
 
 
@@ -283,15 +298,27 @@ def get_mpgs_payment_status(order_id):
         f"merchant/{settings.MPGS_MERCHANT_ID}/order/{order_id}"
     )
 
+    response = None
+    data = None
+
     try:
         response = requests.get(url, auth=_mpgs_auth())
-        response.raise_for_status()
-        data = response.json()
 
-        print(
-            "[HyperPay MPGS] Order status response:",
-            json.dumps(data, indent=2, sort_keys=True),
+        try:
+            data = response.json()
+        except ValueError:
+            data = None
+
+        pretty_payload = (
+            json.dumps(data, indent=2, sort_keys=True) if data is not None else response.text
         )
+
+        print("[HyperPay MPGS] Order status response:", pretty_payload)
+
+        response.raise_for_status()
+
+        if data is None:
+            data = {}
 
         order_data = data.get("order", {})
         status = order_data.get("status") or data.get("result")
@@ -321,6 +348,9 @@ def get_mpgs_payment_status(order_id):
             "raw": data,
         }
     except requests.RequestException as exc:
+        if response is None:
+            print("[HyperPay MPGS] Order status request failed:", str(exc))
+
         return {"status": "ERROR", "message": str(exc)}
 
 
