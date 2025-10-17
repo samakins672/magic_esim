@@ -331,7 +331,7 @@ def normalize_copy_and_pay_checkout_id(checkout_id):
     if not checkout_id:
         return checkout_id
 
-    cleaned = checkout_id.strip()
+    cleaned = urllib.parse.unquote(checkout_id).strip()
 
     for delimiter in ("?", "#"):
         if delimiter in cleaned:
@@ -407,6 +407,8 @@ def get_copy_and_pay_payment_status(checkout_id):
     """Fetch the payment status for a Copy & Pay checkout."""
 
     normalized_checkout_id = normalize_copy_and_pay_checkout_id(checkout_id)
+    if not normalized_checkout_id:
+        return {"status": "ERROR", "message": "Missing HyperPay checkout identifier."}
     url = f"{_hyperpay_base_url()}/v1/checkouts/{normalized_checkout_id}/payment"
     params = {"entityId": settings.HYPERPAY_ENTITY_ID}
 
