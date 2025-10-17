@@ -401,6 +401,12 @@ def get_copy_and_pay_payment_status(checkout_id):
         response.raise_for_status()
         data = response.json()
 
+        print(
+            f"[HyperPay Copy & Pay] Checkout {checkout_id} status payload:"
+            f" {json.dumps(data, indent=2, sort_keys=True)}",
+            flush=True,
+        )
+
         result = data.get("result", {})
         result_code = (result.get("code") or "").strip()
 
