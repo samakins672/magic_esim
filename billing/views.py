@@ -144,13 +144,18 @@ class PaymentListCreateView(generics.ListCreateAPIView):
                 payment.gateway_transaction_id = normalized_checkout_id
                 payment.expiry_datetime = copy_pay_response.get('timeout')
 
+                integrity_token = copy_pay_response.get("integrity")
+
                 checkout_url = self.request.build_absolute_uri(
                     reverse('frontend:hyperpay_copy_pay')
                 )
-                payment.payment_url = (
-                    f"{checkout_url}?checkoutId={normalized_checkout_id}"
-                    f"&ref={payment.ref_id}"
-                )
+                query_params = {
+                    "checkoutId": normalized_checkout_id,
+                    "ref": payment.ref_id,
+                }
+                if integrity_token:
+                    query_params["integrity"] = integrity_token
+                payment.payment_url = f"{checkout_url}?{urlencode(query_params)}"
                 payment.save()
 
                 self.response_data = {

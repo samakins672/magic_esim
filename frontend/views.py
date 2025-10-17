@@ -146,6 +146,7 @@ def hyperpay_copy_pay(request):
         'allowed_brands': django_settings.HYPERPAY_ALLOWED_BRANDS,
         'return_url': return_url,
         'entity_id': django_settings.HYPERPAY_ENTITY_ID,
+        'widget_integrity': request.GET.get('integrity'),
     }
 
     return render(request, 'hyperpay_copy_pay.html', context)
@@ -178,7 +179,10 @@ def hyperpay_copy_pay_result(request):
         }
         return render(request, 'hyperpay_copy_pay_result.html', context, status=400)
 
-    status_response = get_copy_and_pay_payment_status(checkout_id)
+    status_response = get_copy_and_pay_payment_status(
+        checkout_id,
+        resource_path=resource_path,
+    )
     normalized_status = (status_response.get('status') or '').upper()
     transaction_id = normalize_copy_and_pay_checkout_id(
         status_response.get('transaction_id')

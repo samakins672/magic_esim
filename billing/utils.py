@@ -390,6 +390,7 @@ def create_copy_and_pay_checkout(
                 "checkout_id": checkout_id,
                 "payment_id": checkout_id,
                 "timeout": expiry,
+                "integrity": data.get("integrity"),
                 "raw": data,
             }
 
@@ -403,13 +404,28 @@ def create_copy_and_pay_checkout(
         return {"status": False, "message": f"Error creating HyperPay payment: {exc}"}
 
 
-def get_copy_and_pay_payment_status(checkout_id):
+def get_copy_and_pay_payment_status(checkout_id, resource_path=None):
     """Fetch the payment status for a Copy & Pay checkout."""
 
     normalized_checkout_id = normalize_copy_and_pay_checkout_id(checkout_id)
-    if not normalized_checkout_id:
-        return {"status": "ERROR", "message": "Missing HyperPay checkout identifier."}
-    url = f"{_hyperpay_base_url()}/v1/checkouts/{normalized_checkout_id}/payment"
+    normalized_resource_path = (resource_path or "").strip()
+
+    if normalized_resource_path:
+        normalized_resource_path = normalized_resource_path.lstrip("/")
+        url = f"{_hyperpay_base_url()}/{normalized_resource_path}"
+
+        if not normalized_checkout_id:
+            segments = [segment for segment in normalized_resource_path.split("/") if segment]
+            if "checkouts" in segments:
+                index = segments.index("checkouts")
+                if index + 1 < len(segments):
+                    normalized_checkout_id = normalize_copy_and_pay_checkout_id(
+                        segments[index + 1]
+                    )
+    else:
+        if not normalized_checkout_id:
+            return {"status": "ERROR", "message": "Missing HyperPay checkout identifier."}
+        url = f"{_hyperpay_base_url()}/v1/checkouts/{normalized_checkout_id}/payment"
     params = {"entityId": settings.HYPERPAY_ENTITY_ID}
 
     try:
@@ -423,9 +439,10 @@ def get_copy_and_pay_payment_status(checkout_id):
         response.raise_for_status()
         data = response.json()
 
+        log_key = normalized_resource_path or normalized_checkout_id or checkout_id
         logger.info(
             "[HyperPay Copy & Pay] Checkout %s status payload: %s",
-            normalized_checkout_id,
+            log_key,
             json.dumps(data, indent=2, sort_keys=True),
         )
 
