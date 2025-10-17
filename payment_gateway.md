@@ -77,6 +77,7 @@ Understanding these touchpoints is key before extending the system with an addit
 * **Status mapping** – CoinPayments returns descriptive strings (`Waiting for buyer funds...`, `Cancelled / Timed Out`, etc.) that are translated into platform statuses inside the views. Preserve these mappings when refactoring to avoid misreporting payment success.【F:billing/views.py†L131-L197】
 
 ### 5.2 HyperPay MPGS
+* **Regional endpoints** – HyperPay provisions MPGS merchants in regional clusters. For GCC/UAE tenants the sandbox and production APIs are served from `https://test.oppwa.com` (`https://oppwa.com` in production). EU-registered tenants instead use the `eu-test.oppwa.com` (`eu-prod.oppwa.com`) cluster, so update `MPGS_API_BASE_URL` and `MPGS_CHECKOUT_URL` accordingly when deploying.【F:.env.example†L31-L36】
 * **Checkout sessions** – Hosted checkout links are generated via the MPGS REST API and require Basic authentication using `merchant.<ID>` credentials. The helper returns a session ID along with a prebuilt redirect URL and calculated expiry timestamp.【F:billing/utils.py†L200-L289】
 * **Status polling** – Order status codes such as `CAPTURED`, `APPROVED`, or `PENDING` are normalized within the API views so they map cleanly onto the platform’s canonical states.【F:billing/views.py†L84-L197】
 * **Redirect flow** – Customers complete payment on the MPGS hosted page and the platform polls `/api/payments/status/<ref_id>/` to reconcile state after the redirect.【F:billing/views.py†L84-L197】
