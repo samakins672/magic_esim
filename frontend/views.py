@@ -1,5 +1,5 @@
 from django.contrib.auth import logout
-from django.conf import settings
+from django.conf import settings as django_settings
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -107,7 +107,7 @@ def profile(request):
     return render(request, 'profile.html', context)
 
 @login_required
-def settings(request):
+def account_settings(request):
     context = {
         'user': request.user
     }
@@ -124,10 +124,10 @@ def hyperpay_copy_pay(request):
     context = {
         'checkout_id': checkout_id,
         'reference': request.GET.get('ref'),
-        'widget_url': settings.HYPERPAY_PAYMENT_WIDGET_URL,
-        'allowed_brands': settings.HYPERPAY_ALLOWED_BRANDS,
-        'return_url': settings.HYPERPAY_RETURN_URL,
-        'entity_id': settings.HYPERPAY_ENTITY_ID,
+        'widget_url': django_settings.HYPERPAY_PAYMENT_WIDGET_URL,
+        'allowed_brands': django_settings.HYPERPAY_ALLOWED_BRANDS,
+        'return_url': django_settings.HYPERPAY_RETURN_URL,
+        'entity_id': django_settings.HYPERPAY_ENTITY_ID,
     }
 
     return render(request, 'hyperpay_copy_pay.html', context)
