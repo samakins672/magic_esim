@@ -196,100 +196,115 @@ class CoinPayments():
         return self.Request('post', **params)
 
 
-def create_tap_payment(amount, currency, customer_email, reference_id, description):
-    """
-    Creates a payment charge in TapPayments.
-    """
-    url = f"{settings.TAP_API_BASE_URL}/charges"
-    headers = {
-        "Authorization": f"Bearer {settings.TAP_SECRET_KEY}",
-        "Content-Type": "application/json"
-    }
+def _mpgs_base_url():
+    return settings.MPGS_API_BASE_URL.rstrip('/')
+
+
+def _mpgs_auth():
+    username = f"merchant.{settings.MPGS_MERCHANT_ID}"
+    password = settings.MPGS_API_PASSWORD
+    return (username, password)
+
+
+def create_mpgs_checkout(amount, currency, customer_email, reference_id, description):
+    """Create a hosted checkout session using HyperPay MPGS."""
+
+    url = (
+        f"{_mpgs_base_url()}/api/rest/version/{settings.MPGS_API_VERSION}/"
+        f"merchant/{settings.MPGS_MERCHANT_ID}/session"
+    )
+
     payload = {
-        "amount": float(amount),
-        "currency": currency,
+        "apiOperation": "CREATE_CHECKOUT_SESSION",
+        "order": {
+            "amount": f"{float(amount):.2f}",
+            "currency": currency,
+            "id": str(reference_id),
+            "description": description,
+        },
+        "transaction": {
+            "reference": str(reference_id),
+        },
         "customer": {
-            "email": customer_email
+            "email": customer_email,
         },
-        "source": {
-            "id": "src_all"  # This allows multiple payment methods like card, Apple Pay, etc.
+        "interaction": {
+            "operation": "PURCHASE",
+            "returnUrl": settings.MPGS_RETURN_URL,
         },
-        "redirect": {
-            "url": settings.TAP_REDIRECT_URL  # Redirect after payment
-        },
-        "reference": {
-            "transaction": reference_id
-        },
-        "description": description
     }
 
     try:
-        response = requests.post(url, json=payload, headers=headers)
+        response = requests.post(url, json=payload, auth=_mpgs_auth())
         response.raise_for_status()
         data = response.json()
 
-        if "id" in data:
+        session_id = data.get("session", {}).get("id")
+        success_indicator = data.get("successIndicator")
+
+        if session_id and success_indicator:
+            checkout_url = settings.MPGS_CHECKOUT_URL.rstrip('/')
+            checkout_url = (
+                f"{checkout_url}?sessionId={session_id}&successIndicator={success_indicator}"
+                f"&merchantId={settings.MPGS_MERCHANT_ID}"
+            )
+
+            expiry = datetime.now(timezone.utc) + timedelta(
+                minutes=settings.MPGS_SESSION_TIMEOUT_MINUTES
+            )
+
             return {
                 "status": True,
-                "payment_id": data["id"],
-                "checkout_url": data["transaction"]["url"],  # URL to redirect user to complete payment
-                "timeout": get_payment_expiry(data)  # URL to redirect user to complete payment
+                "payment_id": session_id,
+                "checkout_url": checkout_url,
+                "timeout": expiry,
             }
-        return {"status": False, "message": "Failed to create payment charge."}
-    except requests.RequestException as e:
-        return {"status": False, "message": f"Error creating payment: {str(e)}"}
+
+        message = data.get("error", {}).get("explanation") or data.get("result")
+        return {"status": False, "message": message or "Failed to create checkout session."}
+    except requests.RequestException as exc:
+        return {"status": False, "message": f"Error creating payment: {exc}"}
 
 
-def get_tap_payment_status(payment_id):
-    """
-    Fetches the status of a TapPayments charge.
-    """
-    url = f"{settings.TAP_API_BASE_URL}/charges/{payment_id}"
-    headers = {
-        "Authorization": f"Bearer {settings.TAP_SECRET_KEY}",
-        "Content-Type": "application/json"
-    }
+def get_mpgs_payment_status(order_id):
+    """Fetch the status of an MPGS order using the order identifier."""
+
+    url = (
+        f"{_mpgs_base_url()}/api/rest/version/{settings.MPGS_API_VERSION}/"
+        f"merchant/{settings.MPGS_MERCHANT_ID}/order/{order_id}"
+    )
 
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, auth=_mpgs_auth())
         response.raise_for_status()
         data = response.json()
-        print(data.get("status"))
+
+        order_data = data.get("order", {})
+        status = order_data.get("status") or data.get("result")
+        amount = order_data.get("amount")
+        currency = order_data.get("currency")
+
+        transaction = None
+        if isinstance(data.get("transactions"), list) and data["transactions"]:
+            transaction = data["transactions"][-1]
+        elif data.get("transaction"):
+            transaction = data["transaction"]
+
+        payment_method = None
+        if transaction:
+            payment_method = transaction.get("paymentMethod") or transaction.get(
+                "sourceOfFunds", {}
+            ).get("type")
+
+        customer_email = order_data.get("customerEmail") or data.get("customer", {}).get("email")
 
         return {
-            "status": data.get("status"),
-            "amount": data.get("amount"),
-            "currency": data.get("currency"),
-            "customer_email": data.get("customer", {}).get("email"),
-            "payment_method": data.get("source", {}).get("type"),
-            "created": data.get("created"),
+            "status": status,
+            "amount": amount,
+            "currency": currency,
+            "customer_email": customer_email,
+            "payment_method": payment_method,
+            "raw": data,
         }
-    except requests.RequestException as e:
-        return {"status": "ERROR", "message": str(e)}
-
-
-def get_payment_expiry(response_data):
-    try:
-        # Extract expiry details
-        expiry_period = response_data["transaction"]["expiry"]["period"]  # 30 (minutes)
-        expiry_type = response_data["transaction"]["expiry"]["type"]  # "MINUTE"
-        created_timestamp = int(response_data["transaction"]["created"]) // 1000  # Convert from ms to seconds
-
-        # Convert timestamp to datetime
-        created_datetime = datetime.fromtimestamp(created_timestamp, timezone.utc)
-
-        # Determine expiry time based on type
-        if expiry_type == "MINUTE":
-            expiry_datetime = created_datetime + timedelta(minutes=expiry_period)
-        elif expiry_type == "HOUR":
-            expiry_datetime = created_datetime + timedelta(hours=expiry_period)
-        elif expiry_type == "DAY":
-            expiry_datetime = created_datetime + timedelta(days=expiry_period)
-        else:
-            expiry_datetime = created_datetime  # Default to created time if unknown
-
-        return expiry_datetime
-
-    except KeyError as e:
-        print(f"Missing key in response: {e}")
-        return None
+    except requests.RequestException as exc:
+        return {"status": "ERROR", "message": str(exc)}
