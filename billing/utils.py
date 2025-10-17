@@ -243,6 +243,11 @@ def create_mpgs_checkout(amount, currency, customer_email, reference_id, descrip
         response.raise_for_status()
         data = response.json()
 
+        print(
+            "[HyperPay MPGS] Checkout response:",
+            json.dumps(data, indent=2, sort_keys=True),
+        )
+
         session_id = data.get("session", {}).get("id")
         success_indicator = data.get("successIndicator")
 
@@ -282,6 +287,11 @@ def get_mpgs_payment_status(order_id):
         response = requests.get(url, auth=_mpgs_auth())
         response.raise_for_status()
         data = response.json()
+
+        print(
+            "[HyperPay MPGS] Order status response:",
+            json.dumps(data, indent=2, sort_keys=True),
+        )
 
         order_data = data.get("order", {})
         status = order_data.get("status") or data.get("result")
@@ -378,6 +388,11 @@ def create_copy_and_pay_checkout(
         response.raise_for_status()
         data = response.json()
 
+        print(
+            "[HyperPay Copy & Pay] Checkout response:",
+            json.dumps(data, indent=2, sort_keys=True),
+        )
+
         checkout_id = data.get("id")
 
         if checkout_id:
@@ -438,6 +453,11 @@ def get_copy_and_pay_payment_status(checkout_id, resource_path=None):
         response = requests.get(url, params=params, headers=_hyperpay_headers())
         response.raise_for_status()
         data = response.json()
+
+        print(
+            "[HyperPay Copy & Pay] Status response:",
+            json.dumps(data, indent=2, sort_keys=True),
+        )
 
         log_key = normalized_resource_path or normalized_checkout_id or checkout_id
         logger.info(
