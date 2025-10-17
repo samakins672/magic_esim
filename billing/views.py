@@ -119,12 +119,22 @@ class PaymentListCreateView(generics.ListCreateAPIView):
             else:
                 esim_plan = plan_details['obj']['packageList'][0]['name']
 
+            base_return_url = settings.HYPERPAY_RETURN_URL or self.request.build_absolute_uri(
+                reverse('frontend:hyperpay_copy_pay_result')
+            )
+            if base_return_url:
+                separator = '&' if '?' in base_return_url else '?'
+                shopper_result_url = f"{base_return_url}{separator}ref={payment.ref_id}"
+            else:
+                shopper_result_url = None
+
             copy_pay_response = create_copy_and_pay_checkout(
                 amount=payment.price,
                 currency=payment.currency,
                 customer_email=self.request.user.email,
                 reference_id=str(payment.ref_id),
                 description=f"Payment for {esim_plan} eSIM plan",
+                shopper_result_url=shopper_result_url,
             )
 
             if copy_pay_response.get("status"):
