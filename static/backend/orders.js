@@ -32,8 +32,8 @@ function populateOrdersTable(orders) {
         </button>`;
 
         const confirmPaymentButton = `
-        <button class="btn btn-success btn-sm confirm-payment-btn" 
-          data-ref_id="${order.payment_gateway == 'TapPayments' ? order.gateway_transaction_id : order.ref_id}" data-payment_gateway="${order.payment_gateway}">
+        <button class="btn btn-success btn-sm confirm-payment-btn"
+          data-ref_id="${order.ref_id}" data-payment_gateway="${order.payment_gateway}">
           Confirm Payment
         </button>`;
 
@@ -112,8 +112,8 @@ $(document).on('click', '.confirm-payment-btn', function (e) {
     var submitButton = $(this);
     submitButton.html('<span class="spinner-border m-2 mx-auto" role="status" aria-hidden="true"></span>').attr('disabled', true);
 
-    if (payment_gateway === 'TapPayments') {
-        url = `/api/payments/status/check/?tap_id=${ref_id}`;
+    if (payment_gateway === 'HyperPayMPGS') {
+        url = `/api/payments/status/${ref_id}/`;
     } else {
         url = `/api/payments/status/${ref_id}/`;
     }

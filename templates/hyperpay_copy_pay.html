@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Card Payment</title>
+    <link rel="stylesheet" href="{% static 'new/css/style.css' %}">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f5f7fb;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .payment-container {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+            padding: 32px;
+            max-width: 520px;
+            width: 100%;
+        }
+
+        .payment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .payment-header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #1e1e2d;
+        }
+
+        .payment-meta {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+
+        .widget-wrapper {
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background-color: #f8fafc;
+        }
+
+        .paymentWidgets {
+            min-height: 220px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="payment-container">
+        <div class="payment-header">
+            <h1>Complete Your Payment</h1>
+            <span style="font-weight:600;color:#2563eb;">HyperPay</span>
+        </div>
+        {% if reference %}
+        <div class="payment-meta">Reference: {{ reference }}</div>
+        {% endif %}
+        <div class="widget-wrapper">
+            <form action="{{ return_url }}" class="paymentWidgets" data-brands="{{ allowed_brands|default:'VISA MASTER' }}">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        window.wpwlOptions = window.wpwlOptions || {};
+        window.wpwlOptions.style = "card";
+        {% if entity_id %}
+        window.wpwlOptions.onReady = function () {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'entityId';
+            input.value = '{{ entity_id }}';
+            var form = document.querySelector('.paymentWidgets');
+            if (form) {
+                form.appendChild(input);
+            }
+        };
+        {% endif %}
+    </script>
+    <script
+        src="{{ widget_url }}?checkoutId={{ checkout_id }}"
+        {% if widget_integrity %}integrity="{{ widget_integrity }}" crossorigin="anonymous"{% endif %}
+        async></script>
+</body>
+
+</html>

@@ -9,9 +9,11 @@ The payment flow is coordinated by a combination of Django backend services and 
 * **Data model** – Payments are persisted through `billing.models.Payment`, which stores the gateway identifier, checkout URL, on-chain address (for crypto providers), transaction identifiers, and status timestamps.【F:billing/models.py†L5-L43】
 * **Serializer** – `billing.serializers.PaymentSerializer` controls which fields can be written by clients and which are populated by gateway logic, preventing users from overriding gateway-managed attributes.【F:billing/serializers.py†L1-L15】
 * **API views** – `billing.views.PaymentListCreateView`, `PaymentStatusCheckView`, and `UpdatePendingPaymentsView` encapsulate gateway-specific branching for charge creation, callback polling, and scheduled status refreshes.【F:billing/views.py†L1-L197】
-* **Gateway helpers** – Concrete integrations (e.g., CoinPayments and TapPayments) live in `billing/utils.py` where reusable request helpers and status utilities reside.【F:billing/utils.py†L1-L183】【F:billing/utils.py†L200-L289】
+* **Gateway helpers** – Concrete integrations (e.g., CoinPayments and HyperPay MPGS) live in `billing/utils.py` where reusable request helpers and status utilities reside.【F:billing/utils.py†L1-L183】【F:billing/utils.py†L200-L289】
 * **Configuration** – Environment-driven credentials are declared in `magic_esim/settings.py` and loaded from deployment secrets (see section 3.1).【F:magic_esim/settings.py†L239-L274】
-* **Checkout UI** – The customer-facing payment selection is rendered in `templates/checkout.html`, with submission handled via `static/backend/checkout.js` which posts the gateway choice to the API and redirects the user to the provider checkout link.【F:templates/checkout.html†L209-L276】【F:static/backend/checkout.js†L1-L126】【F:static/backend/checkout.js†L142-L210】
+* **Checkout UI** – The customer-facing payment selection is rendered in `templates/checkout.html`, with submission handled via `static/backend/checkout.js` which posts the gateway choice to the API and redirects the user to the provider checkout link.【F:templates/checkout.html†L209-L280】【F:static/backend/checkout.js†L1-L126】【F:static/backend/checkout.js†L142-L210】
+* **Hosted card widget** – HyperPay Copy & Pay renders inside `templates/hyperpay_copy_pay.html`, which loads the payment widget script returned by the checkout API and submits the hosted form back to HyperPay.【F:templates/hyperpay_copy_pay.html†L1-L97】
+* **Return handling** – Customers are redirected to `/payments/hyperpay/result/`, which resolves the checkout ID with HyperPay, updates the matching `Payment` record, and displays the outcome to the shopper.【F:frontend/urls.py†L1-L20】【F:frontend/views.py†L101-L187】【F:templates/hyperpay_copy_pay_result.html†L1-L120】
 
 Understanding these touchpoints is key before extending the system with an additional provider.
 
@@ -19,11 +21,11 @@ Understanding these touchpoints is key before extending the system with an addit
 
 ### 2.1 Prepare configuration
 1. **Gather credentials** – Determine the secret keys, merchant IDs, webhook URLs, or other settings the provider requires.
-2. **Declare settings** – Add new entries under the payment configuration block in `magic_esim/settings.py`, following the existing CoinPayments and TapPayments variables. Always use `config('KEY')` so that secrets remain externalized.【F:magic_esim/settings.py†L239-L274】
+2. **Declare settings** – Add new entries under the payment configuration block in `magic_esim/settings.py`, following the existing CoinPayments and HyperPay MPGS variables. Always use `config('KEY')` so that secrets remain externalized.【F:magic_esim/settings.py†L239-L274】
 3. **Update deployment secrets** – Ensure the `.env` files used for local development, staging, and production expose the new keys. Document required values for DevOps.
 
 ### 2.2 Implement gateway helper
-1. **Create a helper module** – Extend `billing/utils.py` with a dedicated class or function encapsulating API calls (authentication, charge creation, status lookup, refunds, etc.). Mirror the structure used by `CoinPayments` and `create_tap_payment` to keep logic centralized and testable.【F:billing/utils.py†L1-L183】【F:billing/utils.py†L200-L289】
+1. **Create a helper module** – Extend `billing/utils.py` with a dedicated class or function encapsulating API calls (authentication, charge creation, status lookup, refunds, etc.). Mirror the structure used by `CoinPayments` and `create_mpgs_checkout` to keep logic centralized and testable.【F:billing/utils.py†L1-L183】【F:billing/utils.py†L200-L289】
 2. **Normalize responses** – Return dictionaries with consistent fields (`status`, `message`, `payment_id`, `checkout_url`, `timeout`, etc.) so the view logic can remain uniform.
 3. **Handle errors explicitly** – Raise `requests.RequestException` or return structured error states that the serializer can surface as validation errors.
 
@@ -58,11 +60,11 @@ Understanding these touchpoints is key before extending the system with an addit
 ## 4. Managing Gateways in Production
 
 ### 4.1 Monitoring payment health
-* **Manual status checks** – Use `PaymentStatusCheckView` by visiting `/api/payments/status/<ref_id>/` (CoinPayments) or `/api/payments/status/check/?tap_id=<id>` (TapPayments) to force a refresh when investigating support tickets.【F:billing/views.py†L124-L197】
+* **Manual status checks** – Use `PaymentStatusCheckView` by visiting `/api/payments/status/<ref_id>/` for both CoinPayments and HyperPay MPGS transactions to force a refresh when investigating support tickets.【F:billing/views.py†L124-L197】
 * **Automated sweeps** – Schedule regular calls to `/api/payments/update-pending/` to reconcile pending payments created within the last 48 hours. This view normalizes statuses across gateways and timestamps successful payments.【F:billing/views.py†L198-L266】
 
 ### 4.2 Timeout and expiry handling
-* Persisted `expiry_datetime` values drive customer messaging about when payment links expire. Always record the timeout provided by the gateway (see `create_tap_payment` and the CoinPayments response mapping).【F:billing/views.py†L45-L123】【F:billing/utils.py†L200-L251】
+* Persisted `expiry_datetime` values drive customer messaging about when payment links expire. Always record the timeout provided by the gateway (see `create_mpgs_checkout` and the CoinPayments response mapping).【F:billing/views.py†L45-L123】【F:billing/utils.py†L200-L289】
 * When adding gateways without a natural expiry, either set `expiry_datetime=None` or calculate a sensible deadline to keep the UI consistent.
 
 ### 4.3 Refunds and cancellations
@@ -76,10 +78,16 @@ Understanding these touchpoints is key before extending the system with an addit
 * **Credentials** – Requires `COINPAYMENTS_PUBLIC_KEY`, `COINPAYMENTS_PRIVATE_KEY`, and `COINPAYMENTS_IPN_URL`. Ensure the IPN route is exposed publicly so CoinPayments can push status updates.【F:magic_esim/settings.py†L239-L256】
 * **Status mapping** – CoinPayments returns descriptive strings (`Waiting for buyer funds...`, `Cancelled / Timed Out`, etc.) that are translated into platform statuses inside the views. Preserve these mappings when refactoring to avoid misreporting payment success.【F:billing/views.py†L131-L197】
 
-### 5.2 TapPayments
-* **REST integration** – Charges are created via REST calls to `TAP_API_BASE_URL` with bearer auth. Responses supply a hosted `transaction.url` and an expiry window used to populate `expiry_datetime`.【F:billing/utils.py†L200-L251】
-* **Status polling** – Tap statuses such as `CAPTURED`, `INITIATED`, and `PENDING` are mapped to the three canonical states. Adjust mapping logic if Tap introduces new status codes.【F:billing/views.py†L84-L168】
-* **Redirect flow** – Checkout completion relies on the customer returning to `TAP_REDIRECT_URL`, which should point to `/api/payments/status/check/` so the status endpoint can finalize the payment before redirecting back to `/orders/`.【F:billing/utils.py†L213-L237】【F:billing/views.py†L84-L168】
+### 5.2 HyperPay MPGS
+* **Regional endpoints** – HyperPay provisions MPGS merchants in regional clusters. For GCC/UAE tenants the sandbox and production APIs are served from `https://test.oppwa.com` (`https://oppwa.com` in production). EU-registered tenants instead use the `eu-test.oppwa.com` (`eu-prod.oppwa.com`) cluster, so update `MPGS_API_BASE_URL` and `MPGS_CHECKOUT_URL` accordingly when deploying.【F:.env.example†L31-L36】
+* **Checkout sessions** – Hosted checkout links are generated via the MPGS REST API and require Basic authentication using `merchant.<ID>` credentials. The helper returns a session ID along with a prebuilt redirect URL and calculated expiry timestamp.【F:billing/utils.py†L200-L289】
+* **Status polling** – Order status codes such as `CAPTURED`, `APPROVED`, or `PENDING` are normalized within the API views so they map cleanly onto the platform’s canonical states.【F:billing/views.py†L84-L259】
+* **Redirect flow** – Customers complete payment on the MPGS hosted page and the platform polls `/api/payments/status/<ref_id>/` to reconcile state after the redirect.【F:billing/views.py†L84-L259】
+
+### 5.3 HyperPay Copy & Pay
+* **Checkout session** – The backend calls HyperPay’s `/v1/checkouts` endpoint with the configured entity ID and returns a hosted widget URL plus a local redirection route that renders the embedded payment form.【F:billing/utils.py†L291-L339】【F:billing/views.py†L62-L129】
+* **Widget page** – The page at `/payments/hyperpay/copy-pay/` hydrates the HyperPay `paymentWidgets.js` script with the checkout ID, allowed brands, and optional entity ID hidden field.【F:frontend/urls.py†L1-L20】【F:frontend/views.py†L1-L116】【F:templates/hyperpay_copy_pay.html†L1-L97】
+* **Status reconciliation** – Polling `/api/payments/status/<ref_id>/` triggers a Copy & Pay lookup that maps result codes into the platform’s canonical `PENDING`, `COMPLETED`, or `FAILED` states, persisting the provider transaction ID when available.【F:billing/utils.py†L341-L375】【F:billing/views.py†L130-L259】
 
 ## 6. Developer Checklist
 
