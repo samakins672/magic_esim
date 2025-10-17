@@ -6,12 +6,19 @@ from rest_framework.response import Response
 from .models import Payment
 from esim.utils import fetch_esim_plan_details
 from .serializers import PaymentSerializer
-from billing.utils import CoinPayments, create_mpgs_checkout, get_mpgs_payment_status
+from billing.utils import (
+    CoinPayments,
+    create_copy_and_pay_checkout,
+    create_mpgs_checkout,
+    get_copy_and_pay_payment_status,
+    get_mpgs_payment_status,
+)
 from django.conf import settings
 from rest_framework import serializers
 from datetime import timedelta
 from django.utils.timezone import now
 import datetime
+from django.urls import reverse
 
 
 class PaymentListCreateView(generics.ListCreateAPIView):
@@ -108,6 +115,45 @@ class PaymentListCreateView(generics.ListCreateAPIView):
                 }
             else:
                 raise serializers.ValidationError({"status": False, "message": mpgs_response.get("message")})
+        elif payment.payment_gateway == 'HyperPayCopyAndPay':
+            plan_details = fetch_esim_plan_details(payment.package_code, seller=payment.seller)
+            if payment.seller == 'esimgo':
+                esim_plan = plan_details['description']
+            else:
+                esim_plan = plan_details['obj']['packageList'][0]['name']
+
+            copy_pay_response = create_copy_and_pay_checkout(
+                amount=payment.price,
+                currency=payment.currency,
+                customer_email=self.request.user.email,
+                reference_id=str(payment.ref_id),
+                description=f"Payment for {esim_plan} eSIM plan",
+            )
+
+            if copy_pay_response.get("status"):
+                payment.status = 'PENDING'
+                payment.esim_plan = esim_plan
+                payment.gateway_transaction_id = copy_pay_response["payment_id"]
+                payment.expiry_datetime = copy_pay_response.get('timeout')
+
+                checkout_url = self.request.build_absolute_uri(
+                    reverse('frontend:hyperpay_copy_pay')
+                )
+                payment.payment_url = (
+                    f"{checkout_url}?checkoutId={copy_pay_response['checkout_id']}"
+                    f"&ref={payment.ref_id}"
+                )
+                payment.save()
+
+                self.response_data = {
+                    "status": True,
+                    "message": "Payment created successfully.",
+                    "data": serializer.data,
+                }
+            else:
+                raise serializers.ValidationError(
+                    {"status": False, "message": copy_pay_response.get("message")}
+                )
         else:
             # Default response if no payment gateway is used
             self.response_data = {
@@ -159,6 +205,39 @@ class PaymentStatusCheckView(APIView):
                     "currency": payment.currency,
                     "payment_gateway": payment.payment_gateway,
                     "transaction_id": payment.gateway_transaction_id,
+                },
+            })
+
+        if payment.payment_gateway == 'HyperPayCopyAndPay':
+            status_response = get_copy_and_pay_payment_status(payment.gateway_transaction_id)
+            payment_status = (status_response.get("status") or "").upper()
+
+            if payment_status == "COMPLETED":
+                payment.status = "COMPLETED"
+                payment.date_paid = now()
+                if status_response.get("transaction_id"):
+                    payment.gateway_transaction_id = status_response["transaction_id"]
+            elif payment_status == "PENDING":
+                payment.status = "PENDING"
+            else:
+                payment.status = "FAILED"
+
+            payment.save()
+
+            return Response({
+                "status": True,
+                "message": "Payment status checked successfully.",
+                "data": {
+                    "ref_id": payment.ref_id,
+                    "status": payment.status,
+                    "amount": payment.price,
+                    "date_created": payment.date_created,
+                    "expiry_datetime": payment.expiry_datetime,
+                    "currency": payment.currency,
+                    "payment_gateway": payment.payment_gateway,
+                    "transaction_id": payment.gateway_transaction_id,
+                    "result_code": status_response.get("result_code"),
+                    "result_description": status_response.get("result_description"),
                 },
             })
 
@@ -241,10 +320,24 @@ class UpdatePendingPaymentsView(APIView):
                 else:
                     payment.status = "FAILED"
 
+            elif payment.payment_gateway == "HyperPayCopyAndPay":
+                status_response = get_copy_and_pay_payment_status(payment.gateway_transaction_id)
+                payment_status = (status_response.get("status") or "").upper()
+
+                if payment_status == "COMPLETED":
+                    payment.status = "COMPLETED"
+                    payment.date_paid = now()
+                    if status_response.get("transaction_id"):
+                        payment.gateway_transaction_id = status_response["transaction_id"]
+                elif payment_status == "PENDING":
+                    payment.status = "PENDING"
+                else:
+                    payment.status = "FAILED"
+
             elif payment.payment_gateway == "CoinPayments":
                 # Check status from CoinPayments
                 cp = CoinPayments(
-                    publicKey=settings.COINPAYMENTS_PUBLIC_KEY, 
+                    publicKey=settings.COINPAYMENTS_PUBLIC_KEY,
                     privateKey=settings.COINPAYMENTS_PRIVATE_KEY,
                     ipn_url=settings.COINPAYMENTS_IPN_URL
                 )

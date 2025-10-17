@@ -1,4 +1,6 @@
 from django.contrib.auth import logout
+from django.conf import settings
+from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 import json
@@ -110,3 +112,22 @@ def settings(request):
         'user': request.user
     }
     return render(request, 'settings.html', context)
+
+
+@login_required
+def hyperpay_copy_pay(request):
+    checkout_id = request.GET.get('checkoutId')
+
+    if not checkout_id:
+        return HttpResponseBadRequest("Missing checkoutId")
+
+    context = {
+        'checkout_id': checkout_id,
+        'reference': request.GET.get('ref'),
+        'widget_url': settings.HYPERPAY_PAYMENT_WIDGET_URL,
+        'allowed_brands': settings.HYPERPAY_ALLOWED_BRANDS,
+        'return_url': settings.HYPERPAY_RETURN_URL,
+        'entity_id': settings.HYPERPAY_ENTITY_ID,
+    }
+
+    return render(request, 'hyperpay_copy_pay.html', context)

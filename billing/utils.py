@@ -308,3 +308,120 @@ def get_mpgs_payment_status(order_id):
         }
     except requests.RequestException as exc:
         return {"status": "ERROR", "message": str(exc)}
+
+
+def _hyperpay_base_url():
+    return settings.HYPERPAY_API_BASE_URL.rstrip('/')
+
+
+def _hyperpay_headers():
+    return {
+        "Authorization": f"Bearer {settings.HYPERPAY_ACCESS_TOKEN}",
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+
+
+def create_copy_and_pay_checkout(
+    amount,
+    currency,
+    customer_email,
+    reference_id,
+    description,
+    shopper_result_url=None,
+):
+    """Create a HyperPay Copy & Pay checkout session."""
+
+    if not settings.HYPERPAY_ENTITY_ID or not settings.HYPERPAY_ACCESS_TOKEN:
+        return {
+            "status": False,
+            "message": "HyperPay Copy & Pay is not configured.",
+        }
+
+    url = f"{_hyperpay_base_url()}/v1/checkouts"
+
+    payload = {
+        "entityId": settings.HYPERPAY_ENTITY_ID,
+        "amount": f"{float(amount):.2f}",
+        "currency": currency,
+        "paymentType": "DB",
+        "merchantTransactionId": str(reference_id),
+        "customer.email": customer_email,
+    }
+
+    if description:
+        payload["descriptor"] = description[:127]
+
+    if shopper_result_url or settings.HYPERPAY_RETURN_URL:
+        payload["shopperResultUrl"] = shopper_result_url or settings.HYPERPAY_RETURN_URL
+
+    try:
+        response = requests.post(url, data=payload, headers=_hyperpay_headers())
+        response.raise_for_status()
+        data = response.json()
+
+        checkout_id = data.get("id")
+
+        if checkout_id:
+            expiry = datetime.now(timezone.utc) + timedelta(
+                minutes=settings.HYPERPAY_CHECKOUT_TIMEOUT_MINUTES
+            )
+
+            return {
+                "status": True,
+                "checkout_id": checkout_id,
+                "payment_id": checkout_id,
+                "timeout": expiry,
+                "raw": data,
+            }
+
+        result_message = data.get("result", {}).get("description")
+        return {
+            "status": False,
+            "message": result_message or "Failed to create HyperPay checkout.",
+            "raw": data,
+        }
+    except requests.RequestException as exc:
+        return {"status": False, "message": f"Error creating HyperPay payment: {exc}"}
+
+
+def get_copy_and_pay_payment_status(checkout_id):
+    """Fetch the payment status for a Copy & Pay checkout."""
+
+    url = f"{_hyperpay_base_url()}/v1/checkouts/{checkout_id}/payment"
+    params = {"entityId": settings.HYPERPAY_ENTITY_ID}
+
+    try:
+        if not settings.HYPERPAY_ENTITY_ID or not settings.HYPERPAY_ACCESS_TOKEN:
+            return {
+                "status": "ERROR",
+                "message": "HyperPay Copy & Pay is not configured.",
+            }
+
+        response = requests.get(url, params=params, headers=_hyperpay_headers())
+        response.raise_for_status()
+        data = response.json()
+
+        result = data.get("result", {})
+        result_code = (result.get("code") or "").strip()
+
+        normalized_status = "PENDING"
+        if result_code.startswith(("000.000", "000.100")):
+            normalized_status = "COMPLETED"
+        elif result_code.startswith("000.200"):
+            normalized_status = "PENDING"
+        elif result_code:
+            normalized_status = "FAILED"
+
+        transaction_id = data.get("id") or data.get("ndc")
+
+        return {
+            "status": normalized_status,
+            "amount": data.get("amount"),
+            "currency": data.get("currency"),
+            "result_code": result_code,
+            "result_description": result.get("description"),
+            "transaction_id": transaction_id,
+            "raw": data,
+        }
+    except requests.RequestException as exc:
+        return {"status": "ERROR", "message": str(exc)}

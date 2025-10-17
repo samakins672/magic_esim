@@ -11,7 +11,8 @@ The payment flow is coordinated by a combination of Django backend services and 
 * **API views** – `billing.views.PaymentListCreateView`, `PaymentStatusCheckView`, and `UpdatePendingPaymentsView` encapsulate gateway-specific branching for charge creation, callback polling, and scheduled status refreshes.【F:billing/views.py†L1-L197】
 * **Gateway helpers** – Concrete integrations (e.g., CoinPayments and HyperPay MPGS) live in `billing/utils.py` where reusable request helpers and status utilities reside.【F:billing/utils.py†L1-L183】【F:billing/utils.py†L200-L289】
 * **Configuration** – Environment-driven credentials are declared in `magic_esim/settings.py` and loaded from deployment secrets (see section 3.1).【F:magic_esim/settings.py†L239-L274】
-* **Checkout UI** – The customer-facing payment selection is rendered in `templates/checkout.html`, with submission handled via `static/backend/checkout.js` which posts the gateway choice to the API and redirects the user to the provider checkout link.【F:templates/checkout.html†L209-L276】【F:static/backend/checkout.js†L1-L126】【F:static/backend/checkout.js†L142-L210】
+* **Checkout UI** – The customer-facing payment selection is rendered in `templates/checkout.html`, with submission handled via `static/backend/checkout.js` which posts the gateway choice to the API and redirects the user to the provider checkout link.【F:templates/checkout.html†L209-L280】【F:static/backend/checkout.js†L1-L126】【F:static/backend/checkout.js†L142-L210】
+* **Hosted card widget** – HyperPay Copy & Pay renders inside `templates/hyperpay_copy_pay.html`, which loads the payment widget script returned by the checkout API and submits the hosted form back to HyperPay.【F:templates/hyperpay_copy_pay.html†L1-L97】
 
 Understanding these touchpoints is key before extending the system with an additional provider.
 
@@ -79,8 +80,13 @@ Understanding these touchpoints is key before extending the system with an addit
 ### 5.2 HyperPay MPGS
 * **Regional endpoints** – HyperPay provisions MPGS merchants in regional clusters. For GCC/UAE tenants the sandbox and production APIs are served from `https://test.oppwa.com` (`https://oppwa.com` in production). EU-registered tenants instead use the `eu-test.oppwa.com` (`eu-prod.oppwa.com`) cluster, so update `MPGS_API_BASE_URL` and `MPGS_CHECKOUT_URL` accordingly when deploying.【F:.env.example†L31-L36】
 * **Checkout sessions** – Hosted checkout links are generated via the MPGS REST API and require Basic authentication using `merchant.<ID>` credentials. The helper returns a session ID along with a prebuilt redirect URL and calculated expiry timestamp.【F:billing/utils.py†L200-L289】
-* **Status polling** – Order status codes such as `CAPTURED`, `APPROVED`, or `PENDING` are normalized within the API views so they map cleanly onto the platform’s canonical states.【F:billing/views.py†L84-L197】
-* **Redirect flow** – Customers complete payment on the MPGS hosted page and the platform polls `/api/payments/status/<ref_id>/` to reconcile state after the redirect.【F:billing/views.py†L84-L197】
+* **Status polling** – Order status codes such as `CAPTURED`, `APPROVED`, or `PENDING` are normalized within the API views so they map cleanly onto the platform’s canonical states.【F:billing/views.py†L84-L259】
+* **Redirect flow** – Customers complete payment on the MPGS hosted page and the platform polls `/api/payments/status/<ref_id>/` to reconcile state after the redirect.【F:billing/views.py†L84-L259】
+
+### 5.3 HyperPay Copy & Pay
+* **Checkout session** – The backend calls HyperPay’s `/v1/checkouts` endpoint with the configured entity ID and returns a hosted widget URL plus a local redirection route that renders the embedded payment form.【F:billing/utils.py†L291-L339】【F:billing/views.py†L62-L129】
+* **Widget page** – The page at `/payments/hyperpay/copy-pay/` hydrates the HyperPay `paymentWidgets.js` script with the checkout ID, allowed brands, and optional entity ID hidden field.【F:frontend/urls.py†L1-L20】【F:frontend/views.py†L1-L116】【F:templates/hyperpay_copy_pay.html†L1-L97】
+* **Status reconciliation** – Polling `/api/payments/status/<ref_id>/` triggers a Copy & Pay lookup that maps result codes into the platform’s canonical `PENDING`, `COMPLETED`, or `FAILED` states, persisting the provider transaction ID when available.【F:billing/utils.py†L341-L375】【F:billing/views.py†L130-L259】
 
 ## 6. Developer Checklist
 
