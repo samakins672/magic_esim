@@ -375,6 +375,7 @@ def create_copy_and_pay_checkout(
         "paymentType": "DB",
         "merchantTransactionId": str(reference_id),
         "customer.email": customer_email,
+        "integrity": "true",
     }
 
     if description:
