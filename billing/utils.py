@@ -356,7 +356,6 @@ def create_copy_and_pay_checkout(
     customer_email,
     reference_id,
     description,
-    shopper_result_url=None,
 ):
     """Create a HyperPay Copy & Pay checkout session."""
 
@@ -380,9 +379,6 @@ def create_copy_and_pay_checkout(
 
     if description:
         payload["descriptor"] = description[:127]
-
-    if shopper_result_url or settings.HYPERPAY_RETURN_URL:
-        payload["shopperResultUrl"] = shopper_result_url or settings.HYPERPAY_RETURN_URL
 
     try:
         response = requests.post(url, data=payload, headers=_hyperpay_headers())
