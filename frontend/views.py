@@ -9,7 +9,10 @@ import json
 import os
 
 from billing.models import Payment
-from billing.utils import get_copy_and_pay_payment_status
+from billing.utils import (
+    get_copy_and_pay_payment_status,
+    normalize_copy_and_pay_checkout_id,
+)
 
 
 # Load all countries
@@ -121,7 +124,7 @@ def account_settings(request):
 
 @login_required
 def hyperpay_copy_pay(request):
-    checkout_id = request.GET.get('checkoutId')
+    checkout_id = normalize_copy_and_pay_checkout_id(request.GET.get('checkoutId'))
 
     if not checkout_id:
         return HttpResponseBadRequest("Missing checkoutId")
@@ -149,7 +152,9 @@ def hyperpay_copy_pay(request):
 
 
 def hyperpay_copy_pay_result(request):
-    checkout_id = request.GET.get('id') or request.GET.get('checkoutId')
+    checkout_id = normalize_copy_and_pay_checkout_id(
+        request.GET.get('id') or request.GET.get('checkoutId')
+    )
     resource_path = request.GET.get('resourcePath')
 
     if not checkout_id and resource_path:
@@ -157,9 +162,9 @@ def hyperpay_copy_pay_result(request):
         if 'checkouts' in segments:
             index = segments.index('checkouts')
             if index + 1 < len(segments):
-                checkout_id = segments[index + 1]
+                checkout_id = normalize_copy_and_pay_checkout_id(segments[index + 1])
         elif segments:
-            checkout_id = segments[-1]
+            checkout_id = normalize_copy_and_pay_checkout_id(segments[-1])
 
     if not checkout_id:
         context = {
@@ -175,7 +180,9 @@ def hyperpay_copy_pay_result(request):
 
     status_response = get_copy_and_pay_payment_status(checkout_id)
     normalized_status = (status_response.get('status') or '').upper()
-    transaction_id = status_response.get('transaction_id')
+    transaction_id = normalize_copy_and_pay_checkout_id(
+        status_response.get('transaction_id')
+    )
     ref_id = request.GET.get('ref')
 
     payment_qs = Payment.objects.filter(payment_gateway='HyperPayCopyAndPay')

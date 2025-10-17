@@ -325,6 +325,21 @@ def _hyperpay_headers():
     }
 
 
+def normalize_copy_and_pay_checkout_id(checkout_id):
+    """Strip query strings or fragments from a HyperPay checkout identifier."""
+
+    if not checkout_id:
+        return checkout_id
+
+    cleaned = checkout_id.strip()
+
+    for delimiter in ("?", "#"):
+        if delimiter in cleaned:
+            cleaned = cleaned.split(delimiter, 1)[0]
+
+    return cleaned
+
+
 def create_copy_and_pay_checkout(
     amount,
     currency,
@@ -391,7 +406,8 @@ def create_copy_and_pay_checkout(
 def get_copy_and_pay_payment_status(checkout_id):
     """Fetch the payment status for a Copy & Pay checkout."""
 
-    url = f"{_hyperpay_base_url()}/v1/checkouts/{checkout_id}/payment"
+    normalized_checkout_id = normalize_copy_and_pay_checkout_id(checkout_id)
+    url = f"{_hyperpay_base_url()}/v1/checkouts/{normalized_checkout_id}/payment"
     params = {"entityId": settings.HYPERPAY_ENTITY_ID}
 
     try:
@@ -407,7 +423,7 @@ def get_copy_and_pay_payment_status(checkout_id):
 
         logger.info(
             "[HyperPay Copy & Pay] Checkout %s status payload: %s",
-            checkout_id,
+            normalized_checkout_id,
             json.dumps(data, indent=2, sort_keys=True),
         )
 
