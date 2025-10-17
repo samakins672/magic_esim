@@ -52,8 +52,6 @@ class PaymentListCreateView(generics.ListCreateAPIView):
                 'custom': str(payment.ref_id),  # Reference for later tracking
                 'ipn_url': settings.COINPAYMENTS_IPN_URL,
             })
-            print(response)
-            
             plan_details = fetch_esim_plan_details(payment.package_code, seller=payment.seller)
             if payment.seller == 'esimgo':
                 # Fetch eSIM plan details
@@ -61,7 +59,6 @@ class PaymentListCreateView(generics.ListCreateAPIView):
             else:
                 esim_plan = plan_details['obj']['packageList'][0]['name']
 
-            print(esim_plan)
             if response.get('error') == 'ok':
                 # Save transaction details if creation is successful
                 payment.status = 'PENDING'
@@ -89,7 +86,6 @@ class PaymentListCreateView(generics.ListCreateAPIView):
             else:
                 esim_plan = plan_details['obj']['packageList'][0]['name']
 
-            print(payment.price)
             mpgs_response = create_mpgs_checkout(
                 amount=payment.price,
                 currency=payment.currency,
@@ -98,7 +94,6 @@ class PaymentListCreateView(generics.ListCreateAPIView):
                 description=f"Payment for {esim_plan} eSIM plan"
             )
 
-            print(esim_plan)
             if mpgs_response.get("status"):
                 # Save transaction details if creation is successful
                 payment.status = 'PENDING'
