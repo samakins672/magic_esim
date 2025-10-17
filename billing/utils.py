@@ -3,9 +3,13 @@ import hmac
 import hashlib
 import json
 import collections
+import logging
 import requests
 from django.conf import settings
 from datetime import datetime, timedelta, timezone
+
+
+logger = logging.getLogger(__name__)
 
 
 class CoinPayments():
@@ -401,10 +405,10 @@ def get_copy_and_pay_payment_status(checkout_id):
         response.raise_for_status()
         data = response.json()
 
-        print(
-            f"[HyperPay Copy & Pay] Checkout {checkout_id} status payload:"
-            f" {json.dumps(data, indent=2, sort_keys=True)}",
-            flush=True,
+        logger.info(
+            "[HyperPay Copy & Pay] Checkout %s status payload: %s",
+            checkout_id,
+            json.dumps(data, indent=2, sort_keys=True),
         )
 
         result = data.get("result", {})
