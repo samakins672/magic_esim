@@ -224,7 +224,6 @@ def create_mpgs_checkout(amount, currency, customer_email, reference_id, descrip
             "amount": f"{float(amount):.2f}",
             "currency": currency,
             "id": str(reference_id),
-            "description": description,
         },
         "transaction": {
             "reference": str(reference_id),
