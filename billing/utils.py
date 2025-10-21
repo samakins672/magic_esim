@@ -3,9 +3,13 @@ import hmac
 import hashlib
 import json
 import collections
+import logging
 import requests
 from django.conf import settings
 from datetime import datetime, timedelta, timezone
+
+
+logger = logging.getLogger(__name__)
 
 
 class CoinPayments():
@@ -196,100 +200,326 @@ class CoinPayments():
         return self.Request('post', **params)
 
 
-def create_tap_payment(amount, currency, customer_email, reference_id, description):
-    """
-    Creates a payment charge in TapPayments.
-    """
-    url = f"{settings.TAP_API_BASE_URL}/charges"
-    headers = {
-        "Authorization": f"Bearer {settings.TAP_SECRET_KEY}",
-        "Content-Type": "application/json"
-    }
+def _mpgs_base_url():
+    return settings.MPGS_API_BASE_URL.rstrip('/')
+
+
+def _mpgs_auth():
+    username = f"merchant.{settings.MPGS_MERCHANT_ID}"
+    password = settings.MPGS_API_PASSWORD
+    return (username, password)
+
+
+def create_mpgs_checkout(amount, currency, customer_email, reference_id, description):
+    """Create a hosted checkout session using HyperPay MPGS."""
+
+    url = (
+        f"{_mpgs_base_url()}/api/rest/version/{settings.MPGS_API_VERSION}/"
+        f"merchant/{settings.MPGS_MERCHANT_ID}/session"
+    )
+
     payload = {
-        "amount": float(amount),
-        "currency": currency,
+        "apiOperation": "CREATE_CHECKOUT_SESSION",
+        "order": {
+            "amount": f"{float(amount):.2f}",
+            "currency": currency,
+            "id": str(reference_id),
+        },
+        "transaction": {
+            "reference": str(reference_id),
+        },
         "customer": {
-            "email": customer_email
+            "email": customer_email,
         },
-        "source": {
-            "id": "src_all"  # This allows multiple payment methods like card, Apple Pay, etc.
+        "interaction": {
+            "operation": "PURCHASE",
+            "returnUrl": settings.MPGS_RETURN_URL,
         },
-        "redirect": {
-            "url": settings.TAP_REDIRECT_URL  # Redirect after payment
-        },
-        "reference": {
-            "transaction": reference_id
-        },
-        "description": description
     }
+
+    response = None
+    data = None
 
     try:
-        response = requests.post(url, json=payload, headers=headers)
-        response.raise_for_status()
-        data = response.json()
+        response = requests.post(url, json=payload, auth=_mpgs_auth())
 
-        if "id" in data:
+        try:
+            data = response.json()
+        except ValueError:
+            data = None
+
+        pretty_payload = (
+            json.dumps(data, indent=2, sort_keys=True) if data is not None else response.text
+        )
+
+        print("[HyperPay MPGS] Checkout response:", pretty_payload)
+
+        response.raise_for_status()
+
+        if data is None:
+            data = {}
+
+        session_id = data.get("session", {}).get("id")
+        success_indicator = data.get("successIndicator")
+
+        if session_id and success_indicator:
+            checkout_url = settings.MPGS_CHECKOUT_URL.rstrip('/')
+            checkout_url = (
+                f"{checkout_url}?sessionId={session_id}&successIndicator={success_indicator}"
+                f"&merchantId={settings.MPGS_MERCHANT_ID}"
+            )
+
+            expiry = datetime.now(timezone.utc) + timedelta(
+                minutes=settings.MPGS_SESSION_TIMEOUT_MINUTES
+            )
+
             return {
                 "status": True,
-                "payment_id": data["id"],
-                "checkout_url": data["transaction"]["url"],  # URL to redirect user to complete payment
-                "timeout": get_payment_expiry(data)  # URL to redirect user to complete payment
+                "payment_id": session_id,
+                "checkout_url": checkout_url,
+                "timeout": expiry,
             }
-        return {"status": False, "message": "Failed to create payment charge."}
-    except requests.RequestException as e:
-        return {"status": False, "message": f"Error creating payment: {str(e)}"}
+
+        message = data.get("error", {}).get("explanation") or data.get("result")
+        return {"status": False, "message": message or "Failed to create checkout session."}
+    except requests.RequestException as exc:
+        if response is None:
+            print("[HyperPay MPGS] Checkout request failed:", str(exc))
+
+        return {"status": False, "message": f"Error creating payment: {exc}"}
 
 
-def get_tap_payment_status(payment_id):
-    """
-    Fetches the status of a TapPayments charge.
-    """
-    url = f"{settings.TAP_API_BASE_URL}/charges/{payment_id}"
-    headers = {
-        "Authorization": f"Bearer {settings.TAP_SECRET_KEY}",
-        "Content-Type": "application/json"
-    }
+def get_mpgs_payment_status(order_id):
+    """Fetch the status of an MPGS order using the order identifier."""
+
+    url = (
+        f"{_mpgs_base_url()}/api/rest/version/{settings.MPGS_API_VERSION}/"
+        f"merchant/{settings.MPGS_MERCHANT_ID}/order/{order_id}"
+    )
+
+    response = None
+    data = None
 
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, auth=_mpgs_auth())
+
+        try:
+            data = response.json()
+        except ValueError:
+            data = None
+
+        pretty_payload = (
+            json.dumps(data, indent=2, sort_keys=True) if data is not None else response.text
+        )
+
+        print("[HyperPay MPGS] Order status response:", pretty_payload)
+
         response.raise_for_status()
-        data = response.json()
-        print(data.get("status"))
+
+        if data is None:
+            data = {}
+
+        order_data = data.get("order", {})
+        status = order_data.get("status") or data.get("result")
+        amount = order_data.get("amount")
+        currency = order_data.get("currency")
+
+        transaction = None
+        if isinstance(data.get("transactions"), list) and data["transactions"]:
+            transaction = data["transactions"][-1]
+        elif data.get("transaction"):
+            transaction = data["transaction"]
+
+        payment_method = None
+        if transaction:
+            payment_method = transaction.get("paymentMethod") or transaction.get(
+                "sourceOfFunds", {}
+            ).get("type")
+
+        customer_email = order_data.get("customerEmail") or data.get("customer", {}).get("email")
 
         return {
-            "status": data.get("status"),
+            "status": status,
+            "amount": amount,
+            "currency": currency,
+            "customer_email": customer_email,
+            "payment_method": payment_method,
+            "raw": data,
+        }
+    except requests.RequestException as exc:
+        if response is None:
+            print("[HyperPay MPGS] Order status request failed:", str(exc))
+
+        return {"status": "ERROR", "message": str(exc)}
+
+
+def _hyperpay_base_url():
+    return settings.HYPERPAY_API_BASE_URL.rstrip('/')
+
+
+def _hyperpay_headers():
+    return {
+        "Authorization": f"Bearer {settings.HYPERPAY_ACCESS_TOKEN}",
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+
+
+def normalize_copy_and_pay_checkout_id(checkout_id):
+    """Strip query strings or fragments from a HyperPay checkout identifier."""
+
+    if not checkout_id:
+        return checkout_id
+
+    cleaned = urllib.parse.unquote(checkout_id).strip()
+
+    for delimiter in ("?", "#"):
+        if delimiter in cleaned:
+            cleaned = cleaned.split(delimiter, 1)[0]
+
+    return cleaned
+
+
+def create_copy_and_pay_checkout(
+    amount,
+    currency,
+    customer_email,
+    reference_id,
+    description,
+    shopper_result_url=None,
+):
+    """Create a HyperPay Copy & Pay checkout session."""
+
+    if not settings.HYPERPAY_ENTITY_ID or not settings.HYPERPAY_ACCESS_TOKEN:
+        return {
+            "status": False,
+            "message": "HyperPay Copy & Pay is not configured.",
+        }
+
+    url = f"{_hyperpay_base_url()}/v1/checkouts"
+
+    payload = {
+        "entityId": settings.HYPERPAY_ENTITY_ID,
+        "amount": f"{float(amount):.2f}",
+        "currency": currency,
+        "paymentType": "DB",
+        "merchantTransactionId": str(reference_id),
+        "customer.email": customer_email,
+        "integrity": "true",
+    }
+
+    if description:
+        payload["descriptor"] = description[:127]
+
+    if not shopper_result_url:
+        shopper_result_url = settings.HYPERPAY_RETURN_URL
+
+    if shopper_result_url:
+        payload["shopperResultUrl"] = shopper_result_url
+
+    try:
+        response = requests.post(url, data=payload, headers=_hyperpay_headers())
+        response.raise_for_status()
+        data = response.json()
+
+        print(
+            "[HyperPay Copy & Pay] Checkout response:",
+            json.dumps(data, indent=2, sort_keys=True),
+        )
+
+        checkout_id = data.get("id")
+
+        if checkout_id:
+            expiry = datetime.now(timezone.utc) + timedelta(
+                minutes=settings.HYPERPAY_CHECKOUT_TIMEOUT_MINUTES
+            )
+
+            return {
+                "status": True,
+                "checkout_id": checkout_id,
+                "payment_id": checkout_id,
+                "timeout": expiry,
+                "integrity": data.get("integrity"),
+                "raw": data,
+            }
+
+        result_message = data.get("result", {}).get("description")
+        return {
+            "status": False,
+            "message": result_message or "Failed to create HyperPay checkout.",
+            "raw": data,
+        }
+    except requests.RequestException as exc:
+        return {"status": False, "message": f"Error creating HyperPay payment: {exc}"}
+
+
+def get_copy_and_pay_payment_status(checkout_id, resource_path=None):
+    """Fetch the payment status for a Copy & Pay checkout."""
+
+    normalized_checkout_id = normalize_copy_and_pay_checkout_id(checkout_id)
+    normalized_resource_path = (resource_path or "").strip()
+
+    if normalized_resource_path:
+        normalized_resource_path = normalized_resource_path.lstrip("/")
+        url = f"{_hyperpay_base_url()}/{normalized_resource_path}"
+
+        if not normalized_checkout_id:
+            segments = [segment for segment in normalized_resource_path.split("/") if segment]
+            if "checkouts" in segments:
+                index = segments.index("checkouts")
+                if index + 1 < len(segments):
+                    normalized_checkout_id = normalize_copy_and_pay_checkout_id(
+                        segments[index + 1]
+                    )
+    else:
+        if not normalized_checkout_id:
+            return {"status": "ERROR", "message": "Missing HyperPay checkout identifier."}
+        url = f"{_hyperpay_base_url()}/v1/checkouts/{normalized_checkout_id}/payment"
+    params = {"entityId": settings.HYPERPAY_ENTITY_ID}
+
+    try:
+        if not settings.HYPERPAY_ENTITY_ID or not settings.HYPERPAY_ACCESS_TOKEN:
+            return {
+                "status": "ERROR",
+                "message": "HyperPay Copy & Pay is not configured.",
+            }
+
+        response = requests.get(url, params=params, headers=_hyperpay_headers())
+        response.raise_for_status()
+        data = response.json()
+
+        print(
+            "[HyperPay Copy & Pay] Status response:",
+            json.dumps(data, indent=2, sort_keys=True),
+        )
+
+        log_key = normalized_resource_path or normalized_checkout_id or checkout_id
+        logger.info(
+            "[HyperPay Copy & Pay] Checkout %s status payload: %s",
+            log_key,
+            json.dumps(data, indent=2, sort_keys=True),
+        )
+
+        result = data.get("result", {})
+        result_code = (result.get("code") or "").strip()
+
+        normalized_status = "PENDING"
+        if result_code.startswith(("000.000", "000.100")):
+            normalized_status = "COMPLETED"
+        elif result_code.startswith("000.200"):
+            normalized_status = "PENDING"
+        elif result_code:
+            normalized_status = "FAILED"
+
+        transaction_id = data.get("id") or data.get("ndc")
+
+        return {
+            "status": normalized_status,
             "amount": data.get("amount"),
             "currency": data.get("currency"),
-            "customer_email": data.get("customer", {}).get("email"),
-            "payment_method": data.get("source", {}).get("type"),
-            "created": data.get("created"),
+            "result_code": result_code,
+            "result_description": result.get("description"),
+            "transaction_id": transaction_id,
+            "raw": data,
         }
-    except requests.RequestException as e:
-        return {"status": "ERROR", "message": str(e)}
-
-
-def get_payment_expiry(response_data):
-    try:
-        # Extract expiry details
-        expiry_period = response_data["transaction"]["expiry"]["period"]  # 30 (minutes)
-        expiry_type = response_data["transaction"]["expiry"]["type"]  # "MINUTE"
-        created_timestamp = int(response_data["transaction"]["created"]) // 1000  # Convert from ms to seconds
-
-        # Convert timestamp to datetime
-        created_datetime = datetime.fromtimestamp(created_timestamp, timezone.utc)
-
-        # Determine expiry time based on type
-        if expiry_type == "MINUTE":
-            expiry_datetime = created_datetime + timedelta(minutes=expiry_period)
-        elif expiry_type == "HOUR":
-            expiry_datetime = created_datetime + timedelta(hours=expiry_period)
-        elif expiry_type == "DAY":
-            expiry_datetime = created_datetime + timedelta(days=expiry_period)
-        else:
-            expiry_datetime = created_datetime  # Default to created time if unknown
-
-        return expiry_datetime
-
-    except KeyError as e:
-        print(f"Missing key in response: {e}")
-        return None
+    except requests.RequestException as exc:
+        return {"status": "ERROR", "message": str(exc)}
