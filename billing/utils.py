@@ -27,7 +27,13 @@ def _to_decimal(amount):
 
 
 def convert_currency(amount, source_currency, target_currency):
-    """Convert ``amount`` from ``source_currency`` to ``target_currency`` using exchangerate.host."""
+    """Convert ``amount`` from ``source_currency`` to ``target_currency`` using a static USD↔SAR rate.
+
+    Supported pairs:
+    - USD → SAR (multiply by FX_USD_SAR_RATE)
+    - SAR → USD (divide by FX_USD_SAR_RATE)
+    Other pairs are not supported.
+    """
 
     decimal_amount = _to_decimal(amount)
     source = (source_currency or "").upper()
@@ -44,61 +50,26 @@ def convert_currency(amount, source_currency, target_currency):
         print("[FX] Source and target currency identical; skipping conversion.")
         return decimal_amount
 
-    endpoint = f"{settings.FX_API_BASE_URL.rstrip('/')}/convert"
-    params = {
-        "from": source,
-        "to": target,
-        "amount": format(decimal_amount, "f"),
-    }
-
-    if settings.FX_API_ACCESS_KEY:
-        params["access_key"] = settings.FX_API_ACCESS_KEY
-
-    safe_params = {key: value for key, value in params.items() if key != "access_key"}
-    logger.debug("[FX] Requesting conversion via %s with params=%s", endpoint, safe_params)
-    print(f"[FX] Requesting conversion via {endpoint} with params={safe_params}")
-
+    # Read static USD↔SAR rate from settings; default to '3.80'
+    rate_raw = getattr(settings, "FX_USD_SAR_RATE", "3.80")
     try:
-        response = requests.get(
-            endpoint,
-            params=params,
-            timeout=getattr(settings, "FX_API_TIMEOUT_SECONDS", 5),
-        )
-        response.raise_for_status()
-    except requests.RequestException as exc:
-        logger.error("[FX] Conversion request failed: %s", exc)
-        print(f"[FX] Conversion request failed: {exc}")
-        raise FXConversionError("Unable to retrieve foreign exchange rates.") from exc
-
-    try:
-        data = response.json()
-    except ValueError as exc:
-        logger.error("[FX] Conversion response was not valid JSON: %s", exc)
-        print(f"[FX] Conversion response was not valid JSON: {exc}")
-        raise FXConversionError("Invalid foreign exchange response received.") from exc
-
-    if not isinstance(data, dict):
-        raise FXConversionError("Unexpected foreign exchange payload received.")
-
-    logger.info("[FX] Conversion response payload: %s", json.dumps(data, indent=2, sort_keys=True))
-    print(f"[FX] Conversion response payload: {json.dumps(data, indent=2, sort_keys=True)}")
-
-    if data.get("success") is False:
-        message = None
-        if isinstance(data.get("error"), dict):
-            message = data["error"].get("info") or data["error"].get("type")
-        logger.error("[FX] Conversion API reported failure: %s", message)
-        print(f"[FX] Conversion API reported failure: {message}")
-        raise FXConversionError(message or "Foreign exchange API reported a failure.")
-
-    result = data.get("result")
-    if result is None:
-        raise FXConversionError("Foreign exchange API response missing conversion result.")
-
-    try:
-        converted_amount = Decimal(str(result))
+        rate = Decimal(str(rate_raw))
     except (InvalidOperation, TypeError, ValueError) as exc:
-        raise FXConversionError("Foreign exchange API returned an invalid conversion amount.") from exc
+        logger.error("[FX] Invalid configured USD↔SAR rate: %s", rate_raw)
+        print(f"[FX] Invalid configured USD↔SAR rate: {rate_raw}")
+        raise FXConversionError("Configured USD↔SAR rate is invalid.") from exc
+
+    if rate <= 0:
+        raise FXConversionError("Configured USD↔SAR rate must be greater than zero.")
+
+    if source == "USD" and target == "SAR":
+        converted_amount = decimal_amount * rate
+    elif source == "SAR" and target == "USD":
+        converted_amount = decimal_amount / rate
+    else:
+        raise FXConversionError(
+            f"Unsupported currency conversion: {source}→{target}. Only USD↔SAR is supported."
+        )
 
     logger.info("[FX] Conversion result: %s %s", converted_amount, target)
     print(f"[FX] Conversion result: {converted_amount} {target}")

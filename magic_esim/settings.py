@@ -278,8 +278,8 @@ MPGS_INTERACTION_OPERATION = config(
 MPGS_SESSION_TIMEOUT_MINUTES = config('MPGS_SESSION_TIMEOUT_MINUTES', default=15, cast=int)
 
 # Foreign Exchange Conversion
-FX_API_BASE_URL = config('FX_API_BASE_URL', default='https://api.exchangerate.host')
-FX_API_ACCESS_KEY = config('FX_API_ACCESS_KEY', default=None)
-FX_API_TIMEOUT_SECONDS = config('FX_API_TIMEOUT_SECONDS', default=5, cast=int)
+# Use a static USD↔SAR rate from environment instead of calling an external API.
+# Example: FX_USD_SAR_RATE='3.80'
+FX_USD_SAR_RATE = config('FX_USD_SAR_RATE', default='3.80')
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
