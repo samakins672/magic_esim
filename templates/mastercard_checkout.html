@@ -91,21 +91,17 @@
             data-complete="mpgsCompleteCallback"
             defer></script>
     {% endif %}
+    <link rel="icon" href="{% static 'img/favicon/favicon.ico' %}" />
     {% if can_launch %}
     <script>
         const sessionId = "{{ session_id|escapejs }}";
         const ordersUrl = "{{ orders_url|escapejs }}";
-        const sessionVersion = "{{ session_version|default_if_none:''|escapejs }}";
         function buildCheckoutConfig() {
             const config = {
                 session: {
                     id: sessionId,
                 },
             };
-
-            if (sessionVersion) {
-                config.session.version = sessionVersion;
-            }
 
             return config;
         }
