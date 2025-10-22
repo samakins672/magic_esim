@@ -2,14 +2,108 @@ import urllib.request, urllib.error, urllib.parse
 import hmac
 import hashlib
 import json
-import collections
 import logging
+from copy import deepcopy
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 import requests
 from django.conf import settings
 from datetime import datetime, timedelta, timezone
 
 
 logger = logging.getLogger(__name__)
+
+
+class FXConversionError(Exception):
+    """Raised when currency conversion fails."""
+
+
+def _to_decimal(amount):
+    try:
+        if isinstance(amount, Decimal):
+            return amount
+        return Decimal(str(amount))
+    except (InvalidOperation, TypeError, ValueError) as exc:
+        raise FXConversionError("Invalid amount provided for currency conversion.") from exc
+
+
+def convert_currency(amount, source_currency, target_currency):
+    """Convert ``amount`` from ``source_currency`` to ``target_currency`` using exchangerate.host."""
+
+    decimal_amount = _to_decimal(amount)
+    source = (source_currency or "").upper()
+    target = (target_currency or "").upper()
+
+    logger.info("[FX] Preparing conversion: amount=%s, source=%s, target=%s", decimal_amount, source, target)
+    print(f"[FX] Preparing conversion: amount={decimal_amount}, source={source}, target={target}")
+
+    if not source or not target:
+        raise FXConversionError("Source and target currency codes are required for conversion.")
+
+    if source == target:
+        logger.info("[FX] Source and target currency identical; skipping conversion.")
+        print("[FX] Source and target currency identical; skipping conversion.")
+        return decimal_amount
+
+    endpoint = f"{settings.FX_API_BASE_URL.rstrip('/')}/convert"
+    params = {
+        "from": source,
+        "to": target,
+        "amount": format(decimal_amount, "f"),
+    }
+
+    if settings.FX_API_ACCESS_KEY:
+        params["access_key"] = settings.FX_API_ACCESS_KEY
+
+    safe_params = {key: value for key, value in params.items() if key != "access_key"}
+    logger.debug("[FX] Requesting conversion via %s with params=%s", endpoint, safe_params)
+    print(f"[FX] Requesting conversion via {endpoint} with params={safe_params}")
+
+    try:
+        response = requests.get(
+            endpoint,
+            params=params,
+            timeout=getattr(settings, "FX_API_TIMEOUT_SECONDS", 5),
+        )
+        response.raise_for_status()
+    except requests.RequestException as exc:
+        logger.error("[FX] Conversion request failed: %s", exc)
+        print(f"[FX] Conversion request failed: {exc}")
+        raise FXConversionError("Unable to retrieve foreign exchange rates.") from exc
+
+    try:
+        data = response.json()
+    except ValueError as exc:
+        logger.error("[FX] Conversion response was not valid JSON: %s", exc)
+        print(f"[FX] Conversion response was not valid JSON: {exc}")
+        raise FXConversionError("Invalid foreign exchange response received.") from exc
+
+    if not isinstance(data, dict):
+        raise FXConversionError("Unexpected foreign exchange payload received.")
+
+    logger.info("[FX] Conversion response payload: %s", json.dumps(data, indent=2, sort_keys=True))
+    print(f"[FX] Conversion response payload: {json.dumps(data, indent=2, sort_keys=True)}")
+
+    if data.get("success") is False:
+        message = None
+        if isinstance(data.get("error"), dict):
+            message = data["error"].get("info") or data["error"].get("type")
+        logger.error("[FX] Conversion API reported failure: %s", message)
+        print(f"[FX] Conversion API reported failure: {message}")
+        raise FXConversionError(message or "Foreign exchange API reported a failure.")
+
+    result = data.get("result")
+    if result is None:
+        raise FXConversionError("Foreign exchange API response missing conversion result.")
+
+    try:
+        converted_amount = Decimal(str(result))
+    except (InvalidOperation, TypeError, ValueError) as exc:
+        raise FXConversionError("Foreign exchange API returned an invalid conversion amount.") from exc
+
+    logger.info("[FX] Conversion result: %s %s", converted_amount, target)
+    print(f"[FX] Conversion result: {converted_amount} {target}")
+
+    return converted_amount
 
 
 class CoinPayments():
@@ -210,19 +304,122 @@ def _mpgs_auth():
     return (username, password)
 
 
-def create_mpgs_checkout(amount, currency, customer_email, reference_id, description):
-    """Create a hosted checkout session using HyperPay MPGS."""
+def create_mpgs_checkout(
+    amount,
+    currency,
+    customer_email,
+    reference_id,
+    description=None,
+):
+    """Deprecated wrapper kept for backwards compatibility."""
+    return initiate_mastercard_checkout(amount, currency, customer_email, reference_id, description)
+
+
+def initiate_mastercard_checkout(
+    amount,
+    currency,
+    customer_email,
+    reference_id,
+    description=None,
+):
+    """Create a hosted checkout session using Mastercard Hosted Checkout (MPGS)."""
+
+    logger.info(
+        "[Mastercard Checkout] Initiating checkout: amount=%s, currency=%s, email=%s, reference=%s",
+        amount,
+        currency,
+        customer_email,
+        reference_id,
+    )
+    print(
+        f"[Mastercard Checkout] Initiating checkout: amount={amount}, currency={currency}, "
+        f"email={customer_email}, reference={reference_id}"
+    )
+
+    try:
+        order_amount = _to_decimal(amount)
+    except FXConversionError as exc:
+        logger.error("[Mastercard Checkout] Invalid amount provided: %s", exc)
+        print(f"[Mastercard Checkout] Invalid amount provided: {exc}")
+        return {
+            "status": False,
+            "message": "Invalid amount supplied for Mastercard checkout.",
+        }
+
+    currency_code = (currency or "USD").upper()
+
+    if currency_code != "SAR":
+        try:
+            order_amount = convert_currency(order_amount, currency_code, "SAR")
+            currency_code = "SAR"
+        except FXConversionError as exc:
+            logger.error(
+                "[Mastercard Checkout] Currency conversion from %s failed: %s",
+                currency_code,
+                exc,
+            )
+            print(
+                f"[Mastercard Checkout] Currency conversion from {currency_code} failed: {exc}"
+            )
+            return {
+                "status": False,
+                "message": "Unable to convert payment amount to SAR for Mastercard checkout.",
+            }
+
+    order_amount = order_amount.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    logger.info(
+        "[Mastercard Checkout] Prepared order amount: %s %s for reference %s",
+        order_amount,
+        currency_code,
+        reference_id,
+    )
+    print(
+        f"[Mastercard Checkout] Prepared order amount: {order_amount} {currency_code} for reference {reference_id}"
+    )
 
     url = (
         f"{_mpgs_base_url()}/api/rest/version/{settings.MPGS_API_VERSION}/"
         f"merchant/{settings.MPGS_MERCHANT_ID}/session"
     )
 
+    operation = getattr(settings, "MPGS_INTERACTION_OPERATION", "AUTHORIZE") or "AUTHORIZE"
+    operation = str(operation).strip().upper()
+    interaction_payload = {
+        "operation": operation,
+        "returnUrl": settings.MPGS_RETURN_URL,
+    }
+
+    merchant_name = getattr(settings, "MPGS_MERCHANT_NAME", "")
+    merchant_url = getattr(settings, "MPGS_MERCHANT_URL", "")
+
+    if not merchant_url:
+        return_url = getattr(settings, "MPGS_RETURN_URL", "")
+        if return_url:
+            parsed_return = urllib.parse.urlsplit(return_url)
+            if parsed_return.scheme and parsed_return.netloc:
+                merchant_url = f"{parsed_return.scheme}://{parsed_return.netloc}"
+
+    merchant_details = {}
+    if merchant_name:
+        merchant_details["name"] = merchant_name
+    if merchant_url:
+        merchant_details["url"] = merchant_url
+
+    if merchant_details:
+        interaction_payload["merchant"] = merchant_details
+
+    order_description = None
+    if description:
+        order_description = str(description).strip()
+        if order_description:
+            order_description = order_description[:250]
+
     payload = {
-        "apiOperation": "CREATE_CHECKOUT_SESSION",
+        "apiOperation": "INITIATE_CHECKOUT",
+        "interaction": interaction_payload,
         "order": {
-            "amount": f"{float(amount):.2f}",
-            "currency": currency,
+            "amount": format(order_amount, ".2f"),
+            "currency": currency_code,
             "id": str(reference_id),
         },
         "transaction": {
@@ -231,66 +428,113 @@ def create_mpgs_checkout(amount, currency, customer_email, reference_id, descrip
         "customer": {
             "email": customer_email,
         },
-        "interaction": {
-            "operation": "PURCHASE",
-            "returnUrl": settings.MPGS_RETURN_URL,
-        },
     }
+
+    if order_description:
+        payload["order"]["description"] = order_description
+
+    # Mastercard Hosted Checkout v100 validates that required fields (amount, currency, id)
+    # are supplied during INITIATE_CHECKOUT. Optional attributes, such as order.description,
+    # may also be provided when supported by your use case.
+
+    sanitized_payload = deepcopy(payload)
+    if "session" in sanitized_payload:
+        sanitized_payload["session"].pop("authenticationLimit", None)
+    logger.info(
+        "[Mastercard Checkout] Request payload: %s",
+        json.dumps(sanitized_payload, indent=2, sort_keys=True),
+    )
+    print(
+        f"[Mastercard Checkout] Request payload: {json.dumps(sanitized_payload, indent=2, sort_keys=True)}"
+    )
 
     response = None
     data = None
 
     try:
-        response = requests.post(url, json=payload, auth=_mpgs_auth())
+        response = requests.post(url, json=payload, auth=_mpgs_auth(), timeout=30)
 
         try:
             data = response.json()
         except ValueError:
             data = None
 
-        pretty_payload = (
-            json.dumps(data, indent=2, sort_keys=True) if data is not None else response.text
-        )
-
-        print("[HyperPay MPGS] Checkout response:", pretty_payload)
-
-        response.raise_for_status()
-
         if data is None:
             data = {}
 
-        session_id = data.get("session", {}).get("id")
+        pretty_payload = json.dumps(data, indent=2, sort_keys=True)
+        logger.info("[Mastercard Checkout] Session response: %s", pretty_payload)
+        print(f"[Mastercard Checkout] Session response: {pretty_payload}")
+
+        response.raise_for_status()
+
+        session_data = data.get("session", {})
+        session_id = session_data.get("id")
+        session_version = session_data.get("version")
         success_indicator = data.get("successIndicator")
 
         if session_id and success_indicator:
-            checkout_url = settings.MPGS_CHECKOUT_URL.rstrip('/')
-            checkout_url = (
-                f"{checkout_url}?sessionId={session_id}&successIndicator={success_indicator}"
-                f"&merchantId={settings.MPGS_MERCHANT_ID}"
-            )
-
             expiry = datetime.now(timezone.utc) + timedelta(
                 minutes=settings.MPGS_SESSION_TIMEOUT_MINUTES
+            )
+
+            logger.info(
+                "[Mastercard Checkout] Session created: session_id=%s, success_indicator=%s",
+                session_id,
+                success_indicator,
+            )
+            print(
+                f"[Mastercard Checkout] Session created: session_id={session_id}, "
+                f"success_indicator={success_indicator}"
             )
 
             return {
                 "status": True,
                 "payment_id": session_id,
-                "checkout_url": checkout_url,
+                "session_id": session_id,
+                "session_version": session_version,
                 "timeout": expiry,
+                "success_indicator": success_indicator,
+                "order_amount": order_amount,
+                "order_currency": currency_code,
+                "order_description": order_description,
             }
 
-        message = data.get("error", {}).get("explanation") or data.get("result")
-        return {"status": False, "message": message or "Failed to create checkout session."}
+        message = (
+            data.get("error", {}).get("explanation")
+            or data.get("result", {}).get("description")
+            or data.get("result")
+        )
+        logger.error(
+            "[Mastercard Checkout] Session creation failed: %s | raw=%s",
+            message,
+            pretty_payload,
+        )
+        print(
+            f"[Mastercard Checkout] Session creation failed: {message} | raw={pretty_payload}"
+        )
+        return {
+            "status": False,
+            "message": message or "Failed to create Mastercard checkout session.",
+            "raw": data,
+        }
     except requests.RequestException as exc:
         if response is None:
-            print("[HyperPay MPGS] Checkout request failed:", str(exc))
-
-        return {"status": False, "message": f"Error creating payment: {exc}"}
+            logger.error("[Mastercard Checkout] Session request failed: %s", exc)
+            print(f"[Mastercard Checkout] Session request failed before response: {exc}")
+        return {"status": False, "message": f"Error creating Mastercard payment: {exc}"}
 
 
 def get_mpgs_payment_status(order_id):
-    """Fetch the status of an MPGS order using the order identifier."""
+    """Deprecated wrapper kept for backwards compatibility."""
+    return get_mastercard_payment_status(order_id)
+
+
+def get_mastercard_payment_status(order_id):
+    """Fetch the status of a Mastercard order using the order identifier."""
+
+    logger.info("[Mastercard Checkout] Fetching payment status for order_id=%s", order_id)
+    print(f"[Mastercard Checkout] Fetching payment status for order_id={order_id}")
 
     url = (
         f"{_mpgs_base_url()}/api/rest/version/{settings.MPGS_API_VERSION}/"
@@ -301,23 +545,21 @@ def get_mpgs_payment_status(order_id):
     data = None
 
     try:
-        response = requests.get(url, auth=_mpgs_auth())
+        response = requests.get(url, auth=_mpgs_auth(), timeout=30)
 
         try:
             data = response.json()
         except ValueError:
             data = None
 
-        pretty_payload = (
-            json.dumps(data, indent=2, sort_keys=True) if data is not None else response.text
-        )
-
-        print("[HyperPay MPGS] Order status response:", pretty_payload)
-
-        response.raise_for_status()
-
         if data is None:
             data = {}
+
+        pretty_payload = json.dumps(data, indent=2, sort_keys=True)
+        logger.info("[Mastercard Checkout] Order %s status payload: %s", order_id, pretty_payload)
+        print(f"[Mastercard Checkout] Order {order_id} status payload: {pretty_payload}")
+
+        response.raise_for_status()
 
         order_data = data.get("order", {})
         status = order_data.get("status") or data.get("result")
@@ -338,7 +580,7 @@ def get_mpgs_payment_status(order_id):
 
         customer_email = order_data.get("customerEmail") or data.get("customer", {}).get("email")
 
-        return {
+        result = {
             "status": status,
             "amount": amount,
             "currency": currency,
@@ -346,180 +588,16 @@ def get_mpgs_payment_status(order_id):
             "payment_method": payment_method,
             "raw": data,
         }
+
+        logger.info("[Mastercard Checkout] Normalized order status: %s", json.dumps(result, indent=2, sort_keys=True))
+        print(
+            f"[Mastercard Checkout] Normalized order status: {json.dumps(result, indent=2, sort_keys=True)}"
+        )
+
+        return result
     except requests.RequestException as exc:
         if response is None:
-            print("[HyperPay MPGS] Order status request failed:", str(exc))
+            logger.error("[Mastercard Checkout] Order status request failed: %s", exc)
+            print(f"[Mastercard Checkout] Order status request failed before response: {exc}")
 
-        return {"status": "ERROR", "message": str(exc)}
-
-
-def _hyperpay_base_url():
-    return settings.HYPERPAY_API_BASE_URL.rstrip('/')
-
-
-def _hyperpay_headers():
-    return {
-        "Authorization": f"Bearer {settings.HYPERPAY_ACCESS_TOKEN}",
-        "Content-Type": "application/x-www-form-urlencoded",
-    }
-
-
-def normalize_copy_and_pay_checkout_id(checkout_id):
-    """Strip query strings or fragments from a HyperPay checkout identifier."""
-
-    if not checkout_id:
-        return checkout_id
-
-    cleaned = urllib.parse.unquote(checkout_id).strip()
-
-    for delimiter in ("?", "#"):
-        if delimiter in cleaned:
-            cleaned = cleaned.split(delimiter, 1)[0]
-
-    return cleaned
-
-
-def create_copy_and_pay_checkout(
-    amount,
-    currency,
-    customer_email,
-    reference_id,
-    description,
-    shopper_result_url=None,
-):
-    """Create a HyperPay Copy & Pay checkout session."""
-
-    if not settings.HYPERPAY_ENTITY_ID or not settings.HYPERPAY_ACCESS_TOKEN:
-        return {
-            "status": False,
-            "message": "HyperPay Copy & Pay is not configured.",
-        }
-
-    url = f"{_hyperpay_base_url()}/v1/checkouts"
-
-    payload = {
-        "entityId": settings.HYPERPAY_ENTITY_ID,
-        "amount": f"{float(amount):.2f}",
-        "currency": currency,
-        "paymentType": "DB",
-        "merchantTransactionId": str(reference_id),
-        "customer.email": customer_email,
-        "integrity": "true",
-    }
-
-    if description:
-        payload["descriptor"] = description[:127]
-
-    if not shopper_result_url:
-        shopper_result_url = settings.HYPERPAY_RETURN_URL
-
-    if shopper_result_url:
-        payload["shopperResultUrl"] = shopper_result_url
-
-    try:
-        response = requests.post(url, data=payload, headers=_hyperpay_headers())
-        response.raise_for_status()
-        data = response.json()
-
-        print(
-            "[HyperPay Copy & Pay] Checkout response:",
-            json.dumps(data, indent=2, sort_keys=True),
-        )
-
-        checkout_id = data.get("id")
-
-        if checkout_id:
-            expiry = datetime.now(timezone.utc) + timedelta(
-                minutes=settings.HYPERPAY_CHECKOUT_TIMEOUT_MINUTES
-            )
-
-            return {
-                "status": True,
-                "checkout_id": checkout_id,
-                "payment_id": checkout_id,
-                "timeout": expiry,
-                "integrity": data.get("integrity"),
-                "raw": data,
-            }
-
-        result_message = data.get("result", {}).get("description")
-        return {
-            "status": False,
-            "message": result_message or "Failed to create HyperPay checkout.",
-            "raw": data,
-        }
-    except requests.RequestException as exc:
-        return {"status": False, "message": f"Error creating HyperPay payment: {exc}"}
-
-
-def get_copy_and_pay_payment_status(checkout_id, resource_path=None):
-    """Fetch the payment status for a Copy & Pay checkout."""
-
-    normalized_checkout_id = normalize_copy_and_pay_checkout_id(checkout_id)
-    normalized_resource_path = (resource_path or "").strip()
-
-    if normalized_resource_path:
-        normalized_resource_path = normalized_resource_path.lstrip("/")
-        url = f"{_hyperpay_base_url()}/{normalized_resource_path}"
-
-        if not normalized_checkout_id:
-            segments = [segment for segment in normalized_resource_path.split("/") if segment]
-            if "checkouts" in segments:
-                index = segments.index("checkouts")
-                if index + 1 < len(segments):
-                    normalized_checkout_id = normalize_copy_and_pay_checkout_id(
-                        segments[index + 1]
-                    )
-    else:
-        if not normalized_checkout_id:
-            return {"status": "ERROR", "message": "Missing HyperPay checkout identifier."}
-        url = f"{_hyperpay_base_url()}/v1/checkouts/{normalized_checkout_id}/payment"
-    params = {"entityId": settings.HYPERPAY_ENTITY_ID}
-
-    try:
-        if not settings.HYPERPAY_ENTITY_ID or not settings.HYPERPAY_ACCESS_TOKEN:
-            return {
-                "status": "ERROR",
-                "message": "HyperPay Copy & Pay is not configured.",
-            }
-
-        response = requests.get(url, params=params, headers=_hyperpay_headers())
-        response.raise_for_status()
-        data = response.json()
-
-        print(
-            "[HyperPay Copy & Pay] Status response:",
-            json.dumps(data, indent=2, sort_keys=True),
-        )
-
-        log_key = normalized_resource_path or normalized_checkout_id or checkout_id
-        logger.info(
-            "[HyperPay Copy & Pay] Checkout %s status payload: %s",
-            log_key,
-            json.dumps(data, indent=2, sort_keys=True),
-        )
-
-        result = data.get("result", {})
-        result_code = (result.get("code") or "").strip()
-
-        normalized_status = "PENDING"
-        if result_code.startswith(("000.000", "000.100")):
-            normalized_status = "COMPLETED"
-        elif result_code.startswith("000.200"):
-            normalized_status = "PENDING"
-        elif result_code:
-            normalized_status = "FAILED"
-
-        transaction_id = data.get("id") or data.get("ndc")
-
-        return {
-            "status": normalized_status,
-            "amount": data.get("amount"),
-            "currency": data.get("currency"),
-            "result_code": result_code,
-            "result_description": result.get("description"),
-            "transaction_id": transaction_id,
-            "raw": data,
-        }
-    except requests.RequestException as exc:
         return {"status": "ERROR", "message": str(exc)}

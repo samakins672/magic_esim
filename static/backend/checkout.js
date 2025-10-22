@@ -1,5 +1,286 @@
+let mastercardCheckoutContext = null;
+let mastercardCheckoutScriptPromise = null;
+
+function updateMastercardNotice(message, isError = false) {
+    const statusEl = document.getElementById("mastercardCheckoutStatus");
+    if (!statusEl) {
+        return;
+    }
+
+    statusEl.textContent = message;
+    statusEl.classList.toggle("error", Boolean(isError));
+}
+
+function ensureMastercardCheckoutScript(url) {
+    if (typeof Checkout !== "undefined") {
+        return Promise.resolve();
+    }
+
+    if (!url) {
+        return Promise.reject(new Error("MPGS checkout script URL is not configured."));
+    }
+
+    if (mastercardCheckoutScriptPromise) {
+        return mastercardCheckoutScriptPromise;
+    }
+
+    mastercardCheckoutScriptPromise = new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = url;
+        script.async = true;
+        script.dataset.error = "mpgsErrorCallback";
+        script.dataset.cancel = "mpgsCancelCallback";
+        script.dataset.complete = "mpgsCompleteCallback";
+        script.onload = () => {
+            if (typeof Checkout !== "undefined") {
+                resolve();
+            } else {
+                mastercardCheckoutScriptPromise = null;
+                reject(new Error("Mastercard checkout script did not initialize."));
+            }
+        };
+        script.onerror = () => {
+            mastercardCheckoutScriptPromise = null;
+            reject(new Error("Failed to load MPGS checkout script."));
+        };
+        document.head.appendChild(script);
+    });
+
+    return mastercardCheckoutScriptPromise;
+}
+
+function prepareMastercardCallbacks() {
+    window.mpgsErrorCallback = function (error) {
+        console.error("Mastercard checkout error", error);
+        updateMastercardNotice(
+            "The Mastercard checkout reported an error. Please retry the payment.",
+            true
+        );
+        if (typeof showToast === "function") {
+            showToast("Mastercard checkout error. Please try again.", "bg-danger");
+        }
+    };
+
+    window.mpgsCancelCallback = function () {
+        updateMastercardNotice(
+            "The Mastercard checkout window closed before payment was completed. You can reopen it below to continue.",
+            true
+        );
+    };
+
+    window.mpgsCompleteCallback = function (resultIndicator) {
+        if (resultIndicator) {
+            updateMastercardNotice(
+                "Payment submitted. You can review the status from your orders at any time.",
+                false
+            );
+            if (typeof showToast === "function") {
+                showToast(
+                    "Payment submitted successfully. We'll update your orders once it is processed.",
+                    "bg-success"
+                );
+            }
+        }
+    };
+}
+
+function showMastercardPaymentPage() {
+    if (!mastercardCheckoutContext) {
+        if (typeof showToast === "function") {
+            showToast(
+                "No Mastercard checkout session is available. Please start the payment again.",
+                "bg-danger"
+            );
+        }
+        return;
+    }
+
+    if (typeof Checkout === "undefined") {
+        updateMastercardNotice(
+            "Mastercard checkout is still loading. Please try again in a moment.",
+            true
+        );
+        if (typeof showToast === "function") {
+            showToast("Mastercard checkout is still loading. Please try again.", "bg-warning");
+        }
+        return;
+    }
+
+    try {
+        const sessionConfig = {
+            session: {
+                id: mastercardCheckoutContext.sessionId,
+            },
+        };
+
+        if (mastercardCheckoutContext.sessionVersion) {
+            sessionConfig.session.version = mastercardCheckoutContext.sessionVersion;
+        }
+
+        Checkout.configure(sessionConfig);
+        Checkout.showPaymentPage();
+
+        const messageBase = mastercardCheckoutContext.merchantName
+            ? `Secure Mastercard checkout for ${mastercardCheckoutContext.merchantName} launched.`
+            : "Secure Mastercard checkout launched.";
+        updateMastercardNotice(
+            `${messageBase} If the window closed, you can reopen it at any time below.`,
+            false
+        );
+    } catch (error) {
+        console.error("Failed to launch Mastercard checkout", error);
+        updateMastercardNotice(
+            "We could not launch the Mastercard checkout window. Please try again.",
+            true
+        );
+        if (typeof showToast === "function") {
+            showToast("Unable to launch Mastercard checkout. Please try again.", "bg-danger");
+        }
+    }
+}
+
+function handleMastercardCheckout(mastercardData, fallbackUrl) {
+    if (!mastercardData || !mastercardData.session_id) {
+        if (typeof showToast === "function") {
+            showToast(
+                "Unable to start Mastercard checkout. Please try again later.",
+                "bg-danger"
+            );
+        }
+        return;
+    }
+
+    mastercardCheckoutContext = {
+        sessionId: mastercardData.session_id,
+        sessionVersion: mastercardData.session_version || null,
+        scriptUrl: mastercardData.checkout_script_url || null,
+        ordersUrl: mastercardData.orders_url || "/orders/",
+        merchantName: mastercardData.merchant_name || "",
+        merchantUrl: mastercardData.merchant_url || "",
+        fallbackUrl: fallbackUrl || null,
+    };
+
+    const notice = document.getElementById("mastercardCheckoutNotice");
+    if (notice) {
+        notice.classList.remove("d-none");
+    }
+
+    if (mastercardCheckoutContext.ordersUrl) {
+        const ordersLink = document.getElementById("mastercardOrdersLink");
+        if (ordersLink) {
+            ordersLink.href = mastercardCheckoutContext.ordersUrl;
+        }
+    }
+
+    prepareMastercardCallbacks();
+
+    let message = "We opened a secure Mastercard checkout window.";
+    if (mastercardCheckoutContext.merchantName) {
+        message = `Secure Mastercard checkout for ${mastercardCheckoutContext.merchantName} is ready.`;
+    }
+    message += " If the payment window did not appear, use the button below to try again.";
+    updateMastercardNotice(message, false);
+
+    if (!mastercardCheckoutContext.scriptUrl) {
+        updateMastercardNotice(
+            "The Mastercard checkout script is not configured. Opening the fallback payment page in a new tab.",
+            true
+        );
+        if (typeof showToast === "function") {
+            showToast(
+                "Mastercard checkout is not fully configured. Opening the payment page in a new tab.",
+                "bg-warning"
+            );
+        }
+        if (mastercardCheckoutContext.fallbackUrl) {
+            window.open(mastercardCheckoutContext.fallbackUrl, "_blank");
+        }
+        return;
+    }
+
+    ensureMastercardCheckoutScript(mastercardCheckoutContext.scriptUrl)
+        .then(() => {
+            showMastercardPaymentPage();
+        })
+        .catch((error) => {
+            console.error("Failed to load Mastercard checkout script", error);
+            updateMastercardNotice(
+                "We could not load the Mastercard checkout experience. Please refresh and try again.",
+                true
+            );
+            if (typeof showToast === "function") {
+                showToast(
+                    "Failed to load Mastercard checkout script. Please try again.",
+                    "bg-danger"
+                );
+            }
+            if (mastercardCheckoutContext.fallbackUrl) {
+                window.open(mastercardCheckoutContext.fallbackUrl, "_blank");
+            }
+        });
+}
+
+window.launchMastercardCheckout = function () {
+    if (!mastercardCheckoutContext) {
+        if (typeof showToast === "function") {
+            showToast(
+                "No Mastercard checkout session is available. Please start the payment again.",
+                "bg-warning"
+            );
+        }
+        return;
+    }
+
+    if (!mastercardCheckoutContext.scriptUrl) {
+        if (typeof showToast === "function") {
+            showToast(
+                "Mastercard checkout is not fully configured. Opening the payment page in a new tab.",
+                "bg-warning"
+            );
+        }
+        if (mastercardCheckoutContext.fallbackUrl) {
+            window.open(mastercardCheckoutContext.fallbackUrl, "_blank");
+        }
+        return;
+    }
+
+    ensureMastercardCheckoutScript(mastercardCheckoutContext.scriptUrl)
+        .then(() => {
+            showMastercardPaymentPage();
+        })
+        .catch((error) => {
+            console.error("Failed to load Mastercard checkout script", error);
+            updateMastercardNotice(
+                "We could not load the Mastercard checkout experience. Please refresh and try again.",
+                true
+            );
+            if (typeof showToast === "function") {
+                showToast(
+                    "Failed to load Mastercard checkout script. Please try again.",
+                    "bg-danger"
+                );
+            }
+            if (mastercardCheckoutContext.fallbackUrl) {
+                window.open(mastercardCheckoutContext.fallbackUrl, "_blank");
+            }
+        });
+};
+
+$(document).on("click", "#retryMastercardCheckout", function (event) {
+    event.preventDefault();
+    window.launchMastercardCheckout();
+});
+
 $(document).ready(function () {
     const packageCode = $("#package_code").val();
+    const normalizedPackageCode =
+        typeof packageCode === "string" ? packageCode.trim().toLowerCase() : "";
+
+    if (!packageCode || ["", "null", "undefined"].includes(normalizedPackageCode)) {
+        console.error("Checkout initialised without a valid package code.");
+        window.location.replace('/esims/');
+        return;
+    }
     const locationCode = $("#location_code").val();
     const type = $("#type").val();
     const plan_type = $("#plan_type").val();
@@ -281,9 +562,20 @@ $(document).on('submit', '#paymentForm', function (e) {
         },
         success: function (response) {
             console.log(response.message);
-            
-            window.open(response.data.payment_url, '_blank');
-            window.location.href = '/orders';
+
+            const paymentData = response && response.data ? response.data : {};
+            const isMastercard =
+                paymentData && paymentData.payment_gateway === 'MastercardHostedCheckout';
+
+            if (isMastercard && response.mastercard) {
+                const fallbackUrl = paymentData && paymentData.payment_url ? paymentData.payment_url : null;
+                handleMastercardCheckout(response.mastercard, fallbackUrl);
+            } else {
+                if (paymentData && paymentData.payment_url) {
+                    window.open(paymentData.payment_url, '_blank');
+                }
+                window.location.href = '/orders';
+            }
         },
         error: function (error) {
             console.error(error);

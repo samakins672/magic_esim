@@ -305,6 +305,58 @@
     gap: 20px;
 }
 
+.mastercardCheckoutNotice {
+    width: 100%;
+    background-color: var(--backColor2);
+    border-radius: 27px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.mastercardCheckoutNotice__status {
+    color: var(--sTextColor);
+    font-size: var(--fs14);
+    line-height: 1.6;
+    letter-spacing: 0.4px;
+}
+
+.mastercardCheckoutNotice__status.error {
+    color: #ff9b9b;
+}
+
+.mastercardCheckoutNotice__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.retryMastercardBtn {
+    border: none;
+    border-radius: 16px;
+    padding: 10px 18px;
+    background-color: var(--themeBtnColor);
+    color: var(--sTextColor);
+    font-weight: 600;
+    font-size: var(--fs14);
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.retryMastercardBtn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.mastercardOrdersLink {
+    color: var(--themeBtnColor);
+    font-size: var(--fs14);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
 .onePaymentOption>input[type='radio'] {
     display: none;
 }
@@ -345,6 +397,9 @@
     height: 27px;
     width: auto;
     display: block;
+}
+
+.invert>label>img {
     filter: invert();
 }
 

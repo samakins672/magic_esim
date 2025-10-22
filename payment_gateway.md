@@ -6,14 +6,12 @@ This document explains how payment gateways are wired into the Magic eSIM codeba
 
 The payment flow is coordinated by a combination of Django backend services and template-driven frontend interactions:
 
-* **Data model** – Payments are persisted through `billing.models.Payment`, which stores the gateway identifier, checkout URL, on-chain address (for crypto providers), transaction identifiers, and status timestamps.【F:billing/models.py†L5-L43】
+* **Data model** – Payments are persisted through `billing.models.Payment`, which stores the gateway identifier, checkout URL, on-chain address (for crypto providers), transaction identifiers, MPGS success indicators, and status timestamps.【F:billing/models.py†L5-L44】
 * **Serializer** – `billing.serializers.PaymentSerializer` controls which fields can be written by clients and which are populated by gateway logic, preventing users from overriding gateway-managed attributes.【F:billing/serializers.py†L1-L15】
-* **API views** – `billing.views.PaymentListCreateView`, `PaymentStatusCheckView`, and `UpdatePendingPaymentsView` encapsulate gateway-specific branching for charge creation, callback polling, and scheduled status refreshes.【F:billing/views.py†L1-L197】
-* **Gateway helpers** – Concrete integrations (e.g., CoinPayments and HyperPay MPGS) live in `billing/utils.py` where reusable request helpers and status utilities reside.【F:billing/utils.py†L1-L183】【F:billing/utils.py†L200-L289】
+* **API views** – `billing.views.PaymentListCreateView`, `PaymentStatusCheckView`, `MastercardCheckoutCallbackView`, and `UpdatePendingPaymentsView` encapsulate gateway-specific branching for charge creation, hosted checkout returns, and scheduled status refreshes.【F:billing/views.py†L1-L323】
+* **Gateway helpers** – Concrete integrations (e.g., CoinPayments and Mastercard Hosted Checkout) live in `billing/utils.py` where reusable request helpers and status utilities reside.【F:billing/utils.py†L1-L199】【F:billing/utils.py†L202-L340】
 * **Configuration** – Environment-driven credentials are declared in `magic_esim/settings.py` and loaded from deployment secrets (see section 3.1).【F:magic_esim/settings.py†L239-L274】
 * **Checkout UI** – The customer-facing payment selection is rendered in `templates/checkout.html`, with submission handled via `static/backend/checkout.js` which posts the gateway choice to the API and redirects the user to the provider checkout link.【F:templates/checkout.html†L209-L280】【F:static/backend/checkout.js†L1-L126】【F:static/backend/checkout.js†L142-L210】
-* **Hosted card widget** – HyperPay Copy & Pay renders inside `templates/hyperpay_copy_pay.html`, which loads the payment widget script returned by the checkout API and submits the hosted form back to HyperPay.【F:templates/hyperpay_copy_pay.html†L1-L97】
-* **Return handling** – Customers are redirected to `/payments/hyperpay/result/`, which resolves the checkout ID with HyperPay, updates the matching `Payment` record, and displays the outcome to the shopper.【F:frontend/urls.py†L1-L20】【F:frontend/views.py†L101-L187】【F:templates/hyperpay_copy_pay_result.html†L1-L120】
 
 Understanding these touchpoints is key before extending the system with an additional provider.
 
@@ -21,7 +19,7 @@ Understanding these touchpoints is key before extending the system with an addit
 
 ### 2.1 Prepare configuration
 1. **Gather credentials** – Determine the secret keys, merchant IDs, webhook URLs, or other settings the provider requires.
-2. **Declare settings** – Add new entries under the payment configuration block in `magic_esim/settings.py`, following the existing CoinPayments and HyperPay MPGS variables. Always use `config('KEY')` so that secrets remain externalized.【F:magic_esim/settings.py†L239-L274】
+2. **Declare settings** – Add new entries under the payment configuration block in `magic_esim/settings.py`, following the existing CoinPayments and Mastercard Hosted Checkout variables. Always use `config('KEY')` so that secrets remain externalized.【F:magic_esim/settings.py†L241-L269】
 3. **Update deployment secrets** – Ensure the `.env` files used for local development, staging, and production expose the new keys. Document required values for DevOps.
 
 ### 2.2 Implement gateway helper
@@ -60,7 +58,7 @@ Understanding these touchpoints is key before extending the system with an addit
 ## 4. Managing Gateways in Production
 
 ### 4.1 Monitoring payment health
-* **Manual status checks** – Use `PaymentStatusCheckView` by visiting `/api/payments/status/<ref_id>/` for both CoinPayments and HyperPay MPGS transactions to force a refresh when investigating support tickets.【F:billing/views.py†L124-L197】
+* **Manual status checks** – Use `PaymentStatusCheckView` by visiting `/api/payments/status/<ref_id>/` for both CoinPayments and Mastercard Hosted Checkout transactions to force a refresh when investigating support tickets.【F:billing/views.py†L124-L197】
 * **Automated sweeps** – Schedule regular calls to `/api/payments/update-pending/` to reconcile pending payments created within the last 48 hours. This view normalizes statuses across gateways and timestamps successful payments.【F:billing/views.py†L198-L266】
 
 ### 4.2 Timeout and expiry handling
@@ -78,16 +76,14 @@ Understanding these touchpoints is key before extending the system with an addit
 * **Credentials** – Requires `COINPAYMENTS_PUBLIC_KEY`, `COINPAYMENTS_PRIVATE_KEY`, and `COINPAYMENTS_IPN_URL`. Ensure the IPN route is exposed publicly so CoinPayments can push status updates.【F:magic_esim/settings.py†L239-L256】
 * **Status mapping** – CoinPayments returns descriptive strings (`Waiting for buyer funds...`, `Cancelled / Timed Out`, etc.) that are translated into platform statuses inside the views. Preserve these mappings when refactoring to avoid misreporting payment success.【F:billing/views.py†L131-L197】
 
-### 5.2 HyperPay MPGS
-* **Regional endpoints** – HyperPay provisions MPGS merchants in regional clusters. For GCC/UAE tenants the sandbox and production APIs are served from `https://test.oppwa.com` (`https://oppwa.com` in production). EU-registered tenants instead use the `eu-test.oppwa.com` (`eu-prod.oppwa.com`) cluster, so update `MPGS_API_BASE_URL` and `MPGS_CHECKOUT_URL` accordingly when deploying.【F:.env.example†L31-L36】
-* **Checkout sessions** – Hosted checkout links are generated via the MPGS REST API and require Basic authentication using `merchant.<ID>` credentials. The helper returns a session ID along with a prebuilt redirect URL and calculated expiry timestamp.【F:billing/utils.py†L200-L289】
-* **Status polling** – Order status codes such as `CAPTURED`, `APPROVED`, or `PENDING` are normalized within the API views so they map cleanly onto the platform’s canonical states.【F:billing/views.py†L84-L259】
-* **Redirect flow** – Customers complete payment on the MPGS hosted page and the platform polls `/api/payments/status/<ref_id>/` to reconcile state after the redirect.【F:billing/views.py†L84-L259】
-
-### 5.3 HyperPay Copy & Pay
-* **Checkout session** – The backend calls HyperPay’s `/v1/checkouts` endpoint with the configured entity ID and returns a hosted widget URL plus a local redirection route that renders the embedded payment form.【F:billing/utils.py†L291-L339】【F:billing/views.py†L62-L129】
-* **Widget page** – The page at `/payments/hyperpay/copy-pay/` hydrates the HyperPay `paymentWidgets.js` script with the checkout ID, allowed brands, and optional entity ID hidden field.【F:frontend/urls.py†L1-L20】【F:frontend/views.py†L1-L116】【F:templates/hyperpay_copy_pay.html†L1-L97】
-* **Status reconciliation** – Polling `/api/payments/status/<ref_id>/` triggers a Copy & Pay lookup that maps result codes into the platform’s canonical `PENDING`, `COMPLETED`, or `FAILED` states, persisting the provider transaction ID when available.【F:billing/utils.py†L341-L375】【F:billing/views.py†L130-L259】
+### 5.2 Mastercard Hosted Checkout (MPGS)
+* **Regional endpoints** – Mastercard provisions MPGS merchants on regional gateway domains such as `https://ksa.gateway.mastercard.com` or `https://eu.gateway.mastercard.com`. Match `MPGS_API_BASE_URL` to your cluster and pair it with the Hosted Checkout script at `<base>/static/checkout/checkout.min.js?version=<VERSION>` (configurable via `MPGS_CHECKOUT_SCRIPT_URL`).【F:.env.example†L34-L42】【F:magic_esim/settings.py†L260-L274】
+* **Merchant branding** – Hosted checkout requires the merchant display block during session creation. Configure `MPGS_MERCHANT_NAME` and (optionally) `MPGS_MERCHANT_URL` so the checkout helper can populate `interaction.merchant` and the launcher page can echo the brand back to customers.【F:.env.example†L34-L42】【F:magic_esim/settings.py†L260-L274】【F:billing/utils.py†L320-L420】【F:templates/mastercard_checkout.html†L1-L200】
+* **API payloads** – Sessions default to `interaction.operation=AUTHORIZE` (overridable with `MPGS_INTERACTION_OPERATION`) and include the plan name as `order.description`, satisfying the Hosted Checkout v100 parameter validation while surfacing contextual messaging to customers.【F:.env.example†L34-L43】【F:magic_esim/settings.py†L260-L274】【F:billing/utils.py†L320-L520】【F:billing/views.py†L80-L197】【F:frontend/views.py†L1-L200】
+* **Checkout sessions** – Hosted checkout sessions are generated via the MPGS REST API and require Basic authentication using `merchant.<ID>` credentials. The helper returns a session ID, success indicator, and calculated expiry timestamp for the frontend launcher.【F:billing/utils.py†L202-L340】
+* **Status polling** – Order status codes such as `CAPTURED`, `APPROVED`, or `PENDING` are normalized within the API views so they map cleanly onto the platform’s canonical states.【F:billing/views.py†L80-L323】
+* **Redirect flow** – Customers complete payment on the MPGS hosted page. The frontend opens `/payments/mastercard/<ref_id>/`, which embeds Mastercard's checkout script and launches the secure payment page before the browser lands on `/payments/mastercard/callback/` for verification.【F:billing/views.py†L126-L323】【F:frontend/views.py†L1-L200】【F:magic_esim/urls.py†L1-L29】
+* **Currency conversion** – MPGS sessions always submit amounts in SAR. The checkout helper converts USD totals using exchangerate.host and the `FX_API_*` settings before initiating the session.【F:.env.example†L41-L47】【F:magic_esim/settings.py†L260-L268】【F:billing/utils.py†L18-L119】【F:billing/utils.py†L222-L292】
 
 ## 6. Developer Checklist
 

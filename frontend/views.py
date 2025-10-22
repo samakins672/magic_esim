@@ -1,19 +1,13 @@
 from django.contrib.auth import logout
-from django.conf import settings as django_settings
-from django.http import HttpResponseBadRequest
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.utils.timezone import now
+from django.http import HttpResponseForbidden
 from django.urls import reverse
+from django.conf import settings
 import json
 import os
 
 from billing.models import Payment
-from billing.utils import (
-    get_copy_and_pay_payment_status,
-    normalize_copy_and_pay_checkout_id,
-)
-
 
 # Load all countries
 countries_json_path = os.path.join('static', 'vendor', 'locations', 'countries.json')
@@ -100,6 +94,63 @@ def orders(request):
         'user': request.user
     })
 
+
+@login_required
+def mastercard_checkout(request, ref_id):
+    payment = get_object_or_404(Payment, ref_id=ref_id)
+
+    if payment.user_id != request.user.id:
+        return HttpResponseForbidden("You do not have permission to access this payment.")
+
+    if payment.payment_gateway not in ("MastercardHostedCheckout", "HyperPayMPGS"):
+        return render(
+            request,
+            "mastercard_checkout.html",
+            {
+                "can_launch": False,
+                "error_message": "This payment is not configured for Mastercard Hosted Checkout.",
+                "orders_url": reverse('frontend:esim_orders'),
+            },
+            status=400,
+        )
+
+    session_id = payment.gateway_transaction_id
+    session_version = payment.mpgs_session_version
+
+    if not session_id:
+        return render(
+            request,
+            "mastercard_checkout.html",
+            {
+                "can_launch": False,
+                "error_message": "The hosted checkout session has expired. Please start the payment again.",
+                "orders_url": reverse('frontend:esim_orders'),
+            },
+            status=410,
+        )
+
+    checkout_script_url = getattr(settings, "MPGS_CHECKOUT_SCRIPT_URL", None)
+    merchant_name = getattr(settings, "MPGS_MERCHANT_NAME", "")
+    merchant_url = getattr(settings, "MPGS_MERCHANT_URL", "") or request.build_absolute_uri('/')
+
+    context = {
+        "can_launch": True,
+        "session_id": str(session_id),
+        "session_version": session_version,
+        "success_indicator": payment.mpgs_success_indicator,
+        "checkout_script_url": checkout_script_url,
+        "orders_url": reverse('frontend:esim_orders'),
+        "mpgs_merchant_name": merchant_name,
+        "mpgs_merchant_url": merchant_url,
+        "order_amount": (
+            f"{payment.mpgs_order_amount:.2f}" if payment.mpgs_order_amount is not None else ""
+        ),
+        "order_currency": payment.mpgs_order_currency or "",
+        "order_description": payment.esim_plan or "",
+    }
+
+    return render(request, "mastercard_checkout.html", context)
+
 @login_required
 def esim_list(request):
     context = {
@@ -122,117 +173,3 @@ def account_settings(request):
     return render(request, 'settings.html', context)
 
 
-@login_required
-def hyperpay_copy_pay(request):
-    checkout_id = normalize_copy_and_pay_checkout_id(request.GET.get('checkoutId'))
-
-    if not checkout_id:
-        return HttpResponseBadRequest("Missing checkoutId")
-
-    base_return_url = django_settings.HYPERPAY_RETURN_URL or request.build_absolute_uri(
-        reverse('frontend:hyperpay_copy_pay_result')
-    )
-    customer_ref = request.GET.get('ref')
-    if customer_ref:
-        separator = '&' if '?' in base_return_url else '?'
-        return_url = f"{base_return_url}{separator}ref={customer_ref}"
-    else:
-        return_url = base_return_url
-
-    context = {
-        'checkout_id': checkout_id,
-        'reference': customer_ref,
-        'widget_url': django_settings.HYPERPAY_PAYMENT_WIDGET_URL,
-        'allowed_brands': django_settings.HYPERPAY_ALLOWED_BRANDS,
-        'return_url': return_url,
-        'entity_id': django_settings.HYPERPAY_ENTITY_ID,
-        'widget_integrity': request.GET.get('integrity'),
-    }
-
-    return render(request, 'hyperpay_copy_pay.html', context)
-
-
-def hyperpay_copy_pay_result(request):
-    checkout_id = normalize_copy_and_pay_checkout_id(
-        request.GET.get('id') or request.GET.get('checkoutId')
-    )
-    resource_path = request.GET.get('resourcePath')
-
-    if not checkout_id and resource_path:
-        segments = [segment for segment in resource_path.split('/') if segment]
-        if 'checkouts' in segments:
-            index = segments.index('checkouts')
-            if index + 1 < len(segments):
-                checkout_id = normalize_copy_and_pay_checkout_id(segments[index + 1])
-        elif segments:
-            checkout_id = normalize_copy_and_pay_checkout_id(segments[-1])
-
-    if not checkout_id:
-        context = {
-            'error': 'Missing HyperPay checkout identifier.',
-            'checkout_id': None,
-            'status': None,
-            'payment': None,
-            'result': {},
-            'ref': request.GET.get('ref'),
-            'raw_payload': '{}',
-        }
-        return render(request, 'hyperpay_copy_pay_result.html', context, status=400)
-
-    status_response = get_copy_and_pay_payment_status(
-        checkout_id,
-        resource_path=resource_path,
-    )
-    normalized_status = (status_response.get('status') or '').upper()
-    transaction_id = normalize_copy_and_pay_checkout_id(
-        status_response.get('transaction_id')
-    )
-    ref_id = request.GET.get('ref')
-
-    payment_qs = Payment.objects.filter(payment_gateway='HyperPayCopyAndPay')
-    if ref_id:
-        payment_qs = payment_qs.filter(ref_id=ref_id)
-
-    id_candidates = [checkout_id]
-    if transaction_id and transaction_id not in id_candidates:
-        id_candidates.append(transaction_id)
-
-    payment = payment_qs.filter(gateway_transaction_id__in=id_candidates).first()
-
-    if not payment and ref_id:
-        payment = payment_qs.first()
-
-    if payment:
-        if normalized_status == 'COMPLETED':
-            payment.status = 'COMPLETED'
-            payment.date_paid = now()
-            if transaction_id:
-                payment.gateway_transaction_id = transaction_id
-        elif normalized_status == 'PENDING':
-            payment.status = 'PENDING'
-        elif normalized_status:
-            payment.status = 'FAILED'
-
-        payment.save()
-
-    error_message = None
-    if normalized_status == 'ERROR':
-        error_message = status_response.get('message') or status_response.get('result_description')
-
-    raw_payload = status_response.get('raw') or status_response
-    try:
-        raw_payload_pretty = json.dumps(raw_payload, indent=2, sort_keys=True)
-    except (TypeError, ValueError):
-        raw_payload_pretty = str(raw_payload)
-
-    context = {
-        'checkout_id': checkout_id,
-        'status': normalized_status,
-        'payment': payment,
-        'result': status_response,
-        'ref': ref_id,
-        'error': error_message,
-        'raw_payload': raw_payload_pretty,
-    }
-
-    return render(request, 'hyperpay_copy_pay_result.html', context)

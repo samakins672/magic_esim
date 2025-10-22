@@ -63,6 +63,24 @@ class eSIMPlanListView(APIView):
             )
         filters = serializer.validated_data
 
+        package_code = filters.get("packageCode")
+        if isinstance(package_code, str):
+            normalized_package_code = package_code.strip()
+            if not normalized_package_code:
+                filters.pop("packageCode", None)
+            elif normalized_package_code.lower() in {"null", "undefined"}:
+                return Response(
+                    {
+                        "status": False,
+                        "message": "A valid packageCode must be provided to retrieve plan details.",
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            else:
+                filters["packageCode"] = normalized_package_code
+        elif package_code is None:
+            filters.pop("packageCode", None)
+
         # Prepare empty lists for each
         standard_data = []   # Will hold eSIMAccess results
         unlimited_data = []  # Will hold eSIMGo results
@@ -82,7 +100,7 @@ class eSIMPlanListView(APIView):
             )
 
             if response.status_code == 200:
-                access_obj = response.json().get("obj", {})
+                access_obj = response.json().get("obj") or {}
                 packages = access_obj.get("packageList", [])
 
                 # Filter packages where slug starts with locationCode and doesn't end with _END or _DAILY

@@ -210,15 +210,12 @@
                             </svg>&nbsp;Protected payments</p>
                         <div class="paymentOptions">
                             <div class="onePaymentOption">
-                                <input type="radio" name="payment_gateway" id="HyperPayMPGS" value="HyperPayMPGS"
+                                <input type="radio" name="payment_gateway" id="MastercardHostedCheckout" value="MastercardHostedCheckout"
                                     checked="">
-                                <label for="HyperPayMPGS"><span class="circle"></span><span class="payment-label">HyperPay MPGS</span></label>
+                                <label for="MastercardHostedCheckout"><span class="circle"></span><img 
+                                        src="/static/new/assets/misc/mastercard.webp" alt=""></label>
                             </div>
-                            <div class="onePaymentOption">
-                                <input type="radio" name="payment_gateway" id="HyperPayCopyAndPay" value="HyperPayCopyAndPay">
-                                <label for="HyperPayCopyAndPay"><span class="circle"></span><span class="payment-label">HyperPay Copy &amp; Pay</span></label>
-                            </div>
-                            <div class="onePaymentOption">
+                            <div class="onePaymentOption invert">
                                 <input type="radio" name="payment_gateway" id="CoinPayments" value="CoinPayments">
                                 <label for="CoinPayments"><span class="circle"></span><img
                                         src="/static/new/assets/misc/coinpayment.webp" alt=""></label>
@@ -229,6 +226,20 @@
                                     title="Not available at the moment"><span class="circle"></span><img
                                         src="/static/new/assets/misc/stripe.webp" alt=""></label>
                             </div>
+                        </div>
+                    </div>
+
+                    <div id="mastercardCheckoutNotice" class="mastercardCheckoutNotice d-none">
+                        <p class="mastercardCheckoutNotice__status" id="mastercardCheckoutStatus">
+                            We opened a secure Mastercard checkout window. If it didn't appear, click the button below to try again.
+                        </p>
+                        <div class="mastercardCheckoutNotice__actions">
+                            <button type="button" id="retryMastercardCheckout" class="retryMastercardBtn">
+                                Open Mastercard Checkout
+                            </button>
+                            <a href="/orders/" id="mastercardOrdersLink" class="mastercardOrdersLink" target="_blank" rel="noopener">
+                                View my orders
+                            </a>
                         </div>
                     </div>
 

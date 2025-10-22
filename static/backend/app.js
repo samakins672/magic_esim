@@ -2,12 +2,26 @@ const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
 // Function to show toast
 function showToast(message, bgClass) {
-    // var toastEl = $('#responseToast');
-    // toastEl.find('.toast-body').text(message); // Set the message
-    // toastEl.removeClass('bg-primary bg-secondary bg-info bg-success bg-danger').addClass(bgClass); // Add appropriate background class
-    // var toast = new bootstrap.Toast(toastEl[0]); // Initialize the toast
-    // toast.show(); // Show the toast
-    alert(message);
+    const toastEl = $('#responseToast');
+
+    if (toastEl.length) {
+        const body = toastEl.find('.toast-body');
+        if (body.length) {
+            body.text(message);
+        }
+
+        const classesToRemove = 'bg-primary bg-secondary bg-info bg-success bg-danger bg-warning';
+        toastEl.removeClass(classesToRemove);
+
+        if (bgClass) {
+            toastEl.addClass(bgClass);
+        }
+
+        const toastInstance = bootstrap.Toast.getOrCreateInstance(toastEl[0]);
+        toastInstance.show();
+    } else {
+        console.log('Toast:', message);
+    }
 }
 
 // Function to get query parameters from the URL

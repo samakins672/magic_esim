@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mastercard Hosted Checkout</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+        }
+        body {
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0b1727;
+            color: #f4f7fb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+        main {
+            max-width: 480px;
+            width: 100%;
+            background: rgba(12, 26, 45, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            box-shadow: 0 30px 60px rgba(9, 20, 37, 0.35);
+            backdrop-filter: blur(16px);
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+        p {
+            margin: 0 0 1.25rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.78);
+        }
+        .mpgs-status {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #7dd3fc;
+        }
+        .mpgs-error {
+            color: #fecaca;
+            font-weight: 600;
+        }
+        .mpgs-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.6rem;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #ffffff;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.35);
+        }
+        .mpgs-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 40px rgba(99, 102, 241, 0.45);
+        }
+        .mpgs-button.secondary {
+            background: transparent;
+            border: 1px solid rgba(125, 211, 252, 0.4);
+            box-shadow: none;
+        }
+        .mpgs-meta {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .mpgs-meta a {
+            color: inherit;
+            text-decoration: underline;
+        }
+    </style>
+    {% if can_launch and checkout_script_url %}
+    <script src="{{ checkout_script_url }}"
+            data-error="mpgsErrorCallback"
+            data-cancel="mpgsCancelCallback"
+            data-complete="mpgsCompleteCallback"
+            defer></script>
+    {% endif %}
+    {% if can_launch %}
+    <script>
+        const sessionId = "{{ session_id|escapejs }}";
+        const ordersUrl = "{{ orders_url|escapejs }}";
+        const sessionVersion = "{{ session_version|default_if_none:''|escapejs }}";
+        function buildCheckoutConfig() {
+            const config = {
+                session: {
+                    id: sessionId,
+                },
+            };
+
+            if (sessionVersion) {
+                config.session.version = sessionVersion;
+            }
+
+            return config;
+        }
+
+        function setStatus(message, isError = false) {
+            const statusEl = document.getElementById('mpgs-status');
+            if (statusEl) {
+                statusEl.textContent = message;
+                statusEl.classList.toggle('mpgs-error', Boolean(isError));
+            }
+        }
+
+        function launchCheckout() {
+            if (!sessionId) {
+                setStatus('Checkout session missing. Please start the payment again.', true);
+                return;
+            }
+            if (typeof Checkout === 'undefined') {
+                setStatus('Unable to load Mastercard checkout. Please allow pop-ups and try again.', true);
+                return;
+            }
+            try {
+                const checkoutConfig = buildCheckoutConfig();
+                Checkout.configure(checkoutConfig);
+                setStatus('Secure Mastercard checkout window opened. Complete your payment to continue.');
+                Checkout.showPaymentPage();
+            } catch (error) {
+                console.error('Failed to launch Mastercard checkout', error);
+                setStatus('We could not launch the Mastercard checkout page. Please retry.', true);
+            }
+        }
+
+        function mpgsErrorCallback(error) {
+            console.error('Mastercard checkout error', error);
+            setStatus('The Mastercard checkout reported an error. Please close this tab and try again.', true);
+        }
+
+        function mpgsCancelCallback() {
+            window.location.replace(ordersUrl);
+        }
+
+        function mpgsCompleteCallback(resultIndicator) {
+            if (resultIndicator) {
+                setStatus('Payment submitted. Returning to Magic eSIM…');
+            }
+        }
+
+        window.addEventListener('load', function () {
+            setTimeout(launchCheckout, 200);
+        });
+
+        window.mpgsErrorCallback = mpgsErrorCallback;
+        window.mpgsCancelCallback = mpgsCancelCallback;
+        window.mpgsCompleteCallback = mpgsCompleteCallback;
+        window.launchCheckout = launchCheckout;
+    </script>
+    {% endif %}
+</head>
+<body>
+    <main>
+        <h1>Secure Mastercard Checkout</h1>
+        {% if can_launch %}
+            <p class="mpgs-status" id="mpgs-status">Preparing your payment session…</p>
+            <p>If the Mastercard window does not appear automatically, use the button below to retry.</p>
+            {% if mpgs_merchant_name %}
+                <p class="mpgs-meta">
+                    Completing payment for {{ mpgs_merchant_name }}{% if mpgs_merchant_url %}
+                        (<a href="{{ mpgs_merchant_url }}" rel="noopener noreferrer" target="_blank">visit site</a>)
+                    {% endif %}.
+                </p>
+            {% endif %}
+            <button type="button" class="mpgs-button" onclick="launchCheckout()">
+                Retry Mastercard Checkout
+            </button>
+            <p class="mpgs-meta">This checkout session will return you to Magic eSIM after payment via Mastercard&apos;s secure gateway.</p>
+        {% else %}
+            <p class="mpgs-error">{{ error_message }}</p>
+            <a class="mpgs-button secondary" href="{{ orders_url }}">Back to Orders</a>
+        {% endif %}
+    </main>
+</body>
+</html>

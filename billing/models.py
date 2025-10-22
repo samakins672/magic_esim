@@ -28,6 +28,12 @@ class Payment(models.Model):
     payment_address = models.CharField(max_length=200, default=None, blank=True, null=True)
     payment_url = models.CharField(max_length=255, default=None, blank=True, null=True)
     gateway_transaction_id = models.CharField(max_length=200, default=None, blank=True, null=True)
+    mpgs_success_indicator = models.CharField(max_length=200, default=None, blank=True, null=True)
+    mpgs_session_version = models.CharField(max_length=200, default=None, blank=True, null=True)
+    mpgs_order_amount = models.DecimalField(
+        max_digits=10, decimal_places=2, default=None, blank=True, null=True
+    )
+    mpgs_order_currency = models.CharField(max_length=10, default=None, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     date_created = models.DateTimeField(default=now)
     expiry_datetime = models.DateTimeField(default=None, blank=True, null=True)

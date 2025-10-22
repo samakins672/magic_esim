@@ -112,7 +112,7 @@ $(document).on('click', '.confirm-payment-btn', function (e) {
     var submitButton = $(this);
     submitButton.html('<span class="spinner-border m-2 mx-auto" role="status" aria-hidden="true"></span>').attr('disabled', true);
 
-    if (payment_gateway === 'HyperPayMPGS') {
+    if (payment_gateway === 'MastercardHostedCheckout' || payment_gateway === 'HyperPayMPGS') {
         url = `/api/payments/status/${ref_id}/`;
     } else {
         url = `/api/payments/status/${ref_id}/`;

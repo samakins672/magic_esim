@@ -8,19 +8,66 @@ from esim.utils import fetch_esim_plan_details
 from .serializers import PaymentSerializer
 from billing.utils import (
     CoinPayments,
-    create_copy_and_pay_checkout,
-    create_mpgs_checkout,
-    get_copy_and_pay_payment_status,
-    get_mpgs_payment_status,
-    normalize_copy_and_pay_checkout_id,
+    get_mastercard_payment_status,
+    initiate_mastercard_checkout,
 )
 from django.conf import settings
 from rest_framework import serializers
 from datetime import timedelta
 from django.utils.timezone import now
-import datetime
 from django.urls import reverse
-from urllib.parse import urlencode
+import datetime
+
+
+MPGS_SUCCESS_STATUSES = {"CAPTURED", "APPROVED", "SUCCESS", "SUCCESSFUL"}
+MPGS_PENDING_STATUSES = {"PENDING", "IN_PROGRESS", "INITIATED", "AUTHORIZED", "AUTHORISED"}
+
+
+def _apply_mastercard_status(payment, status_response):
+    """Normalize Mastercard status payloads onto the local Payment instance."""
+
+    payment_status = (status_response.get("status") or "").upper()
+    updated_fields = []
+
+    if payment_status in MPGS_SUCCESS_STATUSES:
+        if payment.status != "COMPLETED":
+            payment.status = "COMPLETED"
+            updated_fields.append("status")
+        payment.date_paid = now()
+        updated_fields.append("date_paid")
+    elif payment_status in MPGS_PENDING_STATUSES:
+        if payment.status != "PENDING":
+            payment.status = "PENDING"
+            updated_fields.append("status")
+    elif payment_status:
+        if payment.status != "FAILED":
+            payment.status = "FAILED"
+            updated_fields.append("status")
+
+    payment_method = status_response.get("payment_method")
+    if payment_method:
+        payment.payment_method = payment_method
+        updated_fields.append("payment_method")
+
+    raw_payload = status_response.get("raw")
+    transaction = None
+    if isinstance(raw_payload, dict):
+        transactions = raw_payload.get("transactions")
+        if isinstance(transactions, list) and transactions:
+            transaction = transactions[-1]
+        elif isinstance(raw_payload.get("transaction"), dict):
+            transaction = raw_payload.get("transaction")
+
+    if isinstance(transaction, dict):
+        transaction_id = transaction.get("id") or transaction.get("transactionId")
+        if transaction_id:
+            payment.gateway_transaction_id = transaction_id
+            if "gateway_transaction_id" not in updated_fields:
+                updated_fields.append("gateway_transaction_id")
+
+    if updated_fields:
+        payment.save(update_fields=updated_fields)
+    return payment
 
 
 class PaymentListCreateView(generics.ListCreateAPIView):
@@ -37,6 +84,7 @@ class PaymentListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         # Save the payment instance with user details
         payment = serializer.save(user=self.request.user)
+        serializer.instance = payment
 
         if payment.payment_gateway == 'CoinPayments':
             # Initialize CoinPayments API
@@ -80,7 +128,8 @@ class PaymentListCreateView(generics.ListCreateAPIView):
             else:
                 # Handle errors (e.g., raise validation error)
                 raise serializers.ValidationError({"status": False, "message": response.get('error')})
-        elif payment.payment_gateway == 'HyperPayMPGS':
+        elif payment.payment_gateway in ('HyperPayMPGS', 'MastercardHostedCheckout'):
+            payment.payment_gateway = 'MastercardHostedCheckout'
             plan_details = fetch_esim_plan_details(payment.package_code, seller=payment.seller)
             if payment.seller == 'esimgo':
                 # Fetch eSIM plan details
@@ -88,87 +137,63 @@ class PaymentListCreateView(generics.ListCreateAPIView):
             else:
                 esim_plan = plan_details['obj']['packageList'][0]['name']
 
-            mpgs_response = create_mpgs_checkout(
+            mpgs_response = initiate_mastercard_checkout(
                 amount=payment.price,
                 currency=payment.currency,
                 customer_email=self.request.user.email,
                 reference_id=str(payment.ref_id),
-                description=f"Payment for {esim_plan} eSIM plan"
+                description=esim_plan,
             )
 
             if mpgs_response.get("status"):
                 # Save transaction details if creation is successful
                 payment.status = 'PENDING'
-                payment.esim_plan = esim_plan
-                payment.payment_url = mpgs_response["checkout_url"]
+                payment.esim_plan = mpgs_response.get("order_description") or esim_plan
                 payment.gateway_transaction_id = mpgs_response["payment_id"]
+                payment.mpgs_success_indicator = mpgs_response.get("success_indicator")
+                payment.mpgs_session_version = mpgs_response.get("session_version")
+                payment.mpgs_order_amount = mpgs_response.get("order_amount")
+                payment.mpgs_order_currency = mpgs_response.get("order_currency")
                 payment.expiry_datetime = mpgs_response['timeout']
+
+                launch_path = reverse(
+                    'frontend:mastercard_checkout', args=[payment.ref_id]
+                )
+                payment.payment_url = self.request.build_absolute_uri(launch_path)
                 payment.save()
+
+                checkout_script_url = getattr(settings, "MPGS_CHECKOUT_SCRIPT_URL", None)
+                merchant_name = getattr(settings, "MPGS_MERCHANT_NAME", "")
+                merchant_url = getattr(settings, "MPGS_MERCHANT_URL", "")
+                if not merchant_url:
+                    merchant_url = self.request.build_absolute_uri('/')
+
+                orders_url = self.request.build_absolute_uri(
+                    reverse('frontend:esim_orders')
+                )
 
                 self.response_data = {
                     "status": True,
                     "message": "Payment created successfully.",
                     "data": serializer.data,
+                    "mastercard": {
+                        "session_id": str(payment.gateway_transaction_id),
+                        "session_version": payment.mpgs_session_version,
+                        "success_indicator": payment.mpgs_success_indicator,
+                        "checkout_script_url": checkout_script_url,
+                        "merchant_name": merchant_name,
+                        "merchant_url": merchant_url,
+                        "order_amount": (
+                            f"{payment.mpgs_order_amount:.2f}"
+                            if payment.mpgs_order_amount is not None
+                            else ""
+                        ),
+                        "order_currency": payment.mpgs_order_currency or "",
+                        "orders_url": orders_url,
+                    },
                 }
             else:
                 raise serializers.ValidationError({"status": False, "message": mpgs_response.get("message")})
-        elif payment.payment_gateway == 'HyperPayCopyAndPay':
-            plan_details = fetch_esim_plan_details(payment.package_code, seller=payment.seller)
-            if payment.seller == 'esimgo':
-                esim_plan = plan_details['description']
-            else:
-                esim_plan = plan_details['obj']['packageList'][0]['name']
-
-            base_return_url = settings.HYPERPAY_RETURN_URL or self.request.build_absolute_uri(
-                reverse('frontend:hyperpay_copy_pay_result')
-            )
-            if base_return_url:
-                separator = '&' if '?' in base_return_url else '?'
-                shopper_result_url = f"{base_return_url}{separator}ref={payment.ref_id}"
-            else:
-                shopper_result_url = None
-
-            copy_pay_response = create_copy_and_pay_checkout(
-                amount=payment.price,
-                currency=payment.currency,
-                customer_email=self.request.user.email,
-                reference_id=str(payment.ref_id),
-                description=f"Payment for {esim_plan} eSIM plan",
-                shopper_result_url=shopper_result_url,
-            )
-
-            if copy_pay_response.get("status"):
-                payment.status = 'PENDING'
-                payment.esim_plan = esim_plan
-                normalized_checkout_id = normalize_copy_and_pay_checkout_id(
-                    copy_pay_response["payment_id"]
-                )
-                payment.gateway_transaction_id = normalized_checkout_id
-                payment.expiry_datetime = copy_pay_response.get('timeout')
-
-                integrity_token = copy_pay_response.get("integrity")
-
-                checkout_url = self.request.build_absolute_uri(
-                    reverse('frontend:hyperpay_copy_pay')
-                )
-                query_params = {
-                    "checkoutId": normalized_checkout_id,
-                    "ref": payment.ref_id,
-                }
-                if integrity_token:
-                    query_params["integrity"] = integrity_token
-                payment.payment_url = f"{checkout_url}?{urlencode(query_params)}"
-                payment.save()
-
-                self.response_data = {
-                    "status": True,
-                    "message": "Payment created successfully.",
-                    "data": serializer.data,
-                }
-            else:
-                raise serializers.ValidationError(
-                    {"status": False, "message": copy_pay_response.get("message")}
-                )
         else:
             # Default response if no payment gateway is used
             self.response_data = {
@@ -194,19 +219,9 @@ class PaymentStatusCheckView(APIView):
         except Payment.DoesNotExist:
             return Response({"status": False, "message": "Payment not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        if payment.payment_gateway == 'HyperPayMPGS':
-            status_response = get_mpgs_payment_status(str(payment.ref_id))
-            payment_status = (status_response.get("status") or "").upper()
-
-            if payment_status in ["CAPTURED", "APPROVED", "SUCCESS", "SUCCESSFUL"]:
-                payment.status = "COMPLETED"
-                payment.date_paid = now()
-            elif payment_status in ["PENDING", "IN_PROGRESS", "INITIATED", "AUTHORIZED", "AUTHORISED"]:
-                payment.status = "PENDING"
-            else:
-                payment.status = "FAILED"
-
-            payment.save()
+        if payment.payment_gateway in ('HyperPayMPGS', 'MastercardHostedCheckout'):
+            status_response = get_mastercard_payment_status(str(payment.ref_id))
+            payment = _apply_mastercard_status(payment, status_response)
 
             return Response({
                 "status": True,
@@ -220,42 +235,6 @@ class PaymentStatusCheckView(APIView):
                     "currency": payment.currency,
                     "payment_gateway": payment.payment_gateway,
                     "transaction_id": payment.gateway_transaction_id,
-                },
-            })
-
-        if payment.payment_gateway == 'HyperPayCopyAndPay':
-            checkout_id = normalize_copy_and_pay_checkout_id(payment.gateway_transaction_id)
-            status_response = get_copy_and_pay_payment_status(checkout_id)
-            payment_status = (status_response.get("status") or "").upper()
-
-            if payment_status == "COMPLETED":
-                payment.status = "COMPLETED"
-                payment.date_paid = now()
-                if status_response.get("transaction_id"):
-                    payment.gateway_transaction_id = normalize_copy_and_pay_checkout_id(
-                        status_response["transaction_id"]
-                    )
-            elif payment_status == "PENDING":
-                payment.status = "PENDING"
-            else:
-                payment.status = "FAILED"
-
-            payment.save()
-
-            return Response({
-                "status": True,
-                "message": "Payment status checked successfully.",
-                "data": {
-                    "ref_id": payment.ref_id,
-                    "status": payment.status,
-                    "amount": payment.price,
-                    "date_created": payment.date_created,
-                    "expiry_datetime": payment.expiry_datetime,
-                    "currency": payment.currency,
-                    "payment_gateway": payment.payment_gateway,
-                    "transaction_id": payment.gateway_transaction_id,
-                    "result_code": status_response.get("result_code"),
-                    "result_description": status_response.get("result_description"),
                 },
             })
 
@@ -304,6 +283,110 @@ class PaymentStatusCheckView(APIView):
         return Response({"status": False, "message": "Unsupported payment gateway."}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class MastercardCheckoutCallbackView(APIView):
+    """Handle browser returns from Mastercard Hosted Checkout."""
+
+    permission_classes = [AllowAny]
+
+    def _get_payload(self, request):
+        if request.method == "POST":
+            return request.data
+        return request.query_params
+
+    def _process_callback(self, payload):
+        order_id = (
+            payload.get("orderId")
+            or payload.get("order_id")
+            or payload.get("order")
+            or payload.get("reference")
+        )
+
+        if order_id:
+            order_id = str(order_id)
+        else:
+            return Response(
+                {"status": False, "message": "Missing order reference."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            payment = Payment.objects.get(ref_id=order_id)
+        except Payment.DoesNotExist:
+            return Response(
+                {"status": False, "message": "Payment not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        result_indicator = payload.get("resultIndicator") or payload.get("result_indicator")
+        session_id = payload.get("sessionId") or payload.get("session_id") or payload.get("session")
+
+        if session_id and session_id != payment.gateway_transaction_id:
+            payment.gateway_transaction_id = session_id
+            payment.save(update_fields=["gateway_transaction_id"])
+
+        indicator_matched = None
+        if result_indicator:
+            if payment.mpgs_success_indicator:
+                indicator_matched = result_indicator == payment.mpgs_success_indicator
+            else:
+                indicator_matched = True
+
+        status_response = None
+
+        if indicator_matched is not False:
+            status_response = get_mastercard_payment_status(str(payment.ref_id))
+            payment = _apply_mastercard_status(payment, status_response)
+        else:
+            if payment.status != "FAILED":
+                payment.status = "FAILED"
+                payment.save(update_fields=["status"])
+
+        if payment.payment_gateway not in ("HyperPayMPGS", "MastercardHostedCheckout"):
+            message = "Payment recorded, but gateway mismatch detected."
+        elif indicator_matched is False:
+            message = "Payment verification failed because the result indicator did not match."
+        elif payment.status == "COMPLETED":
+            message = "Payment completed successfully."
+        elif payment.status == "PENDING":
+            message = "Payment is pending confirmation."
+        else:
+            message = "Payment verification failed."
+
+        http_status = status.HTTP_200_OK
+        if indicator_matched is False or payment.status == "FAILED":
+            http_status = status.HTTP_400_BAD_REQUEST
+        elif payment.status == "PENDING":
+            http_status = status.HTTP_202_ACCEPTED
+
+        response_data = {
+            "status": payment.status == "COMPLETED",
+            "message": message,
+            "data": {
+                "ref_id": payment.ref_id,
+                "status": payment.status,
+                "amount": payment.price,
+                "currency": payment.currency,
+                "payment_gateway": payment.payment_gateway,
+                "transaction_id": payment.gateway_transaction_id,
+                "indicator_matched": indicator_matched,
+            },
+        }
+
+        if status_response is not None:
+            response_data["gateway_response"] = {
+                "status": status_response.get("status"),
+                "payment_method": status_response.get("payment_method"),
+            }
+
+        return Response(response_data, status=http_status)
+
+    def get(self, request):
+        return self._process_callback(self._get_payload(request))
+
+    def post(self, request):
+        return self._process_callback(self._get_payload(request))
+
+
 class UpdatePendingPaymentsView(APIView):
     """
     Checks and updates the status of all pending payments in the last 48 hours.
@@ -326,34 +409,9 @@ class UpdatePendingPaymentsView(APIView):
         updated_payments = []
 
         for payment in pending_payments:
-            if payment.payment_gateway == "HyperPayMPGS":
-                status_response = get_mpgs_payment_status(str(payment.ref_id))
-                payment_status = (status_response.get("status") or "").upper()
-
-                if payment_status in ["CAPTURED", "APPROVED", "SUCCESS", "SUCCESSFUL"]:
-                    payment.status = "COMPLETED"
-                    payment.date_paid = now()
-                elif payment_status in ["PENDING", "IN_PROGRESS", "INITIATED", "AUTHORIZED", "AUTHORISED"]:
-                    payment.status = "PENDING"
-                else:
-                    payment.status = "FAILED"
-
-            elif payment.payment_gateway == "HyperPayCopyAndPay":
-                checkout_id = normalize_copy_and_pay_checkout_id(payment.gateway_transaction_id)
-                status_response = get_copy_and_pay_payment_status(checkout_id)
-                payment_status = (status_response.get("status") or "").upper()
-
-                if payment_status == "COMPLETED":
-                    payment.status = "COMPLETED"
-                    payment.date_paid = now()
-                    if status_response.get("transaction_id"):
-                        payment.gateway_transaction_id = normalize_copy_and_pay_checkout_id(
-                            status_response["transaction_id"]
-                        )
-                elif payment_status == "PENDING":
-                    payment.status = "PENDING"
-                else:
-                    payment.status = "FAILED"
+            if payment.payment_gateway in ("HyperPayMPGS", "MastercardHostedCheckout"):
+                status_response = get_mastercard_payment_status(str(payment.ref_id))
+                payment = _apply_mastercard_status(payment, status_response)
 
             elif payment.payment_gateway == "CoinPayments":
                 # Check status from CoinPayments

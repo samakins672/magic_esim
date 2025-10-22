@@ -257,27 +257,29 @@ COINPAYMENTS_IPN_URL = config('COINPAYMENTS_IPN_URL')
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
 
-# HyperPay MPGS Configuration
+# Mastercard Hosted Checkout (MPGS) Configuration
 MPGS_API_BASE_URL = config('MPGS_API_BASE_URL')
-MPGS_API_VERSION = config('MPGS_API_VERSION', default='70')
+MPGS_API_VERSION = config('MPGS_API_VERSION', default='100')
 MPGS_MERCHANT_ID = config('MPGS_MERCHANT_ID')
+MPGS_MERCHANT_NAME = config('MPGS_MERCHANT_NAME', default='Magic eSIM')
+MPGS_MERCHANT_URL = config('MPGS_MERCHANT_URL', default='')
 MPGS_API_PASSWORD = config('MPGS_API_PASSWORD')
 MPGS_RETURN_URL = config('MPGS_RETURN_URL')
-MPGS_CHECKOUT_URL = config('MPGS_CHECKOUT_URL')
+MPGS_CHECKOUT_SCRIPT_URL = config(
+    'MPGS_CHECKOUT_SCRIPT_URL',
+    default=(
+        f"{MPGS_API_BASE_URL.rstrip('/')}/static/checkout/checkout.min.js"
+        f"?version={MPGS_API_VERSION}"
+    ),
+)
+MPGS_INTERACTION_OPERATION = config(
+    'MPGS_INTERACTION_OPERATION', default='AUTHORIZE'
+)
 MPGS_SESSION_TIMEOUT_MINUTES = config('MPGS_SESSION_TIMEOUT_MINUTES', default=15, cast=int)
 
-# HyperPay Copy & Pay Configuration
-HYPERPAY_API_BASE_URL = config('HYPERPAY_API_BASE_URL', default=MPGS_API_BASE_URL)
-HYPERPAY_PAYMENT_WIDGET_URL = config(
-    'HYPERPAY_PAYMENT_WIDGET_URL',
-    default=f"{HYPERPAY_API_BASE_URL.rstrip('/')}/v1/paymentWidgets.js",
-)
-HYPERPAY_ENTITY_ID = config('HYPERPAY_ENTITY_ID', default='')
-HYPERPAY_ACCESS_TOKEN = config('HYPERPAY_ACCESS_TOKEN', default='')
-HYPERPAY_RETURN_URL = config('HYPERPAY_RETURN_URL', default=MPGS_RETURN_URL)
-HYPERPAY_ALLOWED_BRANDS = config('HYPERPAY_ALLOWED_BRANDS', default='VISA MASTER')
-HYPERPAY_CHECKOUT_TIMEOUT_MINUTES = config(
-    'HYPERPAY_CHECKOUT_TIMEOUT_MINUTES', default=15, cast=int
-)
+# Foreign Exchange Conversion
+FX_API_BASE_URL = config('FX_API_BASE_URL', default='https://api.exchangerate.host')
+FX_API_ACCESS_KEY = config('FX_API_ACCESS_KEY', default=None)
+FX_API_TIMEOUT_SECONDS = config('FX_API_TIMEOUT_SECONDS', default=5, cast=int)
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
