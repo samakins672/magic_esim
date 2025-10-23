@@ -19,29 +19,43 @@ from django.urls import reverse
 import datetime
 
 
-MPGS_SUCCESS_STATUSES = {"CAPTURED", "APPROVED", "SUCCESS", "SUCCESSFUL"}
-MPGS_PENDING_STATUSES = {"PENDING", "IN_PROGRESS", "INITIATED", "AUTHORIZED", "AUTHORISED"}
+MPGS_SUCCESS_STATUSES = {"CAPTURED", "APPROVED", "SUCCESS", "SUCCESSFUL", "PAID", "SETTLED"}
+MPGS_PENDING_STATUSES = {"PENDING", "IN_PROGRESS", "INITIATED", "AUTHORIZED", "AUTHORISED", "AUTHORISED_PENDING_SETTLEMENT"}
 
 
 def _apply_mastercard_status(payment, status_response):
-    """Normalize Mastercard status payloads onto the local Payment instance."""
+    """Normalize Mastercard status payloads to local Payment.
 
-    payment_status = (status_response.get("status") or "").upper()
+    Default to PENDING unless the API clearly indicates success or a terminal failure
+    (expired, failed, cancelled, declined). This prevents prematurely marking
+    payments as failed when MPGS is still processing.
+    """
+
+    payment_status_raw = status_response.get("status") or ""
+    payment_status = str(payment_status_raw).upper()
     updated_fields = []
 
-    if payment_status in MPGS_SUCCESS_STATUSES:
+    # Determine failure by explicit keywords per Retrieve Order semantics.
+    # Default to PENDING unless the gateway clearly states expired/failed/cancelled/declined.
+    failed_keywords = ("EXPIRE", "FAIL", "CANCEL", "DECLIN")
+    is_failed = any(k in payment_status for k in failed_keywords)
+    is_success = payment_status in MPGS_SUCCESS_STATUSES
+    is_pending = payment_status in MPGS_PENDING_STATUSES
+
+    if is_success:
         if payment.status != "COMPLETED":
             payment.status = "COMPLETED"
             updated_fields.append("status")
         payment.date_paid = now()
         updated_fields.append("date_paid")
-    elif payment_status in MPGS_PENDING_STATUSES:
-        if payment.status != "PENDING":
-            payment.status = "PENDING"
-            updated_fields.append("status")
-    elif payment_status:
+    elif is_failed:
         if payment.status != "FAILED":
             payment.status = "FAILED"
+            updated_fields.append("status")
+    else:
+        # Pending by default for unknown/processing states; don't downgrade completed
+        if payment.status != "COMPLETED" and payment.status != "PENDING":
+            payment.status = "PENDING"
             updated_fields.append("status")
 
     payment_method = status_response.get("payment_method")
