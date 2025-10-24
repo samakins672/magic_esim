@@ -1,5 +1,5 @@
 from rest_framework import generics, status
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResponse
 from magic_esim.permissions import IsAuthenticatedWithSessionOrJWT
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import logout
@@ -8,14 +8,18 @@ from rest_framework_simplejwt.exceptions import TokenError
 from django.contrib.auth import authenticate, login
 from .models import User
 from .serializers import (
-    UserRegistrationSerializer,
+    APIResponseSerializer,
+    AuthResponseSerializer,
+    ChangePasswordSerializer,
     OTPRequestSerializer,
     OTPVerifySerializer,
+    LogoutRequestSerializer,
+    PasswordResetConfirmSerializer,
+    PasswordResetRequestSerializer,
+    UserDetailResponseSerializer,
     UserDetailSerializer,
     UserLoginSerializer,
-    PasswordResetRequestSerializer,
-    PasswordResetConfirmSerializer,
-    ChangePasswordSerializer,
+    UserRegistrationSerializer,
 )
 from rest_framework.views import APIView
 from .utils import api_response
@@ -29,6 +33,21 @@ class GoogleAuthView(generics.GenericAPIView):
     serializer_class = GoogleAuthSerializer
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        tags=["Authentication"],
+        summary="Sign in with Google",
+        request=GoogleAuthSerializer,
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=AuthResponseSerializer,
+                description="Google sign-in succeeded.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=AuthResponseSerializer,
+                description="Google token validation failed.",
+            ),
+        },
+    )
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
 
@@ -52,6 +71,23 @@ class GoogleAuthView(generics.GenericAPIView):
         )
 
 
+@extend_schema_view(
+    post=extend_schema(
+        tags=["Authentication"],
+        summary="Register a new user",
+        request=UserRegistrationSerializer,
+        responses={
+            status.HTTP_201_CREATED: OpenApiResponse(
+                response=APIResponseSerializer,
+                description="User registered successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=APIResponseSerializer,
+                description="Validation failed during registration.",
+            ),
+        },
+    ),
+)
 class UserRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
@@ -85,6 +121,21 @@ class OTPRequestView(generics.GenericAPIView):
     serializer_class = OTPRequestSerializer
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        tags=["Authentication"],
+        summary="Request a one-time password",
+        request=OTPRequestSerializer,
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=APIResponseSerializer,
+                description="OTP sent successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=APIResponseSerializer,
+                description="OTP request validation failed.",
+            ),
+        },
+    )
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -106,6 +157,21 @@ class OTPVerifyView(generics.GenericAPIView):
     serializer_class = OTPVerifySerializer
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        tags=["Authentication"],
+        summary="Verify one-time password",
+        request=OTPVerifySerializer,
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=AuthResponseSerializer,
+                description="OTP verified successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=AuthResponseSerializer,
+                description="OTP verification failed.",
+            ),
+        },
+    )
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -158,6 +224,25 @@ class LoginView(generics.GenericAPIView):
     serializer_class = UserLoginSerializer
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        tags=["Authentication"],
+        summary="Authenticate with email and password",
+        request=UserLoginSerializer,
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=AuthResponseSerializer,
+                description="Login successful.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=AuthResponseSerializer,
+                description="Login validation failed.",
+            ),
+            status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                response=AuthResponseSerializer,
+                description="Invalid credentials or inactive account.",
+            ),
+        },
+    )
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -209,9 +294,19 @@ class LoginView(generics.GenericAPIView):
 
 class LogoutView(APIView):
     @extend_schema(
-        parameters=[
-            OpenApiParameter("refresh", OpenApiTypes.STR, description="The refresh token to be blacklisted", required=True),
-        ],
+        tags=["Authentication"],
+        summary="Log out and blacklist refresh token",
+        request=LogoutRequestSerializer,
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=APIResponseSerializer,
+                description="Logout completed successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=APIResponseSerializer,
+                description="Refresh token was missing or invalid.",
+            ),
+        },
     )
     def post(self, request, *args, **kwargs):
         # Retrieve the refresh token from the request
@@ -250,6 +345,70 @@ class LogoutView(APIView):
             )
 
     
+@extend_schema_view(
+    get=extend_schema(
+        tags=["User"],
+        summary="Retrieve the authenticated user's profile",
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=UserDetailResponseSerializer,
+                description="User profile retrieved successfully.",
+            ),
+            status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                description="Authentication credentials were not provided.",
+            ),
+        },
+    ),
+    put=extend_schema(
+        tags=["User"],
+        summary="Update the authenticated user's profile",
+        request=UserDetailSerializer,
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=UserDetailResponseSerializer,
+                description="User profile updated successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=UserDetailResponseSerializer,
+                description="Profile update validation failed.",
+            ),
+            status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                description="Authentication credentials were not provided.",
+            ),
+        },
+    ),
+    patch=extend_schema(
+        tags=["User"],
+        summary="Partially update the authenticated user's profile",
+        request=UserDetailSerializer,
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=UserDetailResponseSerializer,
+                description="User profile updated successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=UserDetailResponseSerializer,
+                description="Profile update validation failed.",
+            ),
+            status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                description="Authentication credentials were not provided.",
+            ),
+        },
+    ),
+    delete=extend_schema(
+        tags=["User"],
+        summary="Deactivate the authenticated user's account",
+        responses={
+            status.HTTP_204_NO_CONTENT: OpenApiResponse(
+                response=APIResponseSerializer,
+                description="Account deactivated successfully.",
+            ),
+            status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                description="Authentication credentials were not provided.",
+            ),
+        },
+    ),
+)
 class UserMeView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserDetailSerializer
@@ -286,17 +445,11 @@ class UserMeView(generics.RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(instance, data=data, partial=partial)
         if serializer.is_valid():
             self.perform_update(serializer)
+            refreshed = self.get_serializer(instance)
             return api_response(
                 True,
                 "User details updated successfully.",
-                {
-                    "id": instance.id,
-                    "first_name": instance.first_name,
-                    "last_name": instance.last_name,
-                    "email": instance.email,
-                    "profile_image": instance.profile_image.url if instance.profile_image else None,
-                    "is_verified": instance.is_verified,
-                },
+                refreshed.data,
                 status.HTTP_200_OK,
             )
         return api_response(
@@ -321,6 +474,21 @@ class PasswordResetRequestView(generics.GenericAPIView):
     serializer_class = PasswordResetRequestSerializer
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        tags=["Authentication"],
+        summary="Request password reset OTP",
+        request=PasswordResetRequestSerializer,
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=APIResponseSerializer,
+                description="Password reset OTP sent.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=APIResponseSerializer,
+                description="Password reset request failed.",
+            ),
+        },
+    )
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -346,6 +514,25 @@ class PasswordResetConfirmView(generics.GenericAPIView):
     serializer_class = PasswordResetConfirmSerializer
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        tags=["Authentication"],
+        summary="Confirm password reset",
+        request=PasswordResetConfirmSerializer,
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=APIResponseSerializer,
+                description="Password reset successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=APIResponseSerializer,
+                description="Password reset confirmation failed.",
+            ),
+            status.HTTP_404_NOT_FOUND: OpenApiResponse(
+                response=APIResponseSerializer,
+                description="User not found for supplied email.",
+            ),
+        },
+    )
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -398,6 +585,24 @@ class ChangePasswordView(generics.GenericAPIView):
     serializer_class = ChangePasswordSerializer
     permission_classes = [IsAuthenticatedWithSessionOrJWT]
 
+    @extend_schema(
+        tags=["User"],
+        summary="Change the authenticated user's password",
+        request=ChangePasswordSerializer,
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=APIResponseSerializer,
+                description="Password changed successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=APIResponseSerializer,
+                description="Password change failed.",
+            ),
+            status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                description="Authentication credentials were not provided.",
+            ),
+        },
+    )
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():

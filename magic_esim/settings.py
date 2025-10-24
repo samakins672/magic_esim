@@ -31,7 +31,7 @@ ALLOWED_HOSTS = [
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Magic eSIM API',
-    'DESCRIPTION': 'N/A',
+    'DESCRIPTION': 'Programmatic access to Magic eSIM authentication, billing, eSIM catalogues, and virtual numbers.',
 }
 
 # Installed Apps
