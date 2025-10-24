@@ -133,6 +133,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "last_name",
             "email",
             "profile_image",
+            "is_verified",
         ]
 
 class UserLoginSerializer(serializers.Serializer):
@@ -189,3 +190,38 @@ class ChangePasswordSerializer(serializers.Serializer):
         if data['new_password'] != data['confirm_password']:
             raise serializers.ValidationError({"error": "New passwords don't match"})
         return data
+
+
+class APIResponseSerializer(serializers.Serializer):
+    status = serializers.BooleanField()
+    message = serializers.CharField()
+    data = serializers.JSONField(required=False, allow_null=True)
+    errors = serializers.JSONField(required=False, allow_null=True)
+
+
+class AuthenticatedUserSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    first_name = serializers.CharField(allow_blank=True, allow_null=True)
+    last_name = serializers.CharField(allow_blank=True, allow_null=True)
+    email = serializers.EmailField()
+    profile_image = serializers.CharField(allow_blank=True, allow_null=True, required=False)
+    is_verified = serializers.BooleanField()
+
+
+class TokenPairSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+    access = serializers.CharField()
+    access_token_expiry = serializers.IntegerField(required=False)
+    user = AuthenticatedUserSerializer()
+
+
+class AuthResponseSerializer(APIResponseSerializer):
+    data = TokenPairSerializer(required=False)
+
+
+class UserDetailResponseSerializer(APIResponseSerializer):
+    data = UserDetailSerializer(required=False)
+
+
+class LogoutRequestSerializer(serializers.Serializer):
+    refresh = serializers.CharField()

@@ -4,10 +4,21 @@ from rest_framework.response import Response
 from rest_framework import status, generics
 from magic_esim.permissions import IsAuthenticatedWithSessionOrJWT
 from rest_framework.permissions import AllowAny
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiResponse
 from drf_spectacular.types import OpenApiTypes
 from .models import eSIMPlan
-from .serializers import eSIMPlanFilterSerializer, eSIMProfileSerializer, eSIMPlanSerializer
+from .serializers import (
+    CountryListResponseSerializer,
+    ESIMGoPlanDetailResponseSerializer,
+    eSIMBaseResponseSerializer,
+    eSIMPlanFilterSerializer,
+    eSIMPlanListResponseSerializer,
+    eSIMPlanSerializer,
+    eSIMProfileResponseSerializer,
+    eSIMProfileSerializer,
+    eSIMUserPlanListResponseSerializer,
+    eSIMUserPlanResponseSerializer,
+)
 from decouple import config
 import json
 import os
@@ -30,6 +41,9 @@ class eSIMPlanListView(APIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
+        tags=["eSIM"],
+        summary="List available eSIM plans",
+        description="Fetch catalogue data from eSIMAccess and eSIMGo and merge the results into grouped collections.",
         parameters=[
             # Existing filters from your eSIMPlanFilterSerializer
             OpenApiParameter("locationCode", OpenApiTypes.STR, description="Location code (e.g., US, IN)", required=False),
@@ -37,12 +51,22 @@ class eSIMPlanListView(APIView):
             OpenApiParameter("slug", OpenApiTypes.STR, description="Slug identifier for the plan", required=False),
             OpenApiParameter("packageCode", OpenApiTypes.STR, description="Package code of the plan", required=False),
             OpenApiParameter("iccid", OpenApiTypes.STR, description="ICCID for the eSIM", required=False),
-            OpenApiParameter("mainRegion", OpenApiTypes.STR, description="main Region codes", required=False),
+            OpenApiParameter("mainRegion", OpenApiTypes.STR, description="Main region filter for global catalogues", required=False),
 
             # eSIM-Go additional filters
             OpenApiParameter("region", OpenApiTypes.STR, description="Region for local filtering (e.g. 'Africa')", required=False),
             OpenApiParameter("description", OpenApiTypes.STR, description="Description substring filter for local filtering", required=False),
         ],
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=eSIMPlanListResponseSerializer,
+                description="Combined catalogue data retrieved successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=eSIMBaseResponseSerializer,
+                description="Invalid filter parameters supplied.",
+            ),
+        },
     )
     def get(self, request, *args, **kwargs):
         """
@@ -251,6 +275,8 @@ class ESIMGoPlanDetailView(APIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
+        tags=["eSIM"],
+        summary="Retrieve a single eSIMGo bundle",
         parameters=[
             OpenApiParameter(
                 name="name",
@@ -260,9 +286,22 @@ class ESIMGoPlanDetailView(APIView):
             ),
         ],
         responses={
-            200: OpenApiTypes.OBJECT,
-            400: OpenApiTypes.OBJECT,
-            404: OpenApiTypes.OBJECT
+            status.HTTP_200_OK: OpenApiResponse(
+                response=ESIMGoPlanDetailResponseSerializer,
+                description="Plan detail retrieved successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=eSIMBaseResponseSerializer,
+                description="The required plan name was not supplied.",
+            ),
+            status.HTTP_404_NOT_FOUND: OpenApiResponse(
+                response=eSIMBaseResponseSerializer,
+                description="No plan exists for the supplied name.",
+            ),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: OpenApiResponse(
+                response=eSIMBaseResponseSerializer,
+                description="Unexpected error when contacting the eSIM-Go API.",
+            ),
         },
     )
     def get(self, request, *args, **kwargs):
@@ -357,10 +396,26 @@ class eSIMProfileView(APIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
+        tags=["eSIM"],
+        summary="Fetch purchased eSIM profile details",
         parameters=[
             OpenApiParameter("orderNo", OpenApiTypes.STR, description="Order number for the eSIM profile e.g. B2210206381924", required=False),
             OpenApiParameter("iccid", OpenApiTypes.STR, description="ICCID for the eSIM", required=False),
         ],
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=eSIMProfileResponseSerializer,
+                description="Profile information retrieved successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=eSIMBaseResponseSerializer,
+                description="Validation failed for the supplied query parameters.",
+            ),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: OpenApiResponse(
+                response=eSIMBaseResponseSerializer,
+                description="Unexpected error while contacting the eSIM API.",
+            ),
+        },
     )
     def get(self, request, *args, **kwargs):
         serializer = eSIMProfileSerializer(data=request.query_params)
@@ -459,6 +514,39 @@ class eSIMProfileView(APIView):
             }, status=status.HTTP_400_BAD_REQUEST)
         
 
+@extend_schema_view(
+    get=extend_schema(
+        tags=["eSIM"],
+        summary="List the authenticated user's eSIM plans",
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=eSIMUserPlanListResponseSerializer,
+                description="Plans retrieved successfully.",
+            ),
+            status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                description="Authentication credentials were not provided.",
+            ),
+        },
+    ),
+    post=extend_schema(
+        tags=["eSIM"],
+        summary="Create an eSIM plan from a completed payment",
+        request=eSIMPlanSerializer,
+        responses={
+            status.HTTP_201_CREATED: OpenApiResponse(
+                response=eSIMUserPlanResponseSerializer,
+                description="Plan created successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=eSIMBaseResponseSerializer,
+                description="Validation failed when creating the plan.",
+            ),
+            status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                description="Authentication credentials were not provided.",
+            ),
+        },
+    ),
+)
 class eSIMPlanListCreateView(generics.ListCreateAPIView):
     """
     Handles listing all eSIM plans and creating a new eSIM plan.
@@ -583,7 +671,102 @@ class eSIMPlanListCreateView(generics.ListCreateAPIView):
             "data": updated_plans,
         }, status=status.HTTP_200_OK)
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            {
+                "status": True,
+                "message": "eSIM plan created successfully.",
+                "data": serializer.data,
+            },
+            status=status.HTTP_201_CREATED,
+            headers=headers,
+        )
 
+
+@extend_schema_view(
+    get=extend_schema(
+        tags=["eSIM"],
+        summary="Retrieve a specific eSIM plan",
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=eSIMUserPlanResponseSerializer,
+                description="Plan retrieved successfully.",
+            ),
+            status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                description="Authentication credentials were not provided.",
+            ),
+            status.HTTP_404_NOT_FOUND: OpenApiResponse(
+                response=eSIMBaseResponseSerializer,
+                description="No plan exists for the supplied identifier.",
+            ),
+        },
+    ),
+    put=extend_schema(
+        tags=["eSIM"],
+        summary="Fully update an eSIM plan",
+        request=eSIMPlanSerializer,
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=eSIMUserPlanResponseSerializer,
+                description="Plan updated successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=eSIMBaseResponseSerializer,
+                description="Validation failed when updating the plan.",
+            ),
+            status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                description="Authentication credentials were not provided.",
+            ),
+            status.HTTP_404_NOT_FOUND: OpenApiResponse(
+                response=eSIMBaseResponseSerializer,
+                description="No plan exists for the supplied identifier.",
+            ),
+        },
+    ),
+    patch=extend_schema(
+        tags=["eSIM"],
+        summary="Partially update an eSIM plan",
+        request=eSIMPlanSerializer,
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=eSIMUserPlanResponseSerializer,
+                description="Plan updated successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=eSIMBaseResponseSerializer,
+                description="Validation failed when updating the plan.",
+            ),
+            status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                description="Authentication credentials were not provided.",
+            ),
+            status.HTTP_404_NOT_FOUND: OpenApiResponse(
+                response=eSIMBaseResponseSerializer,
+                description="No plan exists for the supplied identifier.",
+            ),
+        },
+    ),
+    delete=extend_schema(
+        tags=["eSIM"],
+        summary="Deactivate an eSIM plan",
+        responses={
+            status.HTTP_204_NO_CONTENT: OpenApiResponse(
+                response=eSIMBaseResponseSerializer,
+                description="Plan deactivated successfully.",
+            ),
+            status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                description="Authentication credentials were not provided.",
+            ),
+            status.HTTP_404_NOT_FOUND: OpenApiResponse(
+                response=eSIMBaseResponseSerializer,
+                description="No plan exists for the supplied identifier.",
+            ),
+        },
+    ),
+)
 class eSIMPlanDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
     Handles retrieving, updating, and deleting a specific eSIM plan.
@@ -614,11 +797,21 @@ class CountriesListView(APIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
+        tags=["eSIM"],
+        summary="List supported countries",
         parameters=[
             OpenApiParameter("name", OpenApiTypes.STR, description="Name of the country to filter", required=False),
         ],
-        responses={200: OpenApiTypes.OBJECT},
-        description="Get list of all countries"
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=CountryListResponseSerializer,
+                description="Countries retrieved successfully.",
+            ),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: OpenApiResponse(
+                response=eSIMBaseResponseSerializer,
+                description="The countries file could not be read.",
+            ),
+        },
     )
     def get(self, request):
         try:
@@ -655,8 +848,18 @@ class PopularCountriesListView(APIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
-        responses={200: OpenApiTypes.OBJECT},
-        description="Get list of popular countries"
+        tags=["eSIM"],
+        summary="List popular countries",
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=CountryListResponseSerializer,
+                description="Popular countries retrieved successfully.",
+            ),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: OpenApiResponse(
+                response=eSIMBaseResponseSerializer,
+                description="The popular countries file could not be read.",
+            ),
+        },
     )
     def get(self, request):
         try:
