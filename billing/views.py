@@ -1,18 +1,30 @@
-from rest_framework import generics, status
+from rest_framework import generics, serializers, status
 from rest_framework.views import APIView
 from magic_esim.permissions import IsAuthenticatedWithSessionOrJWT
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+    extend_schema_view,
+)
 from .models import Payment
 from esim.utils import fetch_esim_plan_details
-from .serializers import PaymentSerializer
+from .serializers import (
+    MastercardCallbackResponseSerializer,
+    PaymentCreateResponseSerializer,
+    PaymentSerializer,
+    PaymentStatusResponseSerializer,
+    PendingPaymentsResponseSerializer,
+)
 from billing.utils import (
     CoinPayments,
     get_mastercard_payment_status,
     initiate_mastercard_checkout,
 )
 from django.conf import settings
-from rest_framework import serializers
 from datetime import timedelta
 from django.utils.timezone import now
 from django.urls import reverse
@@ -84,6 +96,35 @@ def _apply_mastercard_status(payment, status_response):
     return payment
 
 
+@extend_schema_view(
+    get=extend_schema(
+        tags=["Payments"],
+        summary="List authenticated user payments",
+        description=(
+            "Return every payment created by the authenticated user. "
+            "Results are ordered by the default queryset configuration."
+        ),
+        responses=PaymentSerializer(many=True),
+    ),
+    post=extend_schema(
+        tags=["Payments"],
+        summary="Create a payment",
+        description=(
+            "Create a new payment and initiate the configured payment gateway. "
+            "The response wraps the stored payment along with gateway specific metadata."
+        ),
+        request=PaymentSerializer,
+        responses={
+            status.HTTP_201_CREATED: OpenApiResponse(
+                response=PaymentCreateResponseSerializer,
+                description="Payment created successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                description="Validation failed when creating the payment.",
+            ),
+        },
+    ),
+)
 class PaymentListCreateView(generics.ListCreateAPIView):
     """
     Handles listing all payments and creating a new payment.
@@ -227,6 +268,31 @@ class PaymentStatusCheckView(APIView):
     """
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        tags=["Payments"],
+        summary="Check payment status",
+        description="Retrieve the latest status for the payment identified by the reference ID.",
+        parameters=[
+            OpenApiParameter(
+                "ref_id",
+                OpenApiTypes.UUID,
+                OpenApiParameter.PATH,
+                description="The payment reference identifier returned during creation.",
+            )
+        ],
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=PaymentStatusResponseSerializer,
+                description="Payment status retrieved successfully.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                description="Unsupported payment gateway or gateway error.",
+            ),
+            status.HTTP_404_NOT_FOUND: OpenApiResponse(
+                description="Payment not found for the provided reference ID.",
+            ),
+        },
+    )
     def get(self, request, ref_id):
         try:
             payment = Payment.objects.get(ref_id=ref_id)
@@ -394,9 +460,53 @@ class MastercardCheckoutCallbackView(APIView):
 
         return Response(response_data, status=http_status)
 
+    @extend_schema(
+        tags=["Payments"],
+        summary="Handle Mastercard Hosted Checkout callback (GET)",
+        description=(
+            "Process the query parameters returned by Mastercard Hosted Checkout and "
+            "update the associated payment."
+        ),
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=MastercardCallbackResponseSerializer,
+                description="Payment verified successfully.",
+            ),
+            status.HTTP_202_ACCEPTED: OpenApiResponse(
+                response=MastercardCallbackResponseSerializer,
+                description="Payment is still pending confirmation.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=MastercardCallbackResponseSerializer,
+                description="Payment verification failed.",
+            ),
+        },
+    )
     def get(self, request):
         return self._process_callback(self._get_payload(request))
 
+    @extend_schema(
+        tags=["Payments"],
+        summary="Handle Mastercard Hosted Checkout callback (POST)",
+        description=(
+            "Process the form payload returned by Mastercard Hosted Checkout and "
+            "update the associated payment."
+        ),
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=MastercardCallbackResponseSerializer,
+                description="Payment verified successfully.",
+            ),
+            status.HTTP_202_ACCEPTED: OpenApiResponse(
+                response=MastercardCallbackResponseSerializer,
+                description="Payment is still pending confirmation.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=MastercardCallbackResponseSerializer,
+                description="Payment verification failed.",
+            ),
+        },
+    )
     def post(self, request):
         return self._process_callback(self._get_payload(request))
 
@@ -407,6 +517,20 @@ class UpdatePendingPaymentsView(APIView):
     """
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        tags=["Payments"],
+        summary="Refresh pending payments",
+        description=(
+            "Check every payment that has been pending in the last 48 hours and "
+            "synchronise its status with the configured payment gateway."
+        ),
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(
+                response=PendingPaymentsResponseSerializer,
+                description="Pending payments processed.",
+            ),
+        },
+    )
     def get(self, request):
         # Get time threshold for last 48 hours
         time_threshold = now() - datetime.timedelta(hours=48)

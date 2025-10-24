@@ -5,10 +5,9 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.conf import settings
 from rest_framework.permissions import AllowAny
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 from .models import NumberRequests
-from .serializers import NumberRequestSerializer
+from .serializers import NumberRequestResponseSerializer, NumberRequestSerializer
 from users.utils import api_response
 
 class NumberRequestView(APIView):
@@ -18,12 +17,23 @@ class NumberRequestView(APIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
-        request=NumberRequestSerializer,  # Use the serializer for the request body
+        tags=["Virtual Numbers"],
+        summary="Submit a virtual number request",
+        request=NumberRequestSerializer,
         responses={
-            201: OpenApiTypes.OBJECT,
-            400: OpenApiTypes.OBJECT,
+            status.HTTP_201_CREATED: OpenApiResponse(
+                response=NumberRequestResponseSerializer,
+                description="Request stored and notification email sent.",
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                response=NumberRequestResponseSerializer,
+                description="Validation failed for the submitted request.",
+            ),
+            status.HTTP_500_INTERNAL_SERVER_ERROR: OpenApiResponse(
+                response=NumberRequestResponseSerializer,
+                description="Request saved but the notification email failed.",
+            ),
         },
-        description="Endpoint to create a new number request.",
     )
     def post(self, request):
         serializer = NumberRequestSerializer(data=request.data)

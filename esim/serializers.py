@@ -2,7 +2,6 @@ from rest_framework import serializers
 from .models import eSIMPlan
 from billing.models import Payment
 from .utils import fetch_esim_plan_details, calculate_expiry_date, order_esim_profile
-from django.contrib.auth import get_user_model
 
 
 class eSIMPlanFilterSerializer(serializers.Serializer):
@@ -97,4 +96,85 @@ class eSIMPlanSerializer(serializers.ModelSerializer):
             esim_status='PAID'
         )
         return esim_plan
+
+
+class eSIMBaseResponseSerializer(serializers.Serializer):
+    status = serializers.BooleanField()
+    message = serializers.CharField()
+    data = serializers.JSONField(required=False, allow_null=True)
+    errors = serializers.JSONField(required=False, allow_null=True)
+    error = serializers.JSONField(required=False, allow_null=True)
+
+
+class eSIMPlanCollectionSerializer(serializers.Serializer):
+    standard = serializers.ListField(
+        child=serializers.JSONField(),
+        help_text="Plans returned from the eSIMAccess catalogue.",
+    )
+    unlimited = serializers.ListField(
+        child=serializers.JSONField(),
+        help_text="Plans returned from the eSIMGo catalogue.",
+    )
+
+
+class eSIMPlanListResponseSerializer(eSIMBaseResponseSerializer):
+    data = eSIMPlanCollectionSerializer(required=False)
+
+
+class ESIMGoPlanDetailResponseSerializer(eSIMBaseResponseSerializer):
+    data = serializers.JSONField(required=False, allow_null=True)
+
+
+class eSIMProfileResponseSerializer(eSIMBaseResponseSerializer):
+    data = serializers.ListField(
+        child=serializers.JSONField(),
+        required=False,
+        allow_null=True,
+    )
+
+
+class eSIMUserPlanSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    order_no = serializers.CharField(allow_blank=True, allow_null=True)
+    name = serializers.CharField(allow_blank=True, allow_null=True)
+    slug = serializers.CharField(allow_blank=True, allow_null=True)
+    package_code = serializers.CharField()
+    activated_on = serializers.DateTimeField(allow_null=True)
+    volume_used = serializers.CharField(allow_blank=True, allow_null=True)
+    esim_status = serializers.CharField()
+    duration = serializers.IntegerField()
+    currency_code = serializers.CharField()
+    speed = serializers.CharField(allow_blank=True, allow_null=True)
+    volume = serializers.CharField()
+    price = serializers.DecimalField(max_digits=10, decimal_places=2)
+    description = serializers.CharField()
+    seller = serializers.CharField()
+    location_code = serializers.CharField(allow_blank=True, allow_null=True)
+    location_code_lower = serializers.CharField()
+    expires_on = serializers.DateTimeField()
+    smdp_status = serializers.CharField()
+    duration_unit = serializers.CharField()
+    support_top_up_type = serializers.IntegerField()
+    usageScale = serializers.FloatField(required=False, allow_null=True)
+    durationLeft = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+    formattedVolumeLeft = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+
+
+class eSIMUserPlanListResponseSerializer(eSIMBaseResponseSerializer):
+    data = eSIMUserPlanSerializer(many=True, required=False)
+
+
+class eSIMUserPlanResponseSerializer(eSIMBaseResponseSerializer):
+    data = eSIMPlanSerializer(required=False)
+
+
+class CountrySerializer(serializers.Serializer):
+    alpha_2 = serializers.CharField()
+    name = serializers.CharField()
+    slug = serializers.CharField()
+    alpha_2_lower = serializers.CharField()
+
+
+class CountryListResponseSerializer(eSIMBaseResponseSerializer):
+    data = CountrySerializer(many=True, required=False)
 
