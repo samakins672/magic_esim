@@ -1,6 +1,7 @@
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.conf import settings
+from django.urls import reverse
 
 def api_response(status: bool, message: str, data=None, http_status=200):
     """
@@ -46,3 +47,34 @@ def send_otp_email(user_email, otp):
         print(f"OTP email sent to {user_email}")  # For debugging
     except Exception as e:
         print(f"Error sending email to {user_email}: {e}")
+
+
+def send_account_deletion_email(user_email: str, delete_url: str):
+    """
+    Sends an account deletion confirmation email with a unique link.
+
+    :param user_email: Recipient email address.
+    :param delete_url: Absolute URL to confirm deletion.
+    """
+    subject = "Confirm your account deletion"
+    from_email = settings.DEFAULT_FROM_EMAIL
+    recipient_list = [user_email]
+
+    html_content = render_to_string(
+        "emails/account_deletion_email.html",
+        {"delete_url": delete_url},
+    )
+
+    email = EmailMessage(
+        subject,
+        html_content,
+        from_email,
+        recipient_list,
+    )
+    email.content_subtype = "html"
+
+    try:
+        email.send()
+        print(f"Account deletion email sent to {user_email}")
+    except Exception as e:
+        print(f"Error sending account deletion email to {user_email}: {e}")

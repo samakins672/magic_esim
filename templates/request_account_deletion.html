@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include 'partials/head.html' %}
+    <title>Request Account Deletion</title>
+</head>
+<body>
+    <div class="loginScreen">
+        <div class="loginBox">
+            <div class="formLogo">
+                <a href="/"><img src="{% static 'new/assets/branding/preloader.webp' %}" alt=""></a>
+            </div>
+            <h1>Request Account Deletion</h1>
+            <p>Enter your email to receive a confirmation link.</p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="oneInput">
+                    <label for="email">E-mail <span>*</span></label>
+                    <input type="email" name="email" placeholder="abc@example.com" required>
+                </div>
+                <button type="submit" class="submitBtn">Send Confirmation Link</button>
+            </form>
+        </div>
+    </div>
+
+    {% include 'partials/scripts.html' %}
+</body>
+</html>
+

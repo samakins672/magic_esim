@@ -37,3 +37,17 @@ class User(AbstractUser):
 
         # Send the OTP via email
         send_otp_email(self.email, self.otp)
+
+
+class AccountDeletionLog(models.Model):
+    """Audit log entry for user account deletions."""
+    user_pk = models.BigIntegerField(null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(null=True, blank=True)
+    method = models.CharField(max_length=32, default='self-service')
+    request_path = models.CharField(max_length=255, null=True, blank=True)
+    deleted_at = models.DateTimeField(default=now)
+
+    def __str__(self):
+        return f"Deletion of {self.email or self.user_pk} at {self.deleted_at}"

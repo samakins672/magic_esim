@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.urls import reverse
 from django.conf import settings
+from django.core import signing
 import json
 import os
 
@@ -173,3 +174,75 @@ def account_settings(request):
     return render(request, 'settings.html', context)
 
 
+
+def request_account_deletion(request):
+    """Render a form to request account deletion by email, and send confirmation link."""
+    if request.method == 'POST':
+        email = (request.POST.get('email') or '').strip()
+
+        # Build deletion link regardless of whether user exists to avoid enumeration
+        try:
+            from users.models import User
+            user = User.objects.filter(email__iexact=email).first()
+        except Exception:
+            user = None
+
+        if user and user.email:
+            # Create signed token with user id
+            token = signing.dumps({'uid': user.id}, salt='account-deletion')
+            confirm_path = reverse('frontend:confirm_account_deletion', args=[token])
+            delete_url = request.build_absolute_uri(confirm_path)
+
+            # Send email
+            from users.utils import send_account_deletion_email
+            send_account_deletion_email(user.email, delete_url)
+
+        # Always show the same response
+        return render(request, 'request_account_deletion_done.html', {
+            'submitted_email': email,
+        })
+
+    return render(request, 'request_account_deletion.html')
+
+
+def confirm_account_deletion(request, token: str):
+    """Verify token and delete the associated account if valid."""
+    context = {}
+    try:
+        data = signing.loads(token, salt='account-deletion', max_age=60 * 60 * 48)  # 48 hours
+        user_id = data.get('uid')
+    except signing.BadSignature:
+        context['error'] = 'Invalid or tampered link.'
+        return render(request, 'account_deleted.html', context, status=400)
+    except signing.SignatureExpired:
+        context['error'] = 'This link has expired.'
+        return render(request, 'account_deleted.html', context, status=410)
+
+    # Delete user if exists
+    from users.models import User, AccountDeletionLog
+    user = User.objects.filter(id=user_id).first()
+    if not user:
+        context['message'] = 'Account already deleted.'
+        return render(request, 'account_deleted.html', context)
+
+    # Log deletion event for audit
+    try:
+        xff = request.META.get('HTTP_X_FORWARDED_FOR')
+        ip = (xff.split(',')[0].strip() if xff else None) or request.META.get('REMOTE_ADDR')
+        ua = request.META.get('HTTP_USER_AGENT')
+        AccountDeletionLog.objects.create(
+            user_pk=user.id,
+            email=user.email,
+            ip_address=ip,
+            user_agent=ua,
+            method='self-service',
+            request_path=request.path,
+        )
+    except Exception:
+        # Do not block deletion due to logging failure
+        pass
+
+    # Perform delete (cascades payments and related objects)
+    user.delete()
+    context['message'] = 'Your account has been deleted.'
+    return render(request, 'account_deleted.html', context)

@@ -19,4 +19,7 @@ urlpatterns = [
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
     path('terms-and-conditions/', views.terms_and_conditions, name='terms_and_conditions'),
     path('sitemap.xml', TemplateView.as_view(template_name="sitemap.xml", content_type='application/xml')),
+    # Account deletion request/confirm
+    path('request/account/deletion', views.request_account_deletion, name='request_account_deletion'),
+    path('confirm/account/deletion/<str:token>/', views.confirm_account_deletion, name='confirm_account_deletion'),
 ]

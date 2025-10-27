@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include 'partials/head.html' %}
+    <title>Check Your Email</title>
+</head>
+<body>
+    <div class="loginScreen">
+        <div class="loginBox">
+            <div class="formLogo">
+                <a href="/"><img src="{% static 'new/assets/branding/preloader.webp' %}" alt=""></a>
+            </div>
+            <h1>Check your email</h1>
+            <p>
+                If an account exists for <strong>{{ submitted_email }}</strong>,
+                a confirmation link has been sent. Please check your inbox.
+            </p>
+            <p><a href="/">Return to Home</a></p>
+        </div>
+    </div>
+
+    {% include 'partials/scripts.html' %}
+</body>
+</html>
+
