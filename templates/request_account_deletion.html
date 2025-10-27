@@ -4,6 +4,7 @@
 <head>
     {% include 'partials/head.html' %}
     <title>Request Account Deletion</title>
+    <link rel="stylesheet" href="{% static 'new/css/login.css' %}">
 </head>
 <body>
     <div class="loginScreen">
@@ -13,8 +14,9 @@
             </div>
             <h1>Request Account Deletion</h1>
             <p>Enter your email to receive a confirmation link.</p>
+            <h2 class="formAlert d-none">&nbsp;</h2>
 
-            <form method="post">
+            <form method="post" id="accountDeletionForm" class="signInForm">
                 {% csrf_token %}
                 <div class="oneInput">
                     <label for="email">E-mail <span>*</span></label>
@@ -28,4 +30,3 @@
     {% include 'partials/scripts.html' %}
 </body>
 </html>
-

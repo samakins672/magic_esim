@@ -4,6 +4,7 @@
 <head>
     {% include 'partials/head.html' %}
     <title>Check Your Email</title>
+    <link rel="stylesheet" href="{% static 'new/css/login.css' %}">
 </head>
 <body>
     <div class="loginScreen">
@@ -16,11 +17,10 @@
                 If an account exists for <strong>{{ submitted_email }}</strong>,
                 a confirmation link has been sent. Please check your inbox.
             </p>
-            <p><a href="/">Return to Home</a></p>
+            <a href="/" class="submitBtn" style="text-decoration:none;">Return to Home</a>
         </div>
     </div>
 
     {% include 'partials/scripts.html' %}
 </body>
 </html>
-
