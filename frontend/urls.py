@@ -10,6 +10,7 @@ urlpatterns = [
     path('verify/<str:email>', views.verify, name='verify'),
     path('signup/', views.signup, name='signup'),
     path('reset-password/', views.reset_password, name='reset-password'),
+    path('reset-password/confirm/<str:email>/<str:otp>/', views.reset_password_confirm, name='reset-password-confirm'),
     path('logout/', views.frontend_logout, name='frontend_logout'),
     path('esims/', views.esim_list, name='esim_list'),
     path('orders/', views.orders, name='esim_orders'),
