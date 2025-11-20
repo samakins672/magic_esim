@@ -62,8 +62,8 @@ $(document).on('submit', '#formAuthentication', function (e) {
         success: function (response) {
             console.log(response.message);
             
-            // Redirect to verification after signup success
-            window.location.href = '/verify/' + email;
+            // Redirect to verification with password-reset flow indicator
+            window.location.href = '/verify/' + email + '?flow=password-reset';
         },
         error: function (error) {
             console.error(error);
@@ -130,38 +130,60 @@ $(document).on('submit', '#otpVerifyForm', function (e) {
         return $(this).val();
     }).get().join('');
     
-    var formData = JSON.stringify({
-        email: $('#otpVerifyForm [name="email"]').val(),
-        otp: code,
-    });
+    const email = $('#otpVerifyForm [name="email"]').val();
+    
+    // Check if this is a password reset flow
+    const urlParams = new URLSearchParams(window.location.search);
+    const flow = urlParams.get('flow');
+    const isPasswordReset = flow === 'password-reset';
+    
+    if (isPasswordReset) {
+        // For password reset, just validate OTP and redirect to password reset confirmation
+        // We don't call the verify endpoint because we don't want to log the user in yet
+        var formData = JSON.stringify({
+            email: email,
+            otp: code,
+        });
 
-    $.ajax({
-        url: '/api/auth/otp/verify/',
-        type: 'POST',
-        data: formData,
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken
-        },
-        success: function (response) {
-            console.log(response.message);
+        // Validate the OTP exists but don't verify it yet (we'll verify during password reset)
+        // Instead, redirect directly to password reset confirmation with OTP
+        window.location.href = '/reset-password/confirm/' + encodeURIComponent(email) + '/' + code;
+        
+    } else {
+        // For signup verification, use the existing flow
+        var formData = JSON.stringify({
+            email: email,
+            otp: code,
+        });
 
-            // Redirect to login after verification is successful
-            window.location.href = '/login';
-        },
-        error: function (error) {
-            // On error show error message
-            if (error.responseJSON.message !== undefined) {
-                message = error.responseJSON.message;
-            } else {
-                message = 'Invalid OTP';
+        $.ajax({
+            url: '/api/auth/otp/verify/',
+            type: 'POST',
+            data: formData,
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            success: function (response) {
+                console.log(response.message);
+
+                // Redirect to login after verification is successful
+                window.location.href = '/login';
+            },
+            error: function (error) {
+                // On error show error message
+                if (error.responseJSON.message !== undefined) {
+                    message = error.responseJSON.message;
+                } else {
+                    message = 'Invalid OTP';
+                }
+                $('.formAlert').removeClass('d-none').text(message);
+            },
+            complete: function () {
+                loader.addClass("d-none");
             }
-            $('.formAlert').removeClass('d-none').text(message);
-        },
-        complete: function () {
-            loader.addClass("d-none");
-        }
-    });
+        });
+    }
 });
 
 $(document).on('submit', '#formAccountSettings', function (e) {
@@ -254,6 +276,53 @@ $(document).on('submit', '#changePasswordForm', function (e) {
         complete: function() {
             // Revert button text and re-enable the button
             submitButton.html('Submit changes').attr('disabled', false);
+        }
+    });
+});
+
+$(document).on('submit', '#passwordResetConfirmForm', function (e) {
+    e.preventDefault();
+
+    loader = $('.loading');
+    loader.removeClass("d-none");
+
+    var formData = JSON.stringify({
+        email: $('#passwordResetConfirmForm [name="email"]').val(),
+        otp: $('#passwordResetConfirmForm [name="otp"]').val(),
+        new_password: $('#passwordResetConfirmForm [name="new_password"]').val(),
+        confirm_password: $('#passwordResetConfirmForm [name="confirm_password"]').val(),
+    });
+
+    $.ajax({
+        url: '/api/auth/password/reset/confirm/',
+        method: 'POST',
+        data: formData,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        success: function (response) {
+            console.log(response.message);
+            // Show success message briefly, then redirect to login
+            $('.formAlert').removeClass('d-none').css('color', 'green').text('Password reset successfully! Redirecting to login...');
+            setTimeout(function() {
+                window.location.href = '/login';
+            }, 2000);
+        },
+        error: function (error) {
+            console.error(error);
+            let message = 'Password reset failed.';
+            if (error.responseJSON && error.responseJSON.message) {
+                if (typeof error.responseJSON.message === 'string') {
+                    message = error.responseJSON.message;
+                } else if (error.responseJSON.message.error) {
+                    message = error.responseJSON.message.error;
+                }
+            }
+            $('.formAlert').removeClass('d-none').css('color', 'red').text(message);
+        },
+        complete: function() {
+            loader.addClass("d-none");
         }
     });
 });

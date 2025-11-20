@@ -76,6 +76,12 @@ def verify(request, email):
 def reset_password(request):
     return render(request, 'reset-password.html')
 
+def reset_password_confirm(request, email, otp):
+    return render(request, 'reset-password-confirm.html', {
+        'email': email,
+        'otp': otp
+    })
+
 def privacy_policy(request):
     return render(request, 'privacy_policy.html')
 
