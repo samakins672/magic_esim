@@ -83,7 +83,7 @@ Understanding these touchpoints is key before extending the system with an addit
 * **Checkout sessions** – Hosted checkout sessions are generated via the MPGS REST API and require Basic authentication using `merchant.<ID>` credentials. The helper returns a session ID, success indicator, and calculated expiry timestamp for the frontend launcher.【F:billing/utils.py†L202-L340】
 * **Status polling** – Order status codes such as `CAPTURED`, `APPROVED`, or `PENDING` are normalized within the API views so they map cleanly onto the platform’s canonical states.【F:billing/views.py†L80-L323】
 * **Redirect flow** – Customers complete payment on the MPGS hosted page. The frontend opens `/payments/mastercard/<ref_id>/`, which embeds Mastercard's checkout script and launches the secure payment page before MPGS posts back to `/api/payments/mastercard/callback/` for verification.【F:billing/views.py†L126-L323】【F:frontend/views.py†L1-L200】【F:magic_esim/urls.py†L1-L29】
-* **Currency conversion** – MPGS sessions always submit amounts in SAR. The checkout helper converts USD totals using a static environment variable `FX_USD_SAR_RATE` (defaults to `3.80`) before initiating the session. This removes any dependency on external FX APIs.
+* **Currency support** – MPGS sessions support both USD and SAR directly. When a payment is initiated in USD or SAR, the checkout helper sends the amount and currency as-is. For other currencies, the helper converts the amount to SAR using a static environment variable `FX_USD_SAR_RATE` (defaults to `3.80`) before initiating the session. This removes any dependency on external FX APIs while supporting the most common payment currencies.
 
 ## 6. Developer Checklist
 

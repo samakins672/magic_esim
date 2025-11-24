@@ -319,7 +319,8 @@ def initiate_mastercard_checkout(
 
     currency_code = (currency or "USD").upper()
 
-    if currency_code != "SAR":
+    # Mastercard now supports USD directly, so we only convert if the currency is neither USD nor SAR
+    if currency_code not in ("USD", "SAR"):
         try:
             order_amount = convert_currency(order_amount, currency_code, "SAR")
             currency_code = "SAR"
