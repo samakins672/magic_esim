@@ -1,5 +1,6 @@
 /.venv
 .env
+test_settings.py
 staticfiles/
 
 # Python cache files and directories
