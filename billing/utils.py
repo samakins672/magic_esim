@@ -533,10 +533,15 @@ def get_mastercard_payment_status(order_id):
 
         response.raise_for_status()
 
-        order_data = data.get("order", {})
-        status = order_data.get("status") or data.get("result")
-        amount = order_data.get("amount")
-        currency = order_data.get("currency")
+        order_data = data.get("order")
+        order_status = None
+        order_amount = None
+        order_currency = None
+
+        if isinstance(order_data, dict):
+            order_status = order_data.get("status")
+            order_amount = order_data.get("amount")
+            order_currency = order_data.get("currency")
 
         transaction = None
         transactions = data.get("transactions")
@@ -550,13 +555,32 @@ def get_mastercard_payment_status(order_id):
             elif isinstance(transaction_data, dict):
                 transaction = transaction_data
 
+        # If MPGS nests the order under transactions, use that status/amount/currency as a fallback.
+        if order_status is None or order_amount is None or order_currency is None:
+            for candidate in (transaction,):
+                if isinstance(candidate, dict):
+                    tx_order = candidate.get("order")
+                    if isinstance(tx_order, dict):
+                        order_status = order_status or tx_order.get("status")
+                        order_amount = order_amount or tx_order.get("amount")
+                        order_currency = order_currency or tx_order.get("currency")
+
+        # Finalise status with sensible fallbacks: prefer explicit order status, then top-level status, then result.
+        status = order_status or data.get("status") or data.get("result")
+        amount = order_amount
+        currency = order_currency
+
         payment_method = None
         if isinstance(transaction, dict):
             payment_method = transaction.get("paymentMethod") or transaction.get(
                 "sourceOfFunds", {}
             ).get("type")
 
-        customer_email = order_data.get("customerEmail") or data.get("customer", {}).get("email")
+        customer_email = None
+        if isinstance(order_data, dict):
+            customer_email = order_data.get("customerEmail")
+        if not customer_email:
+            customer_email = data.get("customer", {}).get("email")
 
         result = {
             "status": status,
