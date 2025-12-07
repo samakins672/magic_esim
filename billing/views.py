@@ -29,6 +29,7 @@ from datetime import timedelta
 from django.utils.timezone import now
 from django.urls import reverse
 import datetime
+from django.db.models import Q
 
 
 MPGS_SUCCESS_STATUSES = {"CAPTURED", "APPROVED", "SUCCESS", "SUCCESSFUL", "PAID", "SETTLED"}
@@ -49,7 +50,7 @@ def _apply_mastercard_status(payment, status_response):
 
     # Determine failure by explicit keywords per Retrieve Order semantics.
     # Default to PENDING unless the gateway clearly states expired/failed/cancelled/declined.
-    failed_keywords = ("EXPIRE", "FAIL", "CANCEL", "DECLIN")
+    failed_keywords = ("EXPIRE", "FAIL", "CANCEL", "DECLIN", "ERROR", "INVALID", "NOT_FOUND")
     is_failed = any(k in payment_status for k in failed_keywords)
     is_success = payment_status in MPGS_SUCCESS_STATUSES
     is_pending = payment_status in MPGS_PENDING_STATUSES
@@ -299,7 +300,13 @@ class PaymentStatusCheckView(APIView):
         except Payment.DoesNotExist:
             return Response({"status": False, "message": "Payment not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        if payment.payment_gateway in ('HyperPayMPGS', 'MastercardHostedCheckout'):
+        refresh_cutoff = now() - datetime.timedelta(hours=24)
+        # Always allow refresh for PENDING; allow FAILED only within 24h.
+        allow_refresh = payment.status == "PENDING" or (
+            payment.status == "FAILED" and payment.date_created >= refresh_cutoff
+        )
+
+        if payment.payment_gateway in ('HyperPayMPGS', 'MastercardHostedCheckout') and allow_refresh:
             status_response = get_mastercard_payment_status(str(payment.ref_id))
             payment = _apply_mastercard_status(payment, status_response)
 
@@ -318,7 +325,7 @@ class PaymentStatusCheckView(APIView):
                 },
             })
 
-        if payment.payment_gateway == 'CoinPayments':
+        if payment.payment_gateway == 'CoinPayments' and allow_refresh:
             cp = CoinPayments(
                 publicKey=settings.COINPAYMENTS_PUBLIC_KEY,
                 privateKey=settings.COINPAYMENTS_PRIVATE_KEY,
@@ -360,7 +367,21 @@ class PaymentStatusCheckView(APIView):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-        return Response({"status": False, "message": "Unsupported payment gateway."}, status=status.HTTP_400_BAD_REQUEST)
+        # If not refreshed (older than cutoff or unsupported gateway), return current state.
+        return Response({
+            "status": True,
+            "message": "Payment status returned.",
+            "data": {
+                "ref_id": payment.ref_id,
+                "status": payment.status,
+                "amount": payment.price,
+                "date_created": payment.date_created,
+                "expiry_datetime": payment.expiry_datetime,
+                "currency": payment.currency,
+                "payment_gateway": payment.payment_gateway,
+                "transaction_id": payment.gateway_transaction_id,
+            },
+        }, status=status.HTTP_200_OK)
 
 
 class MastercardCheckoutCallbackView(APIView):
@@ -513,7 +534,7 @@ class MastercardCheckoutCallbackView(APIView):
 
 class UpdatePendingPaymentsView(APIView):
     """
-    Checks and updates the status of all pending payments in the last 48 hours.
+    Checks and updates the status of all pending payments (no time limit) and failed payments within the last 24 hours.
     """
     permission_classes = [AllowAny]
 
@@ -521,8 +542,8 @@ class UpdatePendingPaymentsView(APIView):
         tags=["Payments"],
         summary="Refresh pending payments",
         description=(
-            "Check every payment that has been pending in the last 48 hours and "
-            "synchronise its status with the configured payment gateway."
+            "Check every pending payment (no time limit) and failed payment in the last 24 hours, "
+            "then synchronise its status with the configured payment gateway."
         ),
         responses={
             status.HTTP_200_OK: OpenApiResponse(
@@ -532,13 +553,11 @@ class UpdatePendingPaymentsView(APIView):
         },
     )
     def get(self, request):
-        # Get time threshold for last 48 hours
-        time_threshold = now() - datetime.timedelta(hours=48)
+        refresh_cutoff = now() - datetime.timedelta(hours=24)
 
-        # Fetch payments that are still PENDING within the last 48 hours
+        # Fetch payments that are still PENDING (no time limit) or FAILED within the last 24 hours
         pending_payments = Payment.objects.filter(
-            status="PENDING",
-            date_created__gte=time_threshold
+            Q(status="PENDING") | (Q(status="FAILED") & Q(date_created__gte=refresh_cutoff))
         )
 
         if not pending_payments.exists():
@@ -547,6 +566,23 @@ class UpdatePendingPaymentsView(APIView):
         updated_payments = []
 
         for payment in pending_payments:
+            if (
+                payment.status == "PENDING"
+                and payment.payment_gateway in ("HyperPayMPGS", "MastercardHostedCheckout")
+                and payment.date_created < refresh_cutoff
+            ):
+                # Skip stale MPGS orders older than 24h to avoid endless retries on missing/expired refs
+                updated_payments.append({
+                    "ref_id": payment.ref_id,
+                    "status": payment.status,
+                    "amount": payment.price,
+                    "currency": payment.currency,
+                    "payment_gateway": payment.payment_gateway,
+                    "transaction_id": payment.gateway_transaction_id,
+                    "date_paid": payment.date_paid,
+                })
+                continue
+
             if payment.payment_gateway in ("HyperPayMPGS", "MastercardHostedCheckout"):
                 status_response = get_mastercard_payment_status(str(payment.ref_id))
                 # Ensure status_response is a dict before using .get()

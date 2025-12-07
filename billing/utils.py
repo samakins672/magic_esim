@@ -565,10 +565,10 @@ def get_mastercard_payment_status(order_id):
                         order_amount = order_amount or tx_order.get("amount")
                         order_currency = order_currency or tx_order.get("currency")
 
-        # Finalise status with sensible fallbacks: prefer explicit order status, then top-level status, then result.
-        status = order_status or data.get("status") or data.get("result")
-        amount = order_amount
-        currency = order_currency
+        # Finalise status with sensible fallbacks: prefer top-level status/result, then order status.
+        status = data.get("status") or data.get("result") or order_status or data.get("error", {}).get("cause")
+        amount = order_amount or data.get("amount")
+        currency = order_currency or data.get("currency")
 
         payment_method = None
         if isinstance(transaction, dict):

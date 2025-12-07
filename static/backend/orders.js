@@ -1,3 +1,26 @@
+const RETRY_WINDOW_MS = 24 * 60 * 60 * 1000;
+
+function parseDate(value) {
+    if (!value) return NaN;
+    const parsed = Date.parse(value);
+    return isNaN(parsed) ? NaN : parsed;
+}
+
+function isRetryable(order) {
+    const createdMs = parseDate(order.date_created || order.dateCreated);
+    const status = (order.status || "").toUpperCase();
+    if (status === "PENDING") {
+        return true; // Always allow pending to be retried
+    }
+    if (status === "FAILED") {
+        // If we can't parse the date, err on the side of showing the button.
+        if (isNaN(createdMs)) return true;
+        const withinWindow = createdMs >= Date.now() - RETRY_WINDOW_MS;
+        return withinWindow;
+    }
+    return false;
+}
+
 // Function to populate the table
 function populateOrdersTable(orders) {
     const $tableBody = $("#orders-table-body");
@@ -51,7 +74,7 @@ function populateOrdersTable(orders) {
           <td>${expiryCountdown}</td>
           <td>
             ${viewDetailsButton}
-            ${order.status === "PENDING" ? confirmPaymentButton : ""}
+            ${isRetryable(order) ? confirmPaymentButton : ""}
           </td>
         </tr>
       `;

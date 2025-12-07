@@ -1,0 +1,336 @@
+{
+  "3dsAcsEci": "02",
+  "amount": 0.94,
+  "authentication": {
+    "3ds": {
+      "acsEci": "02",
+      "authenticationToken": "kAMREEcAt38YnQBeJKXyQ4QBPmj8",
+      "transactionId": "661b1a4f-f535-4a39-8aeb-444b5a13a8a7"
+    }
+  },
+  "authenticationStatus": "AUTHENTICATION_SUCCESSFUL",
+  "authenticationVersion": "3DS2",
+  "billing": {
+    "address": {
+      "city": "Middletown",
+      "postcodeZip": "19709",
+      "stateProvince": "Delaware",
+      "street": "651 N Broad Street"
+    }
+  },
+  "chargeback": {
+    "amount": 0,
+    "currency": "USD"
+  },
+  "creationTime": "2025-12-07T06:55:20.480Z",
+  "currency": "USD",
+  "customer": {
+    "email": "akinyemisamuel170@gmail.com"
+  },
+  "description": "Nigeria 100MB 7Days",
+  "device": {
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
+    "ipAddress": "146.70.18.106"
+  },
+  "id": "1958717c-204d-4f61-928a-3dd8234102ac",
+  "lastUpdatedTime": "2025-12-07T06:55:23.217Z",
+  "merchant": "80004195",
+  "merchantAmount": 0.94,
+  "merchantCategoryCode": "4812",
+  "merchantCurrency": "USD",
+  "result": "SUCCESS",
+  "risk": {
+    "response": {
+      "gatewayCode": "REJECTED",
+      "review": {
+        "decision": "NOT_REQUIRED"
+      },
+      "rule": [
+        {
+          "data": "517746",
+          "name": "MSO_BIN_RANGE",
+          "recommendation": "NO_ACTION",
+          "type": "MSO_RULE"
+        },
+        {
+          "data": "146.70.18.106",
+          "name": "MSO_IP_ADDRESS_RANGE",
+          "recommendation": "NO_ACTION",
+          "type": "MSO_RULE"
+        },
+        {
+          "data": "PX1",
+          "name": "MSO_IP_COUNTRY",
+          "recommendation": "REJECT",
+          "type": "MSO_RULE"
+        }
+      ]
+    }
+  },
+  "sourceOfFunds": {
+    "provided": {
+      "card": {
+        "brand": "MASTERCARD",
+        "expiry": {
+          "month": "10",
+          "year": "28"
+        },
+        "fundingMethod": "CREDIT",
+        "issuer": "SUTTON BANK",
+        "issuerCountryCode": "USA",
+        "nameOnCard": "Samuel Akinyemi",
+        "number": "517746xxxxxx8501",
+        "scheme": "MASTERCARD",
+        "storedOnFile": "NOT_STORED"
+      }
+    },
+    "type": "CARD"
+  },
+  "status": "FAILED",
+  "totalAuthorizedAmount": 0.0,
+  "totalCapturedAmount": 0.0,
+  "totalDisbursedAmount": 0.0,
+  "totalRefundedAmount": 0.0,
+  "transaction": [
+    {
+      "authentication": {
+        "3ds": {
+          "acsEci": "02",
+          "authenticationToken": "kAMREEcAt38YnQBeJKXyQ4QBPmj8",
+          "transactionId": "661b1a4f-f535-4a39-8aeb-444b5a13a8a7"
+        },
+        "3ds2": {
+          "3dsServerTransactionId": "ab9536eb-26e3-48ca-be7e-bbaa7b226333",
+          "acsReference": "3DS_LOA_ACS_CACC_020200_00813",
+          "acsTransactionId": "e2f017ca-c4a3-4bc4-8efc-7077e74a8ae2",
+          "authenticationScheme": "MASTERCARD",
+          "directoryServerId": "A000000004",
+          "dsReference": "3DS_LOA_DIS_MAST_020301_00931",
+          "dsTransactionId": "661b1a4f-f535-4a39-8aeb-444b5a13a8a7",
+          "methodCompleted": false,
+          "methodSupported": "SUPPORTED",
+          "protocolVersion": "2.2.0",
+          "requestorId": "MAS00001_INT_MPGS_KS80004195",
+          "requestorName": "BADER ALOTAIBI FOR COMMUNICATIONS",
+          "transactionStatus": "Y"
+        },
+        "acceptVersions": "3DS1,3DS2",
+        "amount": 0.94,
+        "channel": "PAYER_BROWSER",
+        "payerInteraction": "NOT_REQUIRED",
+        "purpose": "PAYMENT_TRANSACTION",
+        "redirect": {
+          "domainName": "geoissuer.cardinalcommerce.com"
+        },
+        "time": "2025-12-07T06:55:20.487Z",
+        "version": "3DS2"
+      },
+      "billing": {
+        "address": {
+          "city": "Middletown",
+          "postcodeZip": "19709",
+          "stateProvince": "Delaware",
+          "street": "651 N Broad Street"
+        }
+      },
+      "customer": {
+        "email": "akinyemisamuel170@gmail.com"
+      },
+      "device": {
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
+        "ipAddress": "146.70.18.106"
+      },
+      "merchant": "80004195",
+      "order": {
+        "amount": 0.94,
+        "authenticationStatus": "AUTHENTICATION_SUCCESSFUL",
+        "chargeback": {
+          "amount": 0,
+          "currency": "USD"
+        },
+        "creationTime": "2025-12-07T06:55:20.480Z",
+        "currency": "USD",
+        "description": "Nigeria 100MB 7Days",
+        "id": "1958717c-204d-4f61-928a-3dd8234102ac",
+        "lastUpdatedTime": "2025-12-07T06:55:23.217Z",
+        "merchantAmount": 0.94,
+        "merchantCategoryCode": "4812",
+        "merchantCurrency": "USD",
+        "status": "FAILED",
+        "totalAuthorizedAmount": 0,
+        "totalCapturedAmount": 0,
+        "totalDisbursedAmount": 0,
+        "totalRefundedAmount": 0,
+        "valueTransfer": {
+          "accountType": "NOT_A_TRANSFER"
+        }
+      },
+      "response": {
+        "gatewayCode": "APPROVED",
+        "gatewayRecommendation": "PROCEED"
+      },
+      "result": "SUCCESS",
+      "sourceOfFunds": {
+        "provided": {
+          "card": {
+            "brand": "MASTERCARD",
+            "expiry": {
+              "month": "10",
+              "year": "28"
+            },
+            "fundingMethod": "CREDIT",
+            "issuer": "SUTTON BANK",
+            "nameOnCard": "Samuel Akinyemi",
+            "number": "517746xxxxxx8501",
+            "scheme": "MASTERCARD"
+          }
+        },
+        "type": "CARD"
+      },
+      "timeOfLastUpdate": "2025-12-07T06:55:20.484Z",
+      "timeOfRecord": "2025-12-07T06:55:19.573Z",
+      "transaction": {
+        "acquirer": {
+          "merchantId": "80004195"
+        },
+        "amount": 0.94,
+        "authenticationStatus": "AUTHENTICATION_SUCCESSFUL",
+        "currency": "USD",
+        "id": "trans-179",
+        "reference": "1958717c-204d-4f61-928a-3dd8234102ac",
+        "stan": "0",
+        "type": "AUTHENTICATION"
+      },
+      "version": "100"
+    },
+    {
+      "authentication": {
+        "3ds": {
+          "acsEci": "02",
+          "authenticationToken": "kAMREEcAt38YnQBeJKXyQ4QBPmj8",
+          "transactionId": "661b1a4f-f535-4a39-8aeb-444b5a13a8a7"
+        },
+        "3ds2": {
+          "acsReference": "3DS_LOA_ACS_CACC_020200_00813",
+          "acsTransactionId": "e2f017ca-c4a3-4bc4-8efc-7077e74a8ae2",
+          "authenticationScheme": "MASTERCARD",
+          "dsReference": "3DS_LOA_DIS_MAST_020301_00931",
+          "dsTransactionId": "661b1a4f-f535-4a39-8aeb-444b5a13a8a7",
+          "protocolVersion": "2.2.0",
+          "transactionStatus": "Y"
+        },
+        "amount": 0.94,
+        "time": "2025-12-07T06:55:20.487Z",
+        "transactionId": "trans-179",
+        "version": "3DS2"
+      },
+      "billing": {
+        "address": {
+          "city": "Middletown",
+          "postcodeZip": "19709",
+          "stateProvince": "Delaware",
+          "street": "651 N Broad Street"
+        }
+      },
+      "customer": {
+        "email": "akinyemisamuel170@gmail.com"
+      },
+      "device": {
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
+        "ipAddress": "146.70.18.106"
+      },
+      "gatewayEntryPoint": "CHECKOUT_VIA_WEBSITE",
+      "merchant": "80004195",
+      "order": {
+        "amount": 0.94,
+        "authenticationStatus": "AUTHENTICATION_SUCCESSFUL",
+        "chargeback": {
+          "amount": 0,
+          "currency": "USD"
+        },
+        "creationTime": "2025-12-07T06:55:20.480Z",
+        "currency": "USD",
+        "description": "Nigeria 100MB 7Days",
+        "id": "1958717c-204d-4f61-928a-3dd8234102ac",
+        "lastUpdatedTime": "2025-12-07T06:55:23.217Z",
+        "merchantAmount": 0.94,
+        "merchantCategoryCode": "4812",
+        "merchantCurrency": "USD",
+        "status": "FAILED",
+        "totalAuthorizedAmount": 0.0,
+        "totalCapturedAmount": 0.0,
+        "totalDisbursedAmount": 0.0,
+        "totalRefundedAmount": 0.0
+      },
+      "response": {
+        "gatewayCode": "BLOCKED",
+        "gatewayRecommendation": "RESUBMIT_WITH_ALTERNATIVE_PAYMENT_DETAILS"
+      },
+      "result": "FAILURE",
+      "risk": {
+        "response": {
+          "gatewayCode": "REJECTED",
+          "review": {
+            "decision": "NOT_REQUIRED"
+          },
+          "rule": [
+            {
+              "data": "517746",
+              "name": "MSO_BIN_RANGE",
+              "recommendation": "NO_ACTION",
+              "type": "MSO_RULE"
+            },
+            {
+              "data": "146.70.18.106",
+              "name": "MSO_IP_ADDRESS_RANGE",
+              "recommendation": "NO_ACTION",
+              "type": "MSO_RULE"
+            },
+            {
+              "data": "PX1",
+              "name": "MSO_IP_COUNTRY",
+              "recommendation": "REJECT",
+              "type": "MSO_RULE"
+            }
+          ]
+        }
+      },
+      "sourceOfFunds": {
+        "provided": {
+          "card": {
+            "brand": "MASTERCARD",
+            "expiry": {
+              "month": "10",
+              "year": "28"
+            },
+            "fundingMethod": "CREDIT",
+            "issuer": "SUTTON BANK",
+            "issuerCountryCode": "USA",
+            "nameOnCard": "Samuel Akinyemi",
+            "number": "517746xxxxxx8501",
+            "scheme": "MASTERCARD",
+            "storedOnFile": "NOT_STORED"
+          }
+        },
+        "type": "CARD"
+      },
+      "timeOfLastUpdate": "2025-12-07T06:55:23.217Z",
+      "timeOfRecord": "2025-12-07T06:55:23.180Z",
+      "transaction": {
+        "acquirer": {
+          "id": "SABB_ACQ_S2I",
+          "merchantId": "80004195"
+        },
+        "amount": 0.94,
+        "authenticationStatus": "AUTHENTICATION_SUCCESSFUL",
+        "currency": "USD",
+        "id": "1",
+        "reference": "1958717c-204d-4f61-928a-3dd8234102ac",
+        "source": "INTERNET",
+        "stan": "0",
+        "type": "PAYMENT"
+      },
+      "version": "100"
+    }
+  ]
+}
