@@ -16,6 +16,12 @@ def handle_payment_completed(sender, instance, **kwargs):
         if not payment:
             print("⚠ Payment record not found for the given reference ID.")
             return
+
+        # Avoid duplicate eSIM creation for the same payment
+        existing_plan = eSIMPlan.objects.filter(payment=payment).first()
+        if existing_plan:
+            print(f"ℹ eSIM already exists for payment {payment.ref_id} (order_no={existing_plan.order_no}); skipping.")
+            return
         
         user = payment.user  # Fetch user from the payment record
 
