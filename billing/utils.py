@@ -539,13 +539,19 @@ def get_mastercard_payment_status(order_id):
         currency = order_data.get("currency")
 
         transaction = None
-        if isinstance(data.get("transactions"), list) and data["transactions"]:
-            transaction = data["transactions"][-1]
-        elif data.get("transaction"):
-            transaction = data["transaction"]
+        transactions = data.get("transactions")
+        if isinstance(transactions, list) and transactions:
+            transaction = transactions[-1]
+
+        if transaction is None:
+            transaction_data = data.get("transaction")
+            if isinstance(transaction_data, list) and transaction_data:
+                transaction = transaction_data[-1]
+            elif isinstance(transaction_data, dict):
+                transaction = transaction_data
 
         payment_method = None
-        if transaction:
+        if isinstance(transaction, dict):
             payment_method = transaction.get("paymentMethod") or transaction.get(
                 "sourceOfFunds", {}
             ).get("type")
