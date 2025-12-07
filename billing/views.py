@@ -549,6 +549,12 @@ class UpdatePendingPaymentsView(APIView):
         for payment in pending_payments:
             if payment.payment_gateway in ("HyperPayMPGS", "MastercardHostedCheckout"):
                 status_response = get_mastercard_payment_status(str(payment.ref_id))
+                # Ensure status_response is a dict before using .get()
+                if isinstance(status_response, list):
+                    if status_response:
+                        status_response = status_response[0]
+                    else:
+                        status_response = {}
                 payment = _apply_mastercard_status(payment, status_response)
 
             elif payment.payment_gateway == "CoinPayments":
