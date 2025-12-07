@@ -40,8 +40,6 @@ def handle_payment_completed(sender, instance, **kwargs):
         print(plan_details)
         if not plan_details or plan_details.get('success') == False:
             print("⚠ Failed to fetch plan details from the eSIM API.")
-            payment.status = 'FAILED'
-            payment.save(update_fields=["status"])
             return  
 
         # Calculate expiry date
@@ -53,8 +51,6 @@ def handle_payment_completed(sender, instance, **kwargs):
         order_no = order_esim_profile(package_code, payment_ref_id, plan_price)
         if not order_no:
             print("⚠ Failed to create eSIM order (orderNo missing). Skipping plan creation.")
-            payment.status = 'FAILED'
-            payment.save(update_fields=["status"])
             return
         print(order_no)
 
