@@ -78,8 +78,17 @@ def order_esim_profile(package_code, ref_id, amount):
     try:
         response = requests.post(url, json=params, headers=headers)
         response.raise_for_status()  # Raise an error for non-200 responses
-        data = response.json().get('obj', {}) 
-        return data.get('orderNo')
+        try:
+            payload = response.json() or {}
+        except ValueError:
+            payload = {}
+
+        obj = payload.get('obj') if isinstance(payload, dict) else None
+        if not isinstance(obj, dict):
+            print(f"Error ordering eSIM plan: unexpected response body {payload}")
+            return None
+
+        return obj.get('orderNo')
     except requests.RequestException as e:
         print(f"Error ordering eSIM plan: {e}")
         return None
